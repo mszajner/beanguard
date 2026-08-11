@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Maven `groupId` changed again, from `io.github.mszajner` to `dev.beanguard` — a domain-verified namespace instead of a GitHub-verified one, so publishing isn't tied to a personal GitHub login.
 - Repository moved from a private GitLab instance to [github.com/mszajner/beanguard](https://github.com/mszajner/beanguard).
 - CI publishes Docker images (`server`, `admin`, `shop`, `docs`) to Docker Hub instead of GHCR.
+- CI publishes Docker images only on version tags (`v*`) now, instead of on every push to `main` — no more `-SNAPSHOT`-tagged images.
 - CI publishes `beanguard-api` and `beanguard-client` to Maven Central on version tags (`v*`).
 - `beanguard-client` no longer obfuscates its own JAR with ProGuard — it's open source now, so there was nothing left to hide. The `docs/proguard-vendor-guide.md` guide is rewritten to focus entirely on how *you* protect the keys you embed in your own `BeanGuardConfiguration` implementation.
 

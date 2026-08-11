@@ -41,7 +41,7 @@ jobs:
 
   publish:
     needs: [test-java, test-frontend]
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -62,14 +62,9 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           IMAGE="${DOCKERHUB_USERNAME}/beanguard-${{ matrix.service }}"
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            TAG="${GITHUB_REF#refs/tags/}"
-            SHORT_VERSION=$(echo "$TAG" | sed 's/^v//' | cut -d'.' -f1-2)
-            echo "tags=${IMAGE}:${TAG},${IMAGE}:${SHORT_VERSION}" >> "$GITHUB_OUTPUT"
-          else
-            SHORT_VERSION=$(grep -m1 '<version>' pom.xml | sed -E 's/.*<version>(.*)<\/version>.*/\1/' | sed 's/-SNAPSHOT//' | cut -d'.' -f1-2)
-            echo "tags=${IMAGE}:${SHORT_VERSION}-SNAPSHOT" >> "$GITHUB_OUTPUT"
-          fi
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          echo "tags=${IMAGE}:${TAG},${IMAGE}:${VERSION}" >> "$GITHUB_OUTPUT"
 
       # beanguard-server builds its JAR *inside* its (multi-stage) Dockerfile,
       # so it needs the whole reactor as build context (root pom + api +
