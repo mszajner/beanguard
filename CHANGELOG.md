@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-08-11
+
+First successful Maven Central release — `dev.beanguard:beanguard-api:0.1.1` and `beanguard-client:0.1.1` are live (`v0.1.0` uploaded but never got approved, see below).
+
 ### Changed
 
 - Docker image tags dropped the `v`-prefixed variant — each release now gets a single `X.Y.Z` tag instead of both `vX.Y.Z` and `X.Y.Z`.
@@ -40,5 +44,6 @@ First public release.
 
 Initial internal release — predates the public repository and was never tagged or published anywhere.
 
-[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/mszajner/beanguard/releases/tag/v0.1.1
 [0.1.0]: https://github.com/mszajner/beanguard/releases/tag/v0.1.0
