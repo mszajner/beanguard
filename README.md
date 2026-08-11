@@ -1,5 +1,9 @@
 # BeanGuard
 
+[![CI](https://img.shields.io/github/actions/workflow/status/mszajner/beanguard/ci.yml?branch=main&label=CI)](https://github.com/mszajner/beanguard/actions/workflows/ci.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/dev.beanguard/beanguard-client)](https://central.sonatype.com/artifact/dev.beanguard/beanguard-client)
+[![Docker Pulls](https://img.shields.io/docker/pulls/mszajner/beanguard-server)](https://hub.docker.com/r/mszajner/beanguard-server)
+
 BeanGuard is a licensing system for Java/Spring Boot applications. It issues, encrypts, and verifies licences — you decide what limits and features each one unlocks in your own product.
 
 Full documentation: **[beanguard-docs](beanguard-docs)** (deployed at [beanguard.dev](https://beanguard.dev) once published).
