@@ -103,3 +103,16 @@ mvn test
 ```
 
 Docker must be running (Testcontainers). Never push without a passing test run.
+
+## Releasing
+
+Pushing a version tag (`vX.Y.Z`) triggers `publish` (Docker images to Docker Hub) and `publish-maven` (`beanguard-api`/`beanguard-client` to Maven Central) in `.github/workflows/ci.yml` — both gated to `refs/tags/v*`. Docker images are tagged `X.Y.Z` only (no `v` prefix).
+
+Before tagging:
+1. Bump `<version>` from `X.Y.Z-SNAPSHOT` to `X.Y.Z` in all four `pom.xml` files (root, `beanguard-api`, `beanguard-client`, `beanguard-server`).
+2. Update the hardcoded version references in `beanguard-docs` (PL+EN) so they point at the new `X.Y.Z`:
+   - Docker image tags (`docker pull mszajner/beanguard-*:X.Y.Z` and the `docker-compose` snippets) in `download`/`pobierz`, `quick-start`/`szybki-start`, `server`/`serwer`, `shop`/`sklep`, `admin-panel`/`panel-admina`.
+   - The example Maven `<dependency>` version in `download`/`pobierz` and `client`/`klient`.
+3. Update `CHANGELOG.md`: rename `[Unreleased]` to `[X.Y.Z] - YYYY-MM-DD`, add a fresh empty `[Unreleased]` above it, and update the `[Unreleased]`/`[X.Y.Z]` compare links at the bottom.
+4. Run `mvn test`, commit, tag `vX.Y.Z`, push both the commit and the tag.
+5. Bump `<version>` to the next `X.Y.(Z+1)-SNAPSHOT` in the same four `pom.xml` files, commit, push.
