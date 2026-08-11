@@ -1,0 +1,99 @@
+{
+  "period": {
+    "oneYear": "1 rok",
+    "oneMonth": "1 miesiąc"
+  },
+  "errors": {
+    "openOrdersConflict": "Dla tej licencji istnieją już otwarte zamówienia: {{ids}}. Skontaktuj się ze sprzedawcą lub poczekaj na realizację."
+  },
+  "tokenExpired": {
+    "heading": "Link wygasł",
+    "body": "Ten link do zmiany licencji wygasł. Uruchom ponownie opcję zmiany licencji z poziomu aplikacji, aby uzyskać nowy link."
+  },
+  "modificationBanner": {
+    "demo": "Modyfikujesz licencję próbną (DEMO). Wybrana konfiguracja zastąpi obecną, a okres licencji zostanie naliczony od końca obecnego okresu DEMO.",
+    "standard": "Modyfikujesz istniejącą licencję. Wybrana konfiguracja zastąpi obecną, a licencja zostanie przedłużona od dziś. Kwota do zapłaty uwzględnia kredyt za niewykorzystany czas."
+  },
+  "section1": {
+    "title": "Konfiguruj licencję",
+    "loadingProducts": "Ładowanie produktów...",
+    "noProducts": "Brak dostępnych produktów."
+  },
+  "product": {
+    "required": "(wymagany)",
+    "currentQtyPrefix": "Aktualnie: ",
+    "disableWarning": "Uwaga: wyłączenie tej funkcji jest nieodwracalne — opłacona kwota przepada."
+  },
+  "limitsHint": {
+    "text": "Możesz zwiększyć posiadane limity lub zachować obecne wartości. Aby zmniejszyć —",
+    "contactSupportFallback": "skontaktuj się z supportem"
+  },
+  "section2": {
+    "title": "Dane do faktury"
+  },
+  "form": {
+    "emailLabel": "Adres e-mail *",
+    "emailPlaceholder": "kontakt@firma.pl",
+    "vatIdLabel": "NIP *",
+    "vatIdPlaceholder": "1234567890",
+    "vatIdValidation": "NIP musi składać się z 10 cyfr",
+    "companyNameLabel": "Nazwa firmy *",
+    "companyNamePlaceholder": "Firma Sp. z o.o.",
+    "streetLabel": "Ulica i numer *",
+    "streetPlaceholder": "ul. Przykładowa 1",
+    "postCodeLabel": "Kod pocztowy *",
+    "postCodePlaceholder": "00-000",
+    "postCodeValidation": "Kod pocztowy w formacie XX-XXX",
+    "cityLabel": "Miasto *",
+    "cityPlaceholder": "Warszawa",
+    "phoneLabel": "Telefon *",
+    "phonePlaceholder": "+48 000 000 000"
+  },
+  "summary": {
+    "title": "Podsumowanie",
+    "emptyCart": "Wybierz produkty z listy po lewej.",
+    "credit": "Kredyt za niewykorzystany czas",
+    "period": "Okres",
+    "net": "Netto",
+    "vatPrefix": "VAT ",
+    "grossTotal": "Łącznie brutto",
+    "total": "Łącznie"
+  },
+  "consent": {
+    "prefix": "Zapoznałem/am się z",
+    "terms": "regulaminem",
+    "and": " i ",
+    "privacy": "polityką prywatności",
+    "suffix": "i akceptuję ich postanowienia."
+  },
+  "submit": {
+    "submitting": "Składanie zamówienia...",
+    "selectProducts": "Wybierz produkty",
+    "zeroValue": "Wartość zamówienia wynosi 0",
+    "modify": "Zmień licencję",
+    "buy": "Kup licencję",
+    "secureNote": "Bezpieczne zamówienie"
+  },
+  "seller": {
+    "title": "Sprzedawca",
+    "vatIdPrefix": "NIP: ",
+    "krsPrefix": "KRS: "
+  },
+  "footer": {
+    "rightsReserved": " — Wszystkie prawa zastrzeżone",
+    "terms": "Regulamin",
+    "privacy": "Polityka prywatności"
+  },
+  "confirmationPage": {
+    "heading": "Zamówienie przyjęte",
+    "body": "Twoje zamówienie zostało złożone i oczekuje na realizację. Skontaktujemy się z Tobą e-mailem po jego zatwierdzeniu.",
+    "backToShop": "Wróć do sklepu"
+  },
+  "transferConfirmPage": {
+    "loading": "Potwierdzanie przeniesienia licencji...",
+    "successHeading": "Licencja przeniesiona",
+    "successBody": "Nowa instalacja jest teraz aktywna. Możesz zamknąć tę kartę.",
+    "errorHeading": "Błąd",
+    "errorBody": "Link wygasł lub przeniesienie zostało już wcześniej potwierdzone."
+  }
+}

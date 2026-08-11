@@ -1,0 +1,99 @@
+{
+  "period": {
+    "oneYear": "1 year",
+    "oneMonth": "1 month"
+  },
+  "errors": {
+    "openOrdersConflict": "There are already open orders for this licence: {{ids}}. Please contact the seller or wait for them to be processed."
+  },
+  "tokenExpired": {
+    "heading": "Link expired",
+    "body": "This licence modification link has expired. Start the licence modification flow again from within the application to get a new link."
+  },
+  "modificationBanner": {
+    "demo": "You are modifying a trial (DEMO) licence. The selected configuration will replace the current one, and the licence period will be counted from the end of the current DEMO period.",
+    "standard": "You are modifying an existing licence. The selected configuration will replace the current one, and the licence will be extended starting today. The amount due accounts for credit for unused time."
+  },
+  "section1": {
+    "title": "Configure your licence",
+    "loadingProducts": "Loading products...",
+    "noProducts": "No products available."
+  },
+  "product": {
+    "required": "(required)",
+    "currentQtyPrefix": "Current: ",
+    "disableWarning": "Warning: disabling this feature is irreversible — the amount paid for it is forfeited."
+  },
+  "limitsHint": {
+    "text": "You can increase your current limits or keep the current values. To decrease them —",
+    "contactSupportFallback": "contact support"
+  },
+  "section2": {
+    "title": "Billing details"
+  },
+  "form": {
+    "emailLabel": "Email address *",
+    "emailPlaceholder": "contact@company.com",
+    "vatIdLabel": "VAT ID *",
+    "vatIdPlaceholder": "1234567890",
+    "vatIdValidation": "VAT ID must consist of 10 digits",
+    "companyNameLabel": "Company name *",
+    "companyNamePlaceholder": "Acme Inc.",
+    "streetLabel": "Street and number *",
+    "streetPlaceholder": "123 Example Street",
+    "postCodeLabel": "Postal code *",
+    "postCodePlaceholder": "00-000",
+    "postCodeValidation": "Postal code must be in the XX-XXX format",
+    "cityLabel": "City *",
+    "cityPlaceholder": "Warsaw",
+    "phoneLabel": "Phone *",
+    "phonePlaceholder": "+48 000 000 000"
+  },
+  "summary": {
+    "title": "Summary",
+    "emptyCart": "Select products from the list on the left.",
+    "credit": "Credit for unused time",
+    "period": "Period",
+    "net": "Net",
+    "vatPrefix": "VAT ",
+    "grossTotal": "Gross total",
+    "total": "Total"
+  },
+  "consent": {
+    "prefix": "I have read the",
+    "terms": "terms of service",
+    "and": " and ",
+    "privacy": "privacy policy",
+    "suffix": "and I accept their terms."
+  },
+  "submit": {
+    "submitting": "Placing order...",
+    "selectProducts": "Select products",
+    "zeroValue": "Order value is 0",
+    "modify": "Modify licence",
+    "buy": "Buy licence",
+    "secureNote": "Secure order"
+  },
+  "seller": {
+    "title": "Seller",
+    "vatIdPrefix": "VAT ID: ",
+    "krsPrefix": "Company registry no.: "
+  },
+  "footer": {
+    "rightsReserved": " — All rights reserved",
+    "terms": "Terms of service",
+    "privacy": "Privacy policy"
+  },
+  "confirmationPage": {
+    "heading": "Order received",
+    "body": "Your order has been placed and is awaiting processing. We'll email you once it's confirmed.",
+    "backToShop": "Back to shop"
+  },
+  "transferConfirmPage": {
+    "loading": "Confirming licence transfer...",
+    "successHeading": "Licence transferred",
+    "successBody": "The new installation is now active. You can close this tab.",
+    "errorHeading": "Error",
+    "errorBody": "The link has expired or the transfer has already been confirmed."
+  }
+}

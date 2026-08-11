@@ -1,0 +1,134 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-shop-schema
+      author: mszajner
+      changes:
+        - createTable:
+            tableName: licence_templates
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: price
+                  type: TEXT
+              - column:
+                  name: claim_modifications
+                  type: JSONB
+              - column:
+                  name: expiration_extension_days
+                  type: INTEGER
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: shop_licence_tokens
+            columns:
+              - column:
+                  name: token
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: licence_key
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_shop_token_licence
+                    references: licences(key)
+              - column:
+                  name: expires_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: licence_orders
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: template_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_order_template
+                    references: licence_templates(id)
+              - column:
+                  name: licence_key
+                  type: UUID
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_order_licence
+                    references: licences(key)
+              - column:
+                  name: status
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: company_name
+                  type: TEXT
+              - column:
+                  name: street
+                  type: TEXT
+              - column:
+                  name: post_code
+                  type: TEXT
+              - column:
+                  name: city
+                  type: TEXT
+              - column:
+                  name: vat_id
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: TEXT
+              - column:
+                  name: notes
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false

@@ -1,0 +1,54 @@
+{
+  "page": {
+    "heading": "Cryptographic keys",
+    "description": "Keys used to sign and encrypt issued licences and admin sessions."
+  },
+  "tabs": {
+    "licence": "Licences",
+    "token": "Token"
+  },
+  "issuer": {
+    "heading": "Licence configuration",
+    "label": "Issuer",
+    "save": "Save",
+    "confirmTitle": "Change licence issuer?",
+    "confirmMessage": "Changing the issuer invalidates all previously issued licences. This cannot be undone.",
+    "confirmLabel": "Change issuer",
+    "saving": "Saving…",
+    "genericError": "Failed to save the issuer"
+  },
+  "keys": {
+    "heading": "Signing and encryption keys",
+    "loading": "Loading…",
+    "publicKey": "Public key (RSA)",
+    "publicKeyDescription": "Used by client applications (beanguard-client) to verify the signature of a licence issued by this server — confirms the licence is authentic and unmodified.",
+    "privateKey": "Private key (RSA)",
+    "privateKeyDescription": "Used only by this server to sign issued licences (JWS, RS256 algorithm). Never leaves the server.",
+    "secretKey": "Encryption key (AES)",
+    "secretKeyDescription": "Encrypts the signed licence (JWE, AES-256-GCM), so its contents are only readable by the server and the authorized client application.",
+    "configured": "Configured",
+    "notConfigured": "Not configured",
+    "updatedAt": "Updated {{date}}",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "regenerate": "Generate new keys",
+    "genericError": "Failed to load keys"
+  },
+  "regenerateModal": {
+    "confirmTitle": "Generate new licence keys?",
+    "confirmWarning": "This irreversibly invalidates ALL previously issued licences — client apps will no longer be able to verify or decrypt them.",
+    "confirmInputLabel": "Type REGENERATE to confirm",
+    "confirmPhrase": "REGENERATE",
+    "cancel": "Cancel",
+    "confirm": "Generate new keys",
+    "generating": "Generating…",
+    "genericError": "Failed to generate new keys",
+    "revealTitle": "New keys generated",
+    "revealWarning": "Save the secret key now — it will not be shown again.",
+    "publicKeyLabel": "Public key",
+    "secretKeyLabel": "Secret key",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "close": "Close"
+  }
+}

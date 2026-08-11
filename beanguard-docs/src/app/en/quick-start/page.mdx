@@ -1,0 +1,113 @@
+export const metadata = {
+  title: 'Quick start',
+  description:
+    'Run the server, admin panel, and shop locally with Docker Compose.',
+}
+
+export const sections = [
+  { title: 'Docker Compose', id: 'compose' },
+  { title: 'First startup', id: 'start' },
+  { title: 'Licence keys', id: 'klucze' },
+  { title: "What's next", id: 'dalej' },
+]
+
+# Quick start
+
+The fastest way to see BeanGuard in action: three Docker containers — server, admin panel, and shop — plus a PostgreSQL database. {{ className: 'lead' }}
+
+<Note>
+  The `mszajner/beanguard-*` images are placeholders — the project isn't
+  published on Docker Hub yet. See [Download BeanGuard](/en/download) for the
+  current image names and tags once they're ready.
+</Note>
+
+## Docker Compose {{ id: 'compose' }}
+
+Create a `docker-compose.yml` file:
+
+```yaml
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: beanguard
+      POSTGRES_USER: beanguard
+      POSTGRES_PASSWORD: beanguard
+    volumes:
+      - beanguard-db:/var/lib/postgresql/data
+
+  server:
+    image: mszajner/beanguard-server:0.1
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres/beanguard
+      SPRING_DATASOURCE_USERNAME: beanguard
+      SPRING_DATASOURCE_PASSWORD: beanguard
+      BEANGUARD_ADMIN_URL: http://localhost:8002
+      BEANGUARD_SHOP_URL: http://localhost:8001
+    ports:
+      - '8000:80'
+
+  admin:
+    image: mszajner/beanguard-admin:0.1
+    depends_on:
+      - server
+    environment:
+      BEANGUARD_SERVER_URL: http://server:80
+    ports:
+      - '8002:80'
+
+  shop:
+    image: mszajner/beanguard-shop:0.1
+    depends_on:
+      - server
+    environment:
+      BEANGUARD_SERVER_URL: http://server:80
+    ports:
+      - '8001:80'
+
+volumes:
+  beanguard-db:
+```
+
+Start everything:
+
+```bash
+docker compose up -d
+```
+
+The server listens on `localhost:8000`, the admin panel on `localhost:8002`, the shop on `localhost:8001`.
+
+## First startup {{ id: 'start' }}
+
+On startup, the server applies the database migrations itself (Liquibase), creates the default configuration parameters, **and immediately generates the RSA/AES keys** for signing licences and administrator sessions — no manual steps needed. Go to `http://localhost:8002` and log in to the admin panel.
+
+<Note>
+  You'll find the default administrator login credentials in the `server`
+  container's logs on first startup:
+  `docker compose logs server | grep -i admin`.
+</Note>
+
+See [Admin panel](/en/admin-panel) for an overview of the whole menu.
+
+## Licence keys {{ id: 'klucze' }}
+
+The public key and AES secret you'll enter in the [client configuration](/en/client) are already waiting for you — the server generated them automatically on first startup:
+
+1. In the admin panel, open **[Cryptographic keys](/en/admin-panel/cryptographic-keys)**, **Licence** tab.
+2. Use the **Copy** button to copy the **public key** and the **encryption key (AES)**.
+3. Paste them into `ServerConfig` in your application's `BeanGuardConfiguration` implementation.
+
+<Note>
+  Don't click **Generate new keys** here during initial setup — that button
+  is for rotation and immediately invalidates already-issued licences. The
+  keys generated automatically when the server started are ready to use.
+</Note>
+
+## What's next {{ id: 'dalej' }}
+
+- Configure [Branding](/en/admin-panel/branding) and [Settings](/en/admin-panel/settings) so emails, the panel, and certificates show your details instead of the defaults.
+- Add your first [product](/en/admin-panel/products) for sale, or go straight to a manual [licence](/en/admin-panel/licences) for a test customer.
+- Integrate [beanguard-client](/en/client) into your own application.
+- Configure the [shop](/en/shop) so customers can buy licences themselves.

@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-licence-transfers
+      author: mszajner
+      changes:
+        - createTable:
+            tableName: licence_transfers
+            columns:
+              - column:
+                  name: token
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: licence_key
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transfer_licence
+                    references: licences(key)
+              - column:
+                  name: status
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false

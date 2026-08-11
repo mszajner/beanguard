@@ -1,0 +1,22 @@
+# Used by beanguard-server/Dockerfile, which builds from the repo root
+# (it needs the whole Maven reactor: root pom + beanguard-api +
+# beanguard-client + beanguard-server). Everything below is irrelevant to
+# that build and would otherwise bloat the Docker build context.
+
+.git
+.github
+.idea
+.claude
+.superpowers
+
+# Build output / dependency caches (rebuilt fresh inside the image anyway)
+**/target
+**/node_modules
+**/.next
+**/build
+**/out
+
+# Docs, not needed to compile/package the server
+docs
+licenses
+*.md

@@ -1,0 +1,73 @@
+export const metadata = {
+  title: 'Licences — Admin panel',
+  description:
+    'Browsing, adding, editing, and configuring DEMO licences in the admin panel.',
+}
+
+export const sections = [
+  { title: 'List and filtering', id: 'lista' },
+  { title: 'Adding a licence', id: 'dodawanie' },
+  { title: 'Editing a licence', id: 'edycja' },
+  { title: 'PDF certificate and shop change', id: 'certyfikat' },
+  { title: 'DEMO licence configuration', id: 'demo' },
+]
+
+# Licences
+
+The **Licences** tab is a list of every licence issued to your customers — manually from the panel or automatically through the shop — along with the tools to manage them. {{ className: 'lead' }}
+
+## List and filtering {{ id: 'lista' }}
+
+The table shows the licence key, licensee, contact details, and expiration date with a status:
+
+- **Unlimited** — a licence with no expiration date.
+- **Active** — expiration date in the future.
+- **Expired** — expiration date in the past.
+
+`DEMO`-type licences additionally have a blue **DEMO** badge next to the key.
+
+The search field matches the typed phrase against the licensee's email, VAT ID, company name, address (street/postal code/city), and phone number — and if you type a full licence key (UUID), it finds exactly that licence. Additional filters let you narrow the list by type (`STANDARD` / `DEMO`) and validity status.
+
+## Adding a licence {{ id: 'dodawanie' }}
+
+The **Add licence** button opens a form with these fields:
+
+- **Email address** and **VAT ID** (required),
+- **Licence type** — `STANDARD` or `DEMO`,
+- **Expiration date** — an empty field means a perpetual licence,
+- company details: name, phone, street, postal code, city (optional),
+- **Claims** — any number of key–value pairs defining the limits and features unlocked by this licence; see [Licence model](/en/licence-model) and [Licensing annotations](/en/client/annotations).
+
+<Note>
+  Manually adding a `STANDARD` licence with an email filled in sends the
+  customer a "Licence activation" email — just like a shop purchase. The
+  `DEMO` type is an exception: a manually added demo licence sends **no**
+  email — the "DEMO welcome message" only goes out when a demo licence is
+  issued automatically through the public self-service endpoint, outside the
+  panel. See [Mail templates](/en/admin-panel/mail-templates).
+</Note>
+
+## Editing a licence {{ id: 'edycja' }}
+
+Clicking a licence key in the list opens an edit page with the same fields as the add form (minus the type, which can't be changed after creation), plus:
+
+- **Licence key (UUID)** — the identifier, read-only, copyable with a single click,
+- **Net amount paid** — visible only for a licence linked to a shop order.
+
+## PDF certificate and shop change {{ id: 'certyfikat' }}
+
+Two actions are available for each licence in the list:
+
+- **Download PDF certificate** — generates a licence certificate according to the [PDF template](/en/admin-panel/pdf-templates) configured in the panel.
+- **Open the licence modification form in the shop** — generates a one-time token and opens `beanguard-shop` in a new tab logged in with that licence, as if the customer had done it themselves — useful when you want to add a limit or feature on their behalf.
+
+## DEMO licence configuration {{ id: 'demo' }}
+
+The **DEMO configuration** button next to **Add licence** opens a modal with two parameters used when automatically issuing `DEMO` licences:
+
+- **Expiration time (days)** — the `LICENCE_DEMO_EXPIRATION_DAYS` parameter, defaulting to `30`.
+- **Claims** — the `LICENCE_DEMO_CLAIMS` parameter, in the same table form as when manually adding a licence; this is the default set of limits/features every new demo licence gets.
+
+<Note>
+  These two parameters no longer appear in the general [Parameters](/en/admin-panel/parameters) list — they have a dedicated screen right here.
+</Note>

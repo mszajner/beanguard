@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: 'postgres:16'
+    hostname: postgres
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  server:
+    hostname: server
+    build:
+      context: .
+      dockerfile: beanguard-server/Dockerfile
+    depends_on:
+      - postgres
+    env_file: .env
+    ports:
+      - "8000:80"
+  shop:
+    hostname: shop
+    build:
+      context: beanguard-shop
+    depends_on:
+      - server
+    env_file: .env
+    environment:
+      NODE_ENV: 'development'
+    ports:
+      - "8001:80"
+  admin:
+    hostname: admin
+    build:
+      context: beanguard-admin
+    depends_on:
+      - server
+    env_file: .env
+    environment:
+      NODE_ENV: 'development'
+    ports:
+      - "8002:80"
+  docs:
+    hostname: docs
+    build:
+      context: beanguard-docs
+    environment:
+      NODE_ENV: 'development'
+    ports:
+      - "8003:80"
+
+volumes:
+  postgres_data:

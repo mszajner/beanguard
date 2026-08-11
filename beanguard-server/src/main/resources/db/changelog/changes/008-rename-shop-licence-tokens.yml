@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-rename-shop-licence-tokens
+      author: mszajner
+      changes:
+        - renameTable:
+            oldTableName: shop_licence_tokens
+            newTableName: licence_tokens

@@ -1,0 +1,51 @@
+export const metadata = {
+  title: 'Licence model',
+  description: 'What a BeanGuard licence contains: limits, features, types.',
+}
+
+export const sections = [
+  { title: 'Core fields', id: 'pola' },
+  { title: 'Limits and features in claims', id: 'claims' },
+  { title: 'Demo licences', id: 'demo' },
+  { title: 'Shop products', id: 'produkty' },
+  { title: 'NIP validation', id: 'nip' },
+]
+
+# Licence model
+
+A BeanGuard licence is a set of customer data, an expiration date, and an arbitrary set of key–value pairs (`claims`) that your application's limits and features are based on. {{ className: 'lead' }}
+
+## Core fields {{ id: 'pola' }}
+
+| Field                                                                         | Description                                                                              |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `key` / `secret`                                                             | The licence identifier and its secret — the customer uses this pair to activate the licence in their application |
+| `expiration`                                                                 | Expiration date                                                                           |
+| `companyName`, `street`, `postCode`, `city`, `vatId`, `email`, `phoneNumber` | Licence purchaser's details                                                               |
+| `type`                                                                       | `STANDARD` or `DEMO`                                                                      |
+| `claims`                                                                     | A `String → String` map — where limits and feature flags live                            |
+| `netAmount`                                                                  | The net amount of the order associated with the licence                                    |
+
+## Limits and features in claims {{ id: 'claims' }}
+
+`claims` has no predefined structure — you decide which keys go in there, and reference them in your application via [licensing annotations](/en/client/annotations):
+
+- **Limit** — a numeric value as a string, e.g. `claims["active-users"] = "10"`. Checked by `@RequiresLicenceLimit`.
+- **Feature** — `"true"` or `"false"`, e.g. `claims["advanced-reports"] = "true"`. Checked by `@RequiresLicenceFeature`.
+
+## Demo licences {{ id: 'demo' }}
+
+The server can automatically issue `DEMO` licences — their default set of `claims` and validity period are configured with the `LICENCE_DEMO_CLAIMS` and `LICENCE_DEMO_EXPIRATION_DAYS` parameters (see [Licence server](/en/server)). Once a demo licence is issued, the server sends the customer a welcome email — SMTP configuration is in the `MAIL_*` parameters.
+
+## Shop products {{ id: 'produkty' }}
+
+In the [shop](/en/shop), every product is one of two types:
+
+- `LIMIT` — the purchase raises the value of a specific limit in the customer's `claims`
+- `FEATURE` — the purchase sets a feature flag to `"true"`
+
+An order goes through the statuses `NEW` → `ACCEPTED` (licence updated) or `NEW` → `CANCELED`.
+
+## NIP validation {{ id: 'nip' }}
+
+`beanguard-api` provides a `@PolishNIP` validator to check the correctness of a Polish tax ID (NIP) in order forms — verifying the checksum, not just the format.

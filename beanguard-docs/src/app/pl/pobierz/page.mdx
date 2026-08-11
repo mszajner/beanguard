@@ -1,0 +1,51 @@
+export const metadata = {
+  title: 'Pobierz BeanGuard',
+  description:
+    'Obrazy Docker serwera, panelu admina i sklepu oraz zależność Maven dla klienta.',
+}
+
+# Pobierz BeanGuard
+
+Każdy moduł pobierasz osobno — obrazy Docker dla serwera, panelu admina i sklepu, oraz zależność Maven dla biblioteki klienckiej. {{ className: 'lead' }}
+
+<Note>
+  BeanGuard nie jest jeszcze opublikowany publicznie na Docker Hub ani Maven
+  Central. Nazwy obrazów i koordynaty Maven poniżej to docelowe wartości —
+  podmień je, gdy publikacja będzie gotowa.
+</Note>
+
+## Serwer licencji
+
+```bash
+docker pull mszajner/beanguard-server:0.1
+```
+
+Wymaga PostgreSQL — zobacz [dokumentację serwera](/pl/serwer).
+
+## Panel admina
+
+```bash
+docker pull mszajner/beanguard-admin:0.1
+```
+
+Zobacz [dokumentację panelu admina](/pl/panel-admina).
+
+## Sklep
+
+```bash
+docker pull mszajner/beanguard-shop:0.1
+```
+
+Zobacz [dokumentację sklepu](/pl/sklep).
+
+## Klient (biblioteka Maven)
+
+```xml
+<dependency>
+    <groupId>dev.beanguard</groupId>
+    <artifactId>beanguard-client</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
+Zobacz [integrację klienta](/pl/klient).

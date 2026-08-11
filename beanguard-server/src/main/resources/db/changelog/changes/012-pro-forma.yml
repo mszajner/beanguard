@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012-pro-forma
+      author: mszajner
+      changes:
+        - createTable:
+            tableName: pro_forma_sequence
+            columns:
+              - column:
+                  name: year
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: last_number
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: pro_forma
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_pro_forma_order
+                    references: orders(id)
+              - column:
+                  name: number
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: pdf
+                  type: BYTEA
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false

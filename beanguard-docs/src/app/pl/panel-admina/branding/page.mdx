@@ -1,0 +1,41 @@
+export const metadata = {
+  title: 'Branding — Panel admina',
+  description:
+    'Konfiguracja tożsamości marki: tytuł, logo, favicon, kolor i e-mail wsparcia.',
+}
+
+export const sections = [
+  { title: 'Podstawowe informacje', id: 'podstawowe' },
+  { title: 'Elementy wizualne', id: 'wizualne' },
+  { title: 'Przeładowanie po zapisie', id: 'przeladowanie' },
+]
+
+# Branding
+
+Zakładka **Branding** to jedno miejsce, w którym ustawiasz tożsamość marki widoczną w panelu admina, sklepie, mailach transakcyjnych i na certyfikacie licencji PDF — bez przebudowywania żadnego z obrazów Docker. {{ className: 'lead' }}
+
+## Podstawowe informacje {{ id: 'podstawowe' }}
+
+| Pole                  | Gdzie się pojawia                                                                                                                                       |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tytuł**              | Tytuł karty przeglądarki panelu i sklepu; nazwa produktu w temacie i treści maili transakcyjnych; nazwa produktu na certyfikacie licencji PDF.              |
+| **Website URL**        | Klikalny link na certyfikacie licencji PDF (przy logo i w wierszu z informacją o pobraniu oprogramowania). Obecnie nigdzie indziej nie jest wykorzystywany. |
+| **E-mail wsparcia**    | Link `mailto:` na ekranie logowania panelu; kontakt wsparcia przekazywany do sklepu; dane sprzedawcy na fakturze/potwierdzeniu zamówienia w mailu.          |
+
+## Elementy wizualne {{ id: 'wizualne' }}
+
+| Pole                | Gdzie się pojawia                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Logo URL**         | Panel boczny i ekran logowania panelu, nagłówek sklepu, nagłówek maili transakcyjnych (140px), nagłówek certyfikatu PDF. Puste pole = domyślne logo aplikacji. |
+| **Favicon URL**      | Ikona karty przeglądarki panelu i sklepu. Puste pole = domyślna ikona serwera.                                                                                  |
+| **Kolor podstawowy** | Wartość HEX (np. `#f59e0b`) ustawiana jako zmienna CSS `--color-primary`: kolor ikon w nagłówkach stron panelu, aktywnej pozycji menu bocznego, obwódki fokusu pól formularzy oraz paska akcentu i tła przycisków w mailach transakcyjnych. |
+
+<Note>
+  Podgląd obrazu pod polami **Logo URL** i **Favicon URL** pojawia się od razu
+  po wpisaniu poprawnego adresu — jeśli obraz się nie wczyta, panel po prostu
+  nie pokaże miniatury, nie blokuje to zapisu.
+</Note>
+
+## Przeładowanie po zapisie {{ id: 'przeladowanie' }}
+
+Panel admina wczytuje branding raz, przy starcie aplikacji w przeglądarce — zmiana ustawień nie jest więc widoczna „na żywo” bez odświeżenia. Po zapisaniu zmian panel pokazuje na dole ekranu baner z przyciskiem **Przeładuj teraz**, który odświeża stronę i od razu stosuje nowe logo, kolor i tytuł.

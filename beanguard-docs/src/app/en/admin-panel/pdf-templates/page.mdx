@@ -1,0 +1,61 @@
+export const metadata = {
+  title: 'PDF templates — Admin panel',
+  description:
+    'Editing the licence certificate and pro-forma invoice templates and their placeholders.',
+}
+
+export const sections = [
+  { title: 'List and editing', id: 'lista' },
+  { title: 'Licence certificate', id: 'certyfikat' },
+  { title: 'Pro-forma invoice', id: 'proforma' },
+  { title: 'Restoring defaults', id: 'domyslne' },
+]
+
+# PDF templates
+
+The **PDF templates** tab edits two documents the server generates as HTML → PDF: the licence certificate and the pro-forma invoice. {{ className: 'lead' }}
+
+## List and editing {{ id: 'lista' }}
+
+Clicking a template name opens an editor with raw XHTML source (a text field, no live preview) — this is the same XHTML the PDF-rendering library converts directly into a document, so XHTML's constraints apply (all tags must be closed, among other things), and styling is done via CSS in the `style` attribute or a `<style>` tag.
+
+<Note>
+  Before editing from scratch, click **Restore defaults** and copy the
+  current content as a starting point — it's easier to modify an existing
+  layout than to build one from nothing.
+</Note>
+
+## Licence certificate {{ id: 'certyfikat' }}
+
+The `LEGAL_CERTIFICATE_TEMPLATE` parameter, generated when [downloading a certificate from the licences list](/en/admin-panel/licences) and when a `STANDARD` licence is created. Available placeholders:
+
+| Placeholder                | Where it comes from                                                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `` `{{productName}}` ``    | The **Title** field in [Branding](/en/admin-panel/branding).                                                            |
+| `` `{{logoSection}}` ``    | A ready-made HTML fragment with the `<img>` logo (the **Logo URL** field in Branding) — an empty string if no logo is set. |
+| `` `{{websiteUrl}}` ``     | The **Website URL** field in Branding.                                                                                |
+| `` `{{activationText}}` `` | The **Licence activation instructions on certificate** field in [Settings](/en/admin-panel/settings).                |
+| `` `{{sellerName}}` ``     | The **Company name** field in Settings.                                                                             |
+| `` `{{licenceKey}}` ``     | The key (UUID) of that licence.                                                                                     |
+| `` `{{vatId}}` ``          | VAT ID from the licensee's details.                                                                                     |
+| `` `{{expiration}}` ``     | The licence's expiration date (or "Unlimited").                                                                 |
+| `` `{{issueDate}}` ``      | The date the certificate was generated.                                                                                  |
+| `` `{{periodRow}}` ``      | A ready-made table row with the subscription period — an empty string if the licence didn't come from a recurring order.   |
+| `` `{{claimsSection}}` ``  | Ready-made table rows with the licence's `claims`, with labels from the **Name shown on the licence certificate** field in [Products](/en/admin-panel/products) (or the raw `claim` name if no label is set). |
+
+## Pro-forma invoice {{ id: 'proforma' }}
+
+The `LEGAL_PRO_FORMA_TEMPLATE` parameter, generated when an order is accepted in [Orders](/en/admin-panel/orders). Seller details come from [Settings](/en/admin-panel/settings), buyer details from the order:
+
+| Placeholder                                                                 | Meaning                                          |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| `` `{{number}}` `` `` `{{issueDate}}` `` `` `{{paymentDue}}` ``                | Invoice number, issue date, payment due date (per **Pro forma payment term** from Settings). |
+| `` `{{sellerName}}` `` `` `{{sellerNip}}` `` `` `{{sellerAddress}}` `` `` `{{sellerPhone}}` `` `` `{{sellerKrsLine}}` `` `` `{{bankAccount}}` `` | Company details from Settings; `` `{{sellerKrsLine}}` `` is a ready-made row with the KRS number, omitted when the KRS field is empty. |
+| `` `{{buyerCompany}}` `` `` `{{buyerNip}}` `` `` `{{buyerEmail}}` `` `` `{{buyerStreet}}` `` `` `{{buyerPostCode}}` `` `` `{{buyerCity}}` `` | Buyer details from the order.                          |
+| `` `{{itemsTable}}` ``                                                       | A ready-made table of order line items.                   |
+| `` `{{nettoTotal}}` `` `` `{{vatRate}}` `` `` `{{vatAmount}}` `` `` `{{bruttoTotal}}` `` `` `{{currency}}` `` | Amounts and the VAT rate from Settings and the order.       |
+| `` `{{licenceSection}}` ``                                                   | A ready-made fragment with the linked licence's key — empty if the order doesn't have one yet. |
+
+## Restoring defaults {{ id: 'domyslne' }}
+
+The **Restore defaults** button restores both templates at once to the version built into the server — you can't restore just one of them.

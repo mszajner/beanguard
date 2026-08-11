@@ -1,0 +1,31 @@
+{
+  "page": {
+    "heading": "Ustawienia",
+    "description": "Dane prawne i rozliczeniowe używane na fakturach, certyfikatach i w sklepie."
+  },
+  "loading": "Wczytywanie…",
+  "genericError": "Nie udało się wczytać ustawień",
+  "saved": "Zapisano!",
+  "saving": "Zapisywanie…",
+  "save": "Zapisz",
+  "groups": {
+    "company": "Dane firmy",
+    "sales": "Sprzedaż i płatności",
+    "documents": "Dokumenty prawne",
+    "certificate": "Certyfikat licencji"
+  },
+  "fields": {
+    "currency": "Waluta",
+    "termsUrl": "URL regulaminu",
+    "privacyUrl": "URL polityki prywatności",
+    "vatRate": "Stawka VAT (%)",
+    "companyName": "Nazwa firmy",
+    "companyNip": "NIP",
+    "companyKrs": "KRS",
+    "companyAddress": "Adres firmy",
+    "companyPhone": "Telefon firmowy",
+    "proFormaPaymentDays": "Termin płatności pro-formy (dni)",
+    "bankAccount": "Numer konta bankowego",
+    "certificateActivationText": "Instrukcja aktywacji licencji na certyfikacie"
+  }
+}

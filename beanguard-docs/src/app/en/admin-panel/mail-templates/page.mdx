@@ -1,0 +1,65 @@
+export const metadata = {
+  title: 'Mail templates — Admin panel',
+  description:
+    'Editing the content, subject, and placeholders of transactional emails.',
+}
+
+export const sections = [
+  { title: 'List and editing', id: 'lista' },
+  { title: 'When each email is sent', id: 'wyzwalacze' },
+  { title: 'Placeholders', id: 'placeholdery' },
+  { title: 'Restoring defaults', id: 'domyslne' },
+]
+
+# Mail templates
+
+The **Mail templates** tab lets you edit the subject and body (HTML) of the seven transactional emails the server sends automatically — without touching any code. {{ className: 'lead' }}
+
+## List and editing {{ id: 'lista' }}
+
+The table shows the template name and the message's current subject. Clicking a name opens an editor with **Subject** and **Body** fields (raw HTML, a text field). Saving updates both parameters at once.
+
+<Note>
+  SMTP delivery must be configured — see the `MAIL_HOST` / `MAIL_PORT` /
+  `MAIL_USER` / `MAIL_PASS` parameters on the
+  [Parameters](/en/admin-panel/parameters) page. Without it, the server
+  simply skips sending and logs a warning — none of the emails below go
+  out.
+</Note>
+
+## When each email is sent {{ id: 'wyzwalacze' }}
+
+| Template                            | When it's sent                                                                                                                              |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **DEMO welcome message**       | Automatically after a `DEMO` licence is created through the public, self-service endpoint (`POST /api/open/licences`) — not when a demo licence is added manually in the panel. |
+| **Expiry warning**      | Periodically, for `STANDARD` licences, as many days before expiration as configured in the `MAIL_EXPIRY_WARNING_DAYS` parameter (default `30,7` — two emails).      |
+| **Expiry warning (DEMO)** | The same mechanism as above, a content variant for `DEMO` licences.                                                                        |
+| **Licence transfer confirmation** | When someone tries to activate a licence on a new device while it's already active elsewhere — the link in the email confirms the transfer.  |
+| **Licence activation**             | When a `STANDARD` licence is created with an email filled in — both manually in [Licences](/en/admin-panel/licences) and by accepting an order in the shop. |
+| **Order confirmation**       | After an order is accepted in [Orders](/en/admin-panel/orders) — along with the pro-forma invoice as a PDF attachment, if one was issued. |
+| **Order cancellation**          | After an order is cancelled in [Orders](/en/admin-panel/orders).                                                                    |
+
+## Placeholders {{ id: 'placeholdery' }}
+
+The subject and body are templates that substitute values in place of double curly braces, e.g. `` `{{productName}}` ``. Two placeholders are available in all seven templates — they come from [Branding](/en/admin-panel/branding):
+
+- `` `{{logoUrl}}` `` — the logo in the email header,
+- `` `{{accentColor}}` `` — the colour of the bar under the header and button backgrounds.
+
+The remaining placeholders are specific to each template:
+
+| Template                              | Additional placeholders                                                                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DEMO welcome message             | `` `{{productName}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` `` `` `{{licenceToken}}` `` `` `{{expirationDate}}` ``                     |
+| Expiry warning             | `` `{{productName}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` `` `` `{{buyerCompany}}` `` `` `{{email}}` `` `` `{{daysLeft}}` `` `` `{{expirationDate}}` `` |
+| Expiry warning (DEMO)     | Same as above, without `` `{{buyerCompany}}` ``                                                                                                          |
+| Licence transfer confirmation | `` `{{productName}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` `` `` `{{confirmUrl}}` ``                                                  |
+| Licence activation                   | `` `{{productName}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` `` `` `{{licenceKey}}` ``                                                  |
+| Order confirmation             | `` `{{orderId}}` `` `` `{{orderDate}}` `` `` `{{buyerEmail}}` `` `` `{{buyerCompany}}` `` `` `{{buyerVatId}}` `` `` `{{period}}` `` `` `{{itemsTable}}` `` `` `{{nettoTotal}}` `` `` `{{vatRate}}` `` `` `{{vatAmount}}` `` `` `{{bruttoTotal}}` `` `` `{{currency}}` `` `` `{{sellerName}}` `` `` `{{sellerNip}}` `` `` `{{sellerAddress}}` `` `` `{{sellerContact}}` `` |
+| Order cancellation                | `` `{{orderId}}` `` `` `{{orderDate}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` ``                                                     |
+
+`{{companyName}}` / `{{companyAddress}}` come from [Settings](/en/admin-panel/settings) (company details), and `{{sellerName}}` / `{{sellerNip}}` / `{{sellerAddress}}` / `{{sellerContact}}` in the order confirmation are the same company details plus the support email — named differently because that template also acts as a mini-invoice.
+
+## Restoring defaults {{ id: 'domyslne' }}
+
+The **Restore defaults** button removes your overrides for all seven templates at once and restores the original content built into the server. The action applies to every template simultaneously — you can't restore just one.

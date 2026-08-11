@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 011-licence-credit
+      author: mszajner
+      changes:
+        - addColumn:
+            tableName: licences
+            columns:
+              - column:
+                  name: net_amount
+                  type: NUMERIC(19,2)
+              - column:
+                  name: last_period
+                  type: VARCHAR(20)
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: credit_amount
+                  type: NUMERIC(19,2)
+                  defaultValueNumeric: 0

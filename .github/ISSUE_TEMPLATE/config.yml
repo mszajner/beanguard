@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ❓ Questions & configuration help
+    url: https://github.com/mszajner/beanguard/discussions/categories/q-a
+    about: "How do I configure X? Why does Y behave this way? Ask here — answers stay searchable for everyone."
+  - name: 💡 Ideas & open-ended proposals
+    url: https://github.com/mszajner/beanguard/discussions/categories/ideas
+    about: Not sure it's a concrete feature request yet? Discuss it here first.
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/mszajner/beanguard/blob/main/SECURITY.md
+    about: Please report vulnerabilities privately — never in a public issue.
+  - name: 📖 Documentation
+    url: https://beanguard.dev
+    about: Step-by-step guides, configuration reference, and architecture docs.

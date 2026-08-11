@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 015-order-number
+      author: mszajner
+      changes:
+        - createTable:
+            tableName: order_sequence
+            columns:
+              - column:
+                  name: year
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: last_number
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: number
+                  type: VARCHAR(20)
+                  constraints:
+                    unique: true

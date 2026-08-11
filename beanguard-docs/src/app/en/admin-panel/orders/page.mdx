@@ -1,0 +1,47 @@
+export const metadata = {
+  title: 'Orders — Admin panel',
+  description:
+    'Browsing, accepting, and cancelling orders placed in beanguard-shop.',
+}
+
+export const sections = [
+  { title: 'List and filtering', id: 'lista' },
+  { title: 'Order details', id: 'szczegoly' },
+  { title: 'Acceptance and cancellation', id: 'akceptacja' },
+  { title: 'Pro-forma invoice', id: 'faktura' },
+]
+
+# Orders
+
+The **Orders** tab is a list of every order customers have placed in the [shop](/en/shop) — a new licence purchase, or adding a limit/feature to one they already have. {{ className: 'lead' }}
+
+## List and filtering {{ id: 'lista' }}
+
+The table shows the order number, the customer's details (company, address, VAT ID), contact info (email, phone), status, order date, and pro-forma invoice number (if one has been issued). The text search matches the customer's details, and a status filter narrows the list to one of:
+
+- **New** (`NEW`) — awaiting your decision.
+- **Accepted** (`ACCEPTED`) — the licence was created or updated.
+- **Canceled** (`CANCELED`) — rejected, with no effect on the licence.
+
+## Order details {{ id: 'szczegoly' }}
+
+Clicking an order number opens a modal with the details: the customer's details, the chosen billing period (month/year), the linked licence's key (if this is an addition to an existing one), a table of order line items with prices and quantities, and a summary:
+
+- **Credit for unused time** — appears when the order changes an existing licence in the middle of a paid period; reduces the amount due proportionally to the unused time.
+- **Net total** — the final amount after subtracting any credit.
+
+## Acceptance and cancellation {{ id: 'akceptacja' }}
+
+For orders in **New** status, the details modal shows **Accept** and **Cancel** buttons:
+
+- **Accept** — creates a new licence (for a first purchase) or updates an existing one: sets `claims` based on the purchased products (limit → numeric value, feature → `"true"`) and extends the expiration date by the purchased period. For an order extending an active DEMO licence, the new date is calculated from its existing expiration date, not from the acceptance date.
+- **Cancel** — marks the order as canceled, with no effect on the customer's licence.
+
+<Note>
+  Both actions are irreversible from the panel — an accepted or canceled
+  order can't be reverted back to "New" status.
+</Note>
+
+## Pro-forma invoice {{ id: 'faktura' }}
+
+If a pro-forma invoice was issued for the order, its number in the **Invoice** column is a link — clicking it downloads the PDF generated according to the [pro-forma invoice template](/en/admin-panel/pdf-templates), with the seller details configured in [Settings](/en/admin-panel/settings).

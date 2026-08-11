@@ -1,0 +1,49 @@
+export const metadata = {
+  title: 'Klucze kryptograficzne — Panel admina',
+  description:
+    'Wystawca, klucze RSA/AES i ich regeneracja — osobno dla licencji i sesji administratorów.',
+}
+
+export const sections = [
+  { title: 'Dwie zakładki, dwa niezależne komplety kluczy', id: 'zakladki' },
+  { title: 'Wystawca / konfiguracja', id: 'wystawca' },
+  { title: 'Pary kluczy', id: 'klucze' },
+  { title: 'Regeneracja kluczy', id: 'regeneracja' },
+]
+
+# Klucze kryptograficzne
+
+Zakładka **Klucze kryptograficzne** zarządza dwoma niezależnymi kompletami kluczy RSA/AES: jednym do podpisywania i szyfrowania **licencji**, drugim do podpisywania i szyfrowania **sesji administratorów panelu**. {{ className: 'lead' }}
+
+## Dwie zakładki, dwa niezależne komplety kluczy {{ id: 'zakladki' }}
+
+- **Licencje** — klucze `LICENCE_PUBLIC_KEY` / `LICENCE_PRIVATE_KEY` / `LICENCE_SECRET_KEY`, którymi serwer podpisuje i szyfruje licencje wydawane klientom. Klucz publiczny i sekret AES trafiają do konfiguracji [`beanguard-client`](/pl/klient) w Twojej aplikacji.
+- **Token** — klucze `TOKEN_PUBLIC_KEY` / `TOKEN_PRIVATE_KEY` / `TOKEN_SECRET_KEY`, którymi serwer podpisuje i szyfruje tokeny sesji administratorów panelu (nic wspólnego z licencjami klientów).
+
+Mechanizm i formularz na obu zakładkach są identyczne — różnią się tylko tym, co regeneracja unieważnia.
+
+## Wystawca / konfiguracja {{ id: 'wystawca' }}
+
+Pole **Wystawca** zapisuje się w treści podpisanego JWT (`LICENCE_ISSUER` / `TOKEN_ISSUER`) i jest sprawdzane przy weryfikacji. Zmiana wystawcy jest nieodwracalna w skutkach:
+
+- na zakładce **Licencje** — unieważnia wszystkie dotychczas wydane licencje (klienci przestają się poprawnie weryfikować),
+- na zakładce **Token** — natychmiast wylogowuje wszystkich administratorów, łącznie z Tobą.
+
+Zakładka **Token** ma dodatkowo pole **Czas ważności (ms)** (`TOKEN_EXPIRATION`, domyślnie `86400000` — 24h) — po tym czasie token sesji administratora przestaje być ważny i trzeba zalogować się ponownie. Oba pola mają osobne przyciski zapisu.
+
+## Pary kluczy {{ id: 'klucze' }}
+
+Sekcja **Klucze podpisywania i szyfrowania** pokazuje status (skonfigurowany / nieskonfigurowany) i datę ostatniej zmiany dla trzech kluczy:
+
+- **Klucz publiczny (RSA)** — weryfikuje podpis; kopiowalny.
+- **Klucz prywatny (RSA)** — podpisuje; nigdy nie opuszcza serwera, brak podglądu ani kopiowania.
+- **Klucz szyfrowania (AES)** — szyfruje/deszyfruje treść; kopiowalny (podobnie jak klucz publiczny, wartość nie jest wyświetlana wprost — przycisk **Kopiuj** kopiuje ją bezpośrednio do schowka).
+
+## Regeneracja kluczy {{ id: 'regeneracja' }}
+
+Przycisk **Generuj nowe klucze** wymaga wpisania frazy potwierdzającej (`REGENERUJ`) — dopiero po tym aktywuje się przycisk generowania. Skutki są natychmiastowe i nieodwracalne:
+
+- **Licencje** — wszystkie dotychczas wydane licencje przestają się weryfikować u klientów (nowy klucz publiczny + sekret trzeba im dostarczyć ponownie).
+- **Token** — wszystkie aktywne sesje administratorów (łącznie z Twoją) natychmiast wygasają.
+
+Po wygenerowaniu panel pokazuje nowy **klucz publiczny** i **klucz szyfrowania** jednorazowo — z ostrzeżeniem, żeby skopiować sekret teraz, bo nie będzie już widoczny w tym samym miejscu (choć od teraz jest też dostępny do skopiowania bezpośrednio z listy kluczy, jak opisano wyżej). Klucz prywatny nigdy nie jest pokazywany, nawet tutaj.

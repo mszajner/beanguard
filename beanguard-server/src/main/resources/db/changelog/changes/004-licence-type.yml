@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-licence-type
+      author: mszajner
+      changes:
+        - addColumn:
+            tableName: licences
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                  defaultValue: STANDARD

@@ -1,0 +1,38 @@
+export const metadata = {
+  title: 'Products — Admin panel',
+  description:
+    'Configuring products sold in beanguard-shop: types, prices, order, mandatory flag.',
+}
+
+export const sections = [
+  { title: 'List and order', id: 'lista' },
+  { title: 'Product type: LIMIT or FEATURE', id: 'typ' },
+  { title: 'Product fields', id: 'pola' },
+  { title: 'Mandatory products', id: 'obowiazkowe' },
+]
+
+# Products
+
+The **Products** tab defines what your customers can buy in the [shop](/en/shop) — each product corresponds to one entry in a licence's `claims`. {{ className: 'lead' }}
+
+## List and order {{ id: 'lista' }}
+
+The table shows the name, type, associated `claim`, monthly and yearly prices, and product visibility. Row order (drag handle on the left, drag and drop) is also the display order of products in the shop — a change saves immediately on release.
+
+## Product type: LIMIT or FEATURE {{ id: 'typ' }}
+
+- **LIMIT** — a purchase raises a numeric value in `claims` by the purchased quantity, e.g. `claims["active-users"]`. The customer can buy more than 1 unit at a time.
+- **FEATURE** — a purchase sets a flag in `claims` to `"true"`, e.g. `claims["advanced-reports"] = "true"`. It's a one-off item — the shop only lets you check or uncheck it, with no quantity.
+
+The **Claim** field's value must exactly match the name you reference in your application via [licensing annotations](/en/client/annotations) (`@RequiresLicenceLimit`, `@RequiresLicenceFeature`).
+
+## Product fields {{ id: 'pola' }}
+
+- **Name** and **Description** — visible to the customer in the shop.
+- **Name shown on the licence certificate** — optional, a readable label for this `claim` on the [PDF licence certificate](/en/admin-panel/pdf-templates); if empty, that item doesn't appear on the certificate at all.
+- **Monthly price** / **Yearly price** — separate rates for both billing periods available in the shop.
+- **Visible** — whether the product is shown in the shop at all; disabling it doesn't affect already-purchased licences.
+
+## Mandatory products {{ id: 'obowiazkowe' }}
+
+Checking **Mandatory** makes the product checked by default in the shop form, and the customer **cannot** uncheck it — for the `LIMIT` type, it also forces the purchase of at least one unit. Use this for baseline functionality every licence must have.

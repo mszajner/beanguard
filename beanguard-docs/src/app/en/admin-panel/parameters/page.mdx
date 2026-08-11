@@ -1,0 +1,43 @@
+export const metadata = {
+  title: 'Parameters — Admin panel',
+  description:
+    'Remaining server parameters without a dedicated screen: SMTP and request rate limit.',
+}
+
+export const sections = [
+  { title: "What's left here and why", id: 'zakres' },
+  { title: 'SMTP parameters', id: 'smtp' },
+  { title: 'Request rate limit', id: 'rate-limit' },
+  { title: 'Editing and write-only values', id: 'edycja' },
+]
+
+# Parameters
+
+The **Parameters** tab is a raw view of the database's `parameter` table — but it shows only the parameters that don't yet have their own, more convenient screen elsewhere in the panel. {{ className: 'lead' }}
+
+## What's left here and why {{ id: 'zakres' }}
+
+Most configuration has moved to dedicated pages: [Branding](/en/admin-panel/branding), [Settings](/en/admin-panel/settings), [Cryptographic keys](/en/admin-panel/cryptographic-keys), and DEMO licence configuration in [Licences](/en/admin-panel/licences). What's left here is just the SMTP parameters and the rate limit — for now, without their own screen.
+
+## SMTP parameters {{ id: 'smtp' }}
+
+| Parameter                | Description                                                                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `MAIL_HOST`              | Address of the SMTP server used to send all transactional emails. If empty, email sending is disabled.      |
+| `MAIL_PORT`               | SMTP server port (e.g. `587` for a STARTTLS connection).                                                                |
+| `MAIL_USER`               | Username for authenticating with the SMTP server.                                                                |
+| `MAIL_PASS`               | Password for authenticating with the SMTP server — a write-only value, never displayed.                            |
+| `MAIL_FROM`               | Sender email address shown in the "From" field of sent emails.                                                            |
+| `MAIL_SENDER_NAME`        | Sender name displayed next to the "From" address.                                                                            |
+| `MAIL_SMTP_STARTTLS`      | Whether the connection to the SMTP server uses STARTTLS encryption (`true` / `false`).                                          |
+| `MAIL_EXPIRY_WARNING_DAYS` | A comma-separated list of days before licence expiration at which a reminder email is sent (e.g. `30,7`). |
+
+See [Mail templates](/en/admin-panel/mail-templates) to change the content of the messages themselves.
+
+## Request rate limit {{ id: 'rate-limit' }}
+
+`RATE_LIMIT_OPEN_RPM` — the maximum number of requests per minute from a single IP address for public, unauthenticated endpoints (shop, licence lookup/activation, self-service DEMO issuance). Protects these endpoints from abuse, since they don't require login.
+
+## Editing and write-only values {{ id: 'edycja' }}
+
+Clicking **Edit** next to a parameter opens a modal with the name (read-only) and a value field. Parameters marked as write-only (e.g. `MAIL_PASS`) show `••••••• (write-only)` in the list instead of a value, and the button is called **Overwrite** instead of **Edit** — you can't see the current value, only replace it with a new one.

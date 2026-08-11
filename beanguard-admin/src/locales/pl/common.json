@@ -1,0 +1,57 @@
+{
+  "login": {
+    "sessionExpiredMessage": "Sesja wygasła. Zaloguj się ponownie.",
+    "emptyFieldsError": "Proszę wypełnić wszystkie pola",
+    "genericError": "Błąd logowania",
+    "tagline": "Platforma do zarządzania licencjami.",
+    "subtitle": "Zarządzaj licencjami i odbieraj płatności w jednym miejscu.",
+    "copyrightPrefix": "© 2025 ",
+    "supportLabel": "Wsparcie:",
+    "heading": "Zaloguj się",
+    "instructions": "Wprowadź dane dostępowe do platformy",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "admin@beanguard.dev",
+    "passwordLabel": "Hasło",
+    "passwordPlaceholder": "••••••••",
+    "submitButtonLoading": "Logowanie...",
+    "submitButton": "Zaloguj się"
+  },
+  "mainLayout": {
+    "navGroups": {
+      "management": "Zarządzanie",
+      "shop": "Sklep",
+      "administration": "Administracja"
+    },
+    "nav": {
+      "licences": "Licencje",
+      "orders": "Zamówienia",
+      "products": "Produkty",
+      "users": "Użytkownicy",
+      "mailTemplates": "Szablony maili",
+      "pdfTemplates": "Szablony PDF",
+      "parameters": "Parametry",
+      "licenceKeys": "Klucze kryptograficzne",
+      "branding": "Branding",
+      "legal": "Ustawienia"
+    },
+    "administrator": "Administrator",
+    "logout": "Wyloguj się",
+    "docs": "Dokumentacja",
+    "openShop": "Otwórz sklep"
+  },
+  "confirmDeleteModal": {
+    "cancel": "Anuluj",
+    "deleting": "Usuwanie...",
+    "delete": "Usuń"
+  },
+  "confirmActionModal": {
+    "cancel": "Anuluj"
+  },
+  "updatePrompt": {
+    "message": "Dostępna jest nowa wersja aplikacji.",
+    "refreshButton": "Odśwież"
+  },
+  "pageHelp": {
+    "label": "Pomoc"
+  }
+}

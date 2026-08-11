@@ -1,0 +1,123 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-initial-schema
+      author: mszajner
+      changes:
+        - createTable:
+            tableName: parameters
+            columns:
+              - column:
+                  name: name
+                  type: TEXT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: value
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: roles
+                  type: JSONB
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: licences
+            columns:
+              - column:
+                  name: key
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: secret
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiration
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: company_name
+                  type: TEXT
+              - column:
+                  name: street
+                  type: TEXT
+              - column:
+                  name: post_code
+                  type: TEXT
+              - column:
+                  name: city
+                  type: TEXT
+              - column:
+                  name: vat_id
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: TEXT
+              - column:
+                  name: claims
+                  type: JSONB
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false

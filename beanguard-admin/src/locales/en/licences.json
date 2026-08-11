@@ -1,0 +1,82 @@
+{
+  "addModal": {
+    "title": "Add new licence",
+    "close": "Close",
+    "genericError": "Failed to add licence",
+    "typeLabel": "Licence type",
+    "cancel": "Cancel",
+    "adding": "Adding...",
+    "add": "Add"
+  },
+  "demoModal": {
+    "title": "DEMO licence configuration",
+    "close": "Close",
+    "expirationLabel": "Expiration time (days)",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "save": "Save",
+    "genericError": "Failed to save the DEMO licence configuration"
+  },
+  "editPage": {
+    "heading": "Edit licence",
+    "back": "Back to licences list",
+    "genericLoadError": "Failed to load licence",
+    "genericSaveError": "Failed to save licence",
+    "keyLabel": "Licence key (UUID)",
+    "netAmountLabel": "Net amount paid",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "save": "Save"
+  },
+  "form": {
+    "emailLabel": "Email address",
+    "vatIdLabel": "VAT ID",
+    "expirationLabel": "Expiration date",
+    "companyNameLabel": "Company",
+    "phoneLabel": "Phone",
+    "streetLabel": "Street",
+    "postCodeLabel": "Postal code",
+    "cityLabel": "City"
+  },
+  "claimsEditor": {
+    "heading": "Claims (feature flags)",
+    "keyColumn": "Key",
+    "valueColumn": "Value",
+    "keyPlaceholder": "e.g. pdf-export",
+    "valuePlaceholder": "e.g. true",
+    "keyAriaLabel": "Claim {{index}} key",
+    "valueAriaLabel": "Claim {{index}} value",
+    "removeAriaLabel": "Remove claim {{index}}",
+    "addButton": "Add claim"
+  },
+  "listPage": {
+    "heading": "Licences",
+    "description": "Browse, search and manage licences issued to customers.",
+    "addButton": "Add licence",
+    "demoConfigButton": "DEMO configuration",
+    "searchPlaceholder": "Search…",
+    "typeFilterAll": "All",
+    "typeFilterStandard": "Standard",
+    "expirationFilterAll": "All",
+    "expirationFilterActive": "Active",
+    "expirationFilterExpired": "Expired",
+    "keyColumn": "Key",
+    "licenseeColumn": "Licensee",
+    "contactColumn": "Contact",
+    "expirationColumn": "Expires / Status",
+    "loading": "Loading data...",
+    "noResultsForQuery": "No results for this search",
+    "noData": "No data to display",
+    "downloadCertificateTitle": "Download PDF certificate",
+    "vatIdPrefix": "VAT ID: ",
+    "openShopTitle": "Open the licence modification form in the shop",
+    "genericError": "Failed to load licences",
+    "downloadCertificateError": "Failed to download the certificate: ",
+    "openShopError": "Failed to open the shop: ",
+    "unknownError": "Unknown error",
+    "pageLabel": "Page {{current}} of {{total}}",
+    "statusUnlimited": "Unlimited",
+    "statusActive": "Active",
+    "statusExpired": "Expired"
+  }
+}

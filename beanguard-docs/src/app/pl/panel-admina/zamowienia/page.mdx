@@ -1,0 +1,47 @@
+export const metadata = {
+  title: 'Zamówienia — Panel admina',
+  description:
+    'Przegląd, akceptacja i anulowanie zamówień złożonych w beanguard-shop.',
+}
+
+export const sections = [
+  { title: 'Lista i filtrowanie', id: 'lista' },
+  { title: 'Szczegóły zamówienia', id: 'szczegoly' },
+  { title: 'Akceptacja i anulowanie', id: 'akceptacja' },
+  { title: 'Faktura pro-forma', id: 'faktura' },
+]
+
+# Zamówienia
+
+Zakładka **Zamówienia** to lista wszystkich zamówień złożonych przez klientów w [sklepie](/pl/sklep) — nowy zakup licencji albo dokupienie limitu/funkcji do już posiadanej. {{ className: 'lead' }}
+
+## Lista i filtrowanie {{ id: 'lista' }}
+
+Tabela pokazuje numer zamówienia, dane zamawiającego (firma, adres, NIP), kontakt (e-mail, telefon), status, datę złożenia i numer faktury pro-forma (jeśli już wystawiona). Wyszukiwarka tekstowa dopasowuje frazę do danych zamawiającego, a filtr statusu zawęża listę do jednej z wartości:
+
+- **Nowe** (`NEW`) — czeka na Twoją decyzję.
+- **Zaakceptowane** (`ACCEPTED`) — licencja została utworzona lub zaktualizowana.
+- **Anulowane** (`CANCELED`) — odrzucone, bez wpływu na licencję.
+
+## Szczegóły zamówienia {{ id: 'szczegoly' }}
+
+Kliknięcie numeru zamówienia otwiera modal ze szczegółami: dane zamawiającego, wybrany okres rozliczeniowy (miesiąc/rok), klucz powiązanej licencji (jeśli to dokupienie do istniejącej), tabela pozycji zamówienia z cenami i ilościami oraz podsumowanie:
+
+- **Kredyt za niewykorzystany czas** — pojawia się, gdy zamówienie to zmiana istniejącej licencji w trakcie opłaconego okresu; pomniejsza kwotę do zapłaty proporcjonalnie do niewykorzystanego czasu.
+- **Suma netto** — ostateczna kwota po odjęciu ewentualnego kredytu.
+
+## Akceptacja i anulowanie {{ id: 'akceptacja' }}
+
+Dla zamówień w statusie **Nowe** modal szczegółów pokazuje przyciski **Akceptuj** i **Anuluj**:
+
+- **Akceptuj** — tworzy nową licencję (dla pierwszego zakupu) albo aktualizuje istniejącą: ustawia `claims` na podstawie kupionych produktów (limit → wartość liczbowa, funkcja → `"true"`) i przedłuża termin ważności o wykupiony okres. Dla zamówienia rozszerzającego aktywną licencję DEMO nowy termin liczy się od jej dotychczasowej daty wygaśnięcia, nie od dnia akceptacji.
+- **Anuluj** — oznacza zamówienie jako anulowane, bez żadnego wpływu na licencję klienta.
+
+<Note>
+  Obie akcje są nieodwracalne z poziomu panelu — zaakceptowanego ani
+  anulowanego zamówienia nie da się cofnąć do statusu „Nowe”.
+</Note>
+
+## Faktura pro-forma {{ id: 'faktura' }}
+
+Jeśli do zamówienia wystawiono fakturę pro-forma, jej numer w kolumnie **Faktura** jest linkiem — kliknięcie pobiera PDF wygenerowany według [szablonu faktury pro-forma](/pl/panel-admina/szablony-pdf), z danymi sprzedawcy skonfigurowanymi w [Ustawieniach](/pl/panel-admina/ustawienia).

@@ -1,0 +1,38 @@
+{
+  "form": {
+    "firstNameLabel": "Imię",
+    "lastNameLabel": "Nazwisko",
+    "emailLabel": "Adres e-mail"
+  },
+  "addModal": {
+    "title": "Dodaj nowego użytkownika",
+    "genericError": "Błąd podczas dodawania użytkownika",
+    "passwordLabel": "Hasło",
+    "cancel": "Anuluj",
+    "adding": "Dodawanie...",
+    "add": "Dodaj"
+  },
+  "editModal": {
+    "title": "Edytuj użytkownika",
+    "genericError": "Błąd podczas zapisywania użytkownika",
+    "newPasswordLabel": "Nowe hasło",
+    "newPasswordPlaceholder": "Zostaw puste, aby nie zmieniać",
+    "cancel": "Anuluj",
+    "saving": "Zapisywanie...",
+    "save": "Zapisz",
+    "delete": "Usuń użytkownika"
+  },
+  "listPage": {
+    "genericError": "Błąd podczas pobierania użytkowników",
+    "deleteError": "Błąd podczas usuwania użytkownika",
+    "heading": "Użytkownicy",
+    "description": "Zarządzaj kontami administratorów panelu i ich uprawnieniami.",
+    "addButton": "Dodaj użytkownika",
+    "userColumn": "Użytkownik",
+    "loading": "Pobieranie danych...",
+    "noData": "Brak danych do wyświetlenia",
+    "cannotDeleteLastAdmin": "Nie można usunąć ostatniego administratora",
+    "deleteModalTitle": "Usuń użytkownika",
+    "deleteModalMessage": "Czy na pewno chcesz usunąć tego użytkownika? Tej akcji nie można cofnąć."
+  }
+}

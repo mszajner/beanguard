@@ -1,0 +1,61 @@
+export const metadata = {
+  title: 'Szablony PDF — Panel admina',
+  description:
+    'Edycja szablonu certyfikatu licencji i faktury pro-forma oraz ich placeholderów.',
+}
+
+export const sections = [
+  { title: 'Lista i edycja', id: 'lista' },
+  { title: 'Certyfikat licencji', id: 'certyfikat' },
+  { title: 'Faktura pro-forma', id: 'proforma' },
+  { title: 'Przywracanie domyślnych', id: 'domyslne' },
+]
+
+# Szablony PDF
+
+Zakładka **Szablony PDF** edytuje dwa dokumenty generowane przez serwer jako HTML → PDF: certyfikat licencji i fakturę pro-forma. {{ className: 'lead' }}
+
+## Lista i edycja {{ id: 'lista' }}
+
+Kliknięcie nazwy szablonu otwiera edytor z surowym kodem XHTML (pole tekstowe, bez podglądu na żywo) — to ten sam XHTML, który biblioteka renderująca PDF zamienia bezpośrednio na dokument, więc obowiązują ograniczenia XHTML (m.in. wszystkie tagi muszą być domknięte) i stylowanie przez CSS w atrybucie `style` albo znaczniku `<style>`.
+
+<Note>
+  Zanim zaczniesz edytować od zera, kliknij **Wczytaj domyślne** i skopiuj sobie
+  aktualną treść jako punkt wyjścia — łatwiej modyfikować istniejący układ niż
+  budować go od podstaw.
+</Note>
+
+## Certyfikat licencji {{ id: 'certyfikat' }}
+
+Parametr `LEGAL_CERTIFICATE_TEMPLATE`, generowany przy [pobieraniu certyfikatu z listy licencji](/pl/panel-admina/licencje) i przy tworzeniu licencji `STANDARD`. Dostępne placeholdery:
+
+| Placeholder                | Skąd pochodzi                                                                                                     |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `` `{{productName}}` ``    | Pole **Tytuł** w [Brandingu](/pl/panel-admina/branding).                                                            |
+| `` `{{logoSection}}` ``    | Gotowy fragment HTML z `<img>` logo (pole **Logo URL** w Brandingu) — pusty string, jeśli logo nie jest ustawione. |
+| `` `{{websiteUrl}}` ``     | Pole **Website URL** w Brandingu.                                                                                |
+| `` `{{activationText}}` `` | Pole **Instrukcja aktywacji licencji na certyfikacie** w [Ustawieniach](/pl/panel-admina/ustawienia).                |
+| `` `{{sellerName}}` ``     | Pole **Nazwa firmy** w Ustawieniach.                                                                             |
+| `` `{{licenceKey}}` ``     | Klucz (UUID) danej licencji.                                                                                     |
+| `` `{{vatId}}` ``          | NIP z danych licencjobiorcy.                                                                                     |
+| `` `{{expiration}}` ``     | Data wygaśnięcia licencji (albo „Bezterminowa”).                                                                 |
+| `` `{{issueDate}}` ``      | Data wygenerowania certyfikatu.                                                                                  |
+| `` `{{periodRow}}` ``      | Gotowy wiersz tabeli z okresem subskrypcji — pusty string, jeśli licencja nie pochodzi z zamówienia okresowego.   |
+| `` `{{claimsSection}}` ``  | Gotowe wiersze tabeli z `claims` licencji, z etykietami z pola **Nazwa na certyfikacie** w [Produktach](/pl/panel-admina/produkty) (albo surową nazwą `claim`, jeśli etykieta nie jest ustawiona). |
+
+## Faktura pro-forma {{ id: 'proforma' }}
+
+Parametr `LEGAL_PRO_FORMA_TEMPLATE`, generowany przy akceptacji zamówienia w [Zamówieniach](/pl/panel-admina/zamowienia). Dane sprzedawcy pochodzą z [Ustawień](/pl/panel-admina/ustawienia), dane nabywcy — z zamówienia:
+
+| Placeholder                                                                 | Znaczenie                                          |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| `` `{{number}}` `` `` `{{issueDate}}` `` `` `{{paymentDue}}` ``                | Numer faktury, data wystawienia, termin płatności (wg **Termin płatności pro-formy** z Ustawień). |
+| `` `{{sellerName}}` `` `` `{{sellerNip}}` `` `` `{{sellerAddress}}` `` `` `{{sellerPhone}}` `` `` `{{sellerKrsLine}}` `` `` `{{bankAccount}}` `` | Dane firmy z Ustawień; `` `{{sellerKrsLine}}` `` to gotowy wiersz z numerem KRS, pomijany, gdy pole KRS jest puste. |
+| `` `{{buyerCompany}}` `` `` `{{buyerNip}}` `` `` `{{buyerEmail}}` `` `` `{{buyerStreet}}` `` `` `{{buyerPostCode}}` `` `` `{{buyerCity}}` `` | Dane nabywcy z zamówienia.                          |
+| `` `{{itemsTable}}` ``                                                       | Gotowa tabela pozycji zamówienia.                   |
+| `` `{{nettoTotal}}` `` `` `{{vatRate}}` `` `` `{{vatAmount}}` `` `` `{{bruttoTotal}}` `` `` `{{currency}}` `` | Kwoty i stawka VAT z Ustawień oraz zamówienia.       |
+| `` `{{licenceSection}}` ``                                                   | Gotowy fragment z kluczem powiązanej licencji — pusty, jeśli zamówienie jeszcze jej nie ma. |
+
+## Przywracanie domyślnych {{ id: 'domyslne' }}
+
+Przycisk **Wczytaj domyślne** przywraca oba szablony naraz do wersji wbudowanej w serwer — nie da się przywrócić tylko jednego z nich.

@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-rename-price-to-price-one-month
+      author: mszajner
+      changes:
+        - renameColumn:
+            tableName: products
+            oldColumnName: price
+            newColumnName: price_one_month
+
+  - changeSet:
+      id: 006-add-price-one-year
+      author: mszajner
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: price_one_year
+                  type: NUMERIC(10,2)
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+
+  - changeSet:
+      id: 006-drop-default-price-one-year
+      author: mszajner
+      changes:
+        - dropDefaultValue:
+            tableName: products
+            columnName: price_one_year
+            columnDataType: NUMERIC(10,2)

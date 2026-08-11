@@ -1,0 +1,28 @@
+export const metadata = {
+  title: 'Users — Admin panel',
+  description: 'Managing admin panel administrator accounts.',
+}
+
+export const sections = [
+  { title: 'List', id: 'lista' },
+  { title: 'Adding', id: 'dodawanie' },
+  { title: 'Editing and deleting', id: 'edycja' },
+]
+
+# Users
+
+The **Users** tab manages the accounts that have access to the admin panel. {{ className: 'lead' }}
+
+## List {{ id: 'lista' }}
+
+The table shows each account's first name, last name, and email. Clicking a row opens the edit modal.
+
+## Adding {{ id: 'dodawanie' }}
+
+The add form requires a first name, last name, email, and password (min. 6 characters) — the new account gets full access to the panel.
+
+## Editing and deleting {{ id: 'edycja' }}
+
+The edit modal lets you change the first name, last name, and email. The **New password** field is optional — leave it blank to keep the existing password.
+
+In the bottom-left corner of the modal is a red **Delete user** button. It's disabled when the account being edited is the **last** account in the system — the panel (and the server, independently of the panel) won't let you delete the last administrator, so you can't lock yourself out of your own server. If there's more than one account in the database, any of them — including the one created automatically on the server's first startup — can be deleted without restriction.

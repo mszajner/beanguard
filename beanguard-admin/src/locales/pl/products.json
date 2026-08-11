@@ -1,0 +1,54 @@
+{
+  "form": {
+    "nameLabel": "Nazwa *",
+    "namePlaceholder": "np. Dodatkowi użytkownicy",
+    "descriptionLabel": "Opis",
+    "descriptionPlaceholder": "Opcjonalny opis",
+    "certificateNameLabel": "Nazwa na certyfikacie licencji",
+    "certificateNamePlaceholder": "np. Licencja Standard",
+    "typeLabel": "Typ *",
+    "claimLabel": "Claim *",
+    "claimPlaceholder": "np. users",
+    "priceMonthlyLabel": "Cena miesięczna (PLN) *",
+    "priceYearlyLabel": "Cena roczna (PLN) *",
+    "pricePlaceholder": "0.00",
+    "enabledLabel": "Widoczny w sklepie",
+    "requiredLabel": "Wymagany (pre-wybrany, nie można odznaczyć)"
+  },
+  "addModal": {
+    "title": "Dodaj produkt",
+    "genericError": "Błąd podczas dodawania produktu",
+    "cancel": "Anuluj",
+    "saving": "Zapisywanie...",
+    "add": "Dodaj produkt"
+  },
+  "editModal": {
+    "title": "Edytuj produkt",
+    "genericError": "Błąd podczas zapisywania produktu",
+    "cancel": "Anuluj",
+    "saving": "Zapisywanie...",
+    "save": "Zapisz zmiany",
+    "delete": "Usuń produkt"
+  },
+  "listPage": {
+    "dragHandleAriaLabel": "Przeciągnij aby zmienić kolejność",
+    "requiredBadge": "wymagany",
+    "enabledYes": "Tak",
+    "enabledNo": "Nie",
+    "genericError": "Błąd podczas pobierania produktów",
+    "deleteError": "Błąd podczas usuwania produktu",
+    "heading": "Produkty",
+    "description": "Zarządzaj produktami i cenami dostępnymi w sklepie.",
+    "addButton": "Dodaj produkt",
+    "nameColumn": "Nazwa",
+    "typeColumn": "Typ",
+    "claimColumn": "Claim",
+    "priceMonthlyColumn": "Cena/mc",
+    "priceYearlyColumn": "Cena/rok",
+    "enabledColumn": "Widoczny",
+    "loading": "Pobieranie danych...",
+    "noProducts": "Brak produktów",
+    "deleteModalTitle": "Usuń produkt",
+    "deleteModalMessage": "Czy na pewno chcesz usunąć ten produkt?"
+  }
+}

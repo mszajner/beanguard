@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  test-java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build (beanguard-api / beanguard-client / beanguard-server)
+        run: mvn -B clean install -DskipTests
+      - name: Test
+        run: mvn -B test
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [beanguard-admin, beanguard-shop, beanguard-docs]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: ${{ matrix.module }}/package-lock.json
+      - working-directory: ${{ matrix.module }}
+        run: npm ci
+      - working-directory: ${{ matrix.module }}
+        run: npm run build
+
+  publish:
+    needs: [test-java, test-frontend]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        service: [server, admin, shop, docs]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Determine image tags
+        id: tags
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          IMAGE="${DOCKERHUB_USERNAME}/beanguard-${{ matrix.service }}"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+            SHORT_VERSION=$(echo "$TAG" | sed 's/^v//' | cut -d'.' -f1-2)
+            echo "tags=${IMAGE}:${TAG},${IMAGE}:${SHORT_VERSION}" >> "$GITHUB_OUTPUT"
+          else
+            SHORT_VERSION=$(grep -m1 '<version>' pom.xml | sed -E 's/.*<version>(.*)<\/version>.*/\1/' | sed 's/-SNAPSHOT//' | cut -d'.' -f1-2)
+            echo "tags=${IMAGE}:${SHORT_VERSION}-SNAPSHOT" >> "$GITHUB_OUTPUT"
+          fi
+
+      # beanguard-server builds its JAR *inside* its (multi-stage) Dockerfile,
+      # so it needs the whole reactor as build context (root pom + api +
+      # client + server) - see beanguard-server/Dockerfile's own header
+      # comment. admin/shop/docs are fully self-contained: their own
+      # directory is both the context and where their Dockerfile lives.
+      - name: Determine build context/file
+        id: build-args
+        run: |
+          if [[ "${{ matrix.service }}" == "server" ]]; then
+            echo "context=." >> "$GITHUB_OUTPUT"
+            echo "file=beanguard-server/Dockerfile" >> "$GITHUB_OUTPUT"
+          else
+            echo "context=beanguard-${{ matrix.service }}" >> "$GITHUB_OUTPUT"
+            echo "file=beanguard-${{ matrix.service }}/Dockerfile" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ steps.build-args.outputs.context }}
+          file: ${{ steps.build-args.outputs.file }}
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+
+  publish-maven:
+    needs: [test-java, test-frontend]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+      - name: Deploy beanguard-api / beanguard-client to Maven Central
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -B -Prelease -pl beanguard-api,beanguard-client deploy

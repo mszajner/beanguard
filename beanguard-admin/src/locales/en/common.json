@@ -1,0 +1,57 @@
+{
+  "login": {
+    "sessionExpiredMessage": "Your session has expired. Please log in again.",
+    "emptyFieldsError": "Please fill in all fields",
+    "genericError": "Login failed",
+    "tagline": "A licensing platform for your software.",
+    "subtitle": "Manage licences and collect payments in one place.",
+    "copyrightPrefix": "© 2025 ",
+    "supportLabel": "Support:",
+    "heading": "Sign in",
+    "instructions": "Enter your credentials to access the platform",
+    "emailLabel": "Email",
+    "emailPlaceholder": "admin@beanguard.dev",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submitButtonLoading": "Signing in...",
+    "submitButton": "Sign in"
+  },
+  "mainLayout": {
+    "navGroups": {
+      "management": "Management",
+      "shop": "Shop",
+      "administration": "Administration"
+    },
+    "nav": {
+      "licences": "Licences",
+      "orders": "Orders",
+      "products": "Products",
+      "users": "Users",
+      "mailTemplates": "Mail templates",
+      "pdfTemplates": "PDF templates",
+      "parameters": "Parameters",
+      "licenceKeys": "Cryptographic keys",
+      "branding": "Branding",
+      "legal": "Settings"
+    },
+    "administrator": "Administrator",
+    "logout": "Log out",
+    "docs": "Documentation",
+    "openShop": "Open shop"
+  },
+  "confirmDeleteModal": {
+    "cancel": "Cancel",
+    "deleting": "Deleting...",
+    "delete": "Delete"
+  },
+  "confirmActionModal": {
+    "cancel": "Cancel"
+  },
+  "updatePrompt": {
+    "message": "A new version of the app is available.",
+    "refreshButton": "Refresh"
+  },
+  "pageHelp": {
+    "label": "Help"
+  }
+}

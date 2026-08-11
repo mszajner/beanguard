@@ -1,0 +1,39 @@
+export const metadata = {
+  title: 'Ustawienia — Panel admina',
+  description:
+    'Dane firmy, sprzedaż i płatności, dokumenty prawne oraz tekst aktywacyjny certyfikatu.',
+}
+
+export const sections = [
+  { title: 'Dane firmy', id: 'firma' },
+  { title: 'Sprzedaż i płatności', id: 'sprzedaz' },
+  { title: 'Dokumenty prawne', id: 'dokumenty' },
+  { title: 'Certyfikat licencji', id: 'certyfikat' },
+]
+
+# Ustawienia
+
+Zakładka **Ustawienia** grupuje dane prawne i rozliczeniowe Twojej firmy — wykorzystywane na fakturach pro-forma, certyfikatach licencji i w mailach transakcyjnych. {{ className: 'lead' }}
+
+## Dane firmy {{ id: 'firma' }}
+
+Nazwa, NIP, KRS, telefon i adres firmy — dane sprzedawcy pojawiające się na [certyfikacie licencji](/pl/panel-admina/szablony-pdf) i fakturze pro-forma oraz w stopce maili transakcyjnych. **Numer konta bankowego** trafia wyłącznie na fakturę pro-forma jako dane do przelewu.
+
+<Note>
+  Pole **KRS** jest opcjonalne — pusta wartość po prostu pomija ten wiersz na
+  fakturze pro-forma.
+</Note>
+
+## Sprzedaż i płatności {{ id: 'sprzedaz' }}
+
+- **Waluta** — kod waluty (np. `PLN`) używany w sklepie do prezentacji cen, na fakturze pro-forma i w wyliczeniach w mailu potwierdzającym zamówienie.
+- **Stawka VAT (%)** — stosowana przy przeliczaniu cen netto/brutto w sklepie, na fakturze pro-forma i w mailu potwierdzającym zamówienie.
+- **Termin płatności pro-formy (dni)** — liczba dni od wystawienia faktury pro-forma do terminu płatności widocznego na dokumencie.
+
+## Dokumenty prawne {{ id: 'dokumenty' }}
+
+**URL regulaminu** i **URL polityki prywatności** — adresy Twoich dokumentów prawnych, udostępniane [sklepowi](/pl/sklep) przez publiczny endpoint konfiguracyjny (`/api/open/config`), żeby mógł je zalinkować np. w stopce albo formularzu zamówienia.
+
+## Certyfikat licencji {{ id: 'certyfikat' }}
+
+**Instrukcja aktywacji licencji na certyfikacie** — dowolny tekst wstawiany do [szablonu certyfikatu PDF](/pl/panel-admina/szablony-pdf) jako placeholder `{{ activationText }}` (użyj podwójnych klamr w szablonie, tak jak inne placeholdery) — typowo krótka instrukcja, gdzie w Twojej aplikacji wkleić otrzymany klucz licencji.

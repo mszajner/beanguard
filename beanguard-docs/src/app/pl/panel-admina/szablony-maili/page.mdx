@@ -1,0 +1,64 @@
+export const metadata = {
+  title: 'Szablony maili — Panel admina',
+  description:
+    'Edycja treści i tematu maili transakcyjnych oraz ich placeholderów.',
+}
+
+export const sections = [
+  { title: 'Lista i edycja', id: 'lista' },
+  { title: 'Kiedy wysyłany jest każdy mail', id: 'wyzwalacze' },
+  { title: 'Placeholdery', id: 'placeholdery' },
+  { title: 'Przywracanie domyślnych', id: 'domyslne' },
+]
+
+# Szablony maili
+
+Zakładka **Szablony maili** pozwala edytować temat i treść (HTML) siedmiu maili transakcyjnych wysyłanych automatycznie przez serwer — bez ingerencji w kod. {{ className: 'lead' }}
+
+## Lista i edycja {{ id: 'lista' }}
+
+Tabela pokazuje nazwę szablonu i aktualny temat wiadomości. Kliknięcie nazwy otwiera edytor z polami **Temat** i **Treść** (surowy HTML, pole tekstowe). Zapis aktualizuje oba parametry naraz.
+
+<Note>
+  Wymagana jest skonfigurowana wysyłka SMTP — zobacz parametry `MAIL_HOST` /
+  `MAIL_PORT` / `MAIL_USER` / `MAIL_PASS` na stronie
+  [Parametry](/pl/panel-admina/parametry). Bez tego serwer po prostu pomija
+  wysyłkę i loguje ostrzeżenie, żaden z poniższych maili nie wyjdzie.
+</Note>
+
+## Kiedy wysyłany jest każdy mail {{ id: 'wyzwalacze' }}
+
+| Szablon                            | Kiedy wychodzi                                                                                                                              |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Wiadomość powitalna DEMO**       | Automatycznie po utworzeniu licencji `DEMO` przez publiczny, samoobsługowy endpoint (`POST /api/open/licences`) — nie przy ręcznym dodaniu licencji demo w panelu. |
+| **Ostrzeżenie o wygaśnięciu**      | Cyklicznie, dla licencji `STANDARD`, na tyle dni przed wygaśnięciem, ile skonfigurowano w parametrze `MAIL_EXPIRY_WARNING_DAYS` (domyślnie `30,7` — dwa maile).      |
+| **Ostrzeżenie o wygaśnięciu (DEMO)** | Ten sam mechanizm co powyżej, wariant treści dla licencji `DEMO`.                                                                        |
+| **Potwierdzenie przeniesienia licencji** | Gdy ktoś próbuje aktywować licencję na nowym urządzeniu, a ta jest już aktywna gdzie indziej — link w mailu potwierdza przeniesienie.  |
+| **Aktywacja licencji**             | Przy utworzeniu licencji `STANDARD` z wypełnionym e-mailem — zarówno ręcznie w [Licencjach](/pl/panel-admina/licencje), jak i przez akceptację zamówienia w sklepie. |
+| **Potwierdzenie zamówienia**       | Po akceptacji zamówienia w [Zamówieniach](/pl/panel-admina/zamowienia) — razem z fakturą pro-forma jako załącznikiem PDF, jeśli została wystawiona. |
+| **Anulowanie zamówienia**          | Po anulowaniu zamówienia w [Zamówieniach](/pl/panel-admina/zamowienia).                                                                    |
+
+## Placeholdery {{ id: 'placeholdery' }}
+
+Treść i temat to szablony podstawiające wartości w miejscu podwójnych klamr, np. `` `{{productName}}` ``. Dwa placeholdery są dostępne we wszystkich siedmiu szablonach — pochodzą z [Brandingu](/pl/panel-admina/branding):
+
+- `` `{{logoUrl}}` `` — logo w nagłówku maila,
+- `` `{{accentColor}}` `` — kolor paska pod nagłówkiem i tła przycisków.
+
+Pozostałe placeholdery są specyficzne dla danego szablonu:
+
+| Szablon                              | Dodatkowe placeholdery                                                                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Wiadomość powitalna DEMO             | `` `{{productName}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` `` `` `{{licenceToken}}` `` `` `{{expirationDate}}` ``                     |
+| Ostrzeżenie o wygaśnięciu             | `` `{{productName}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` `` `` `{{buyerCompany}}` `` `` `{{email}}` `` `` `{{daysLeft}}` `` `` `{{expirationDate}}` `` |
+| Ostrzeżenie o wygaśnięciu (DEMO)     | Jak wyżej, bez `` `{{buyerCompany}}` ``                                                                                                          |
+| Potwierdzenie przeniesienia licencji | `` `{{productName}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` `` `` `{{confirmUrl}}` ``                                                  |
+| Aktywacja licencji                   | `` `{{productName}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` `` `` `{{licenceKey}}` ``                                                  |
+| Potwierdzenie zamówienia             | `` `{{orderId}}` `` `` `{{orderDate}}` `` `` `{{buyerEmail}}` `` `` `{{buyerCompany}}` `` `` `{{buyerVatId}}` `` `` `{{period}}` `` `` `{{itemsTable}}` `` `` `{{nettoTotal}}` `` `` `{{vatRate}}` `` `` `{{vatAmount}}` `` `` `{{bruttoTotal}}` `` `` `{{currency}}` `` `` `{{sellerName}}` `` `` `{{sellerNip}}` `` `` `{{sellerAddress}}` `` `` `{{sellerContact}}` `` |
+| Anulowanie zamówienia                | `` `{{orderId}}` `` `` `{{orderDate}}` `` `` `{{companyName}}` `` `` `{{companyAddress}}` ``                                                     |
+
+`{{companyName}}` / `{{companyAddress}}` pochodzą z [Ustawień](/pl/panel-admina/ustawienia) (dane firmy), a `{{sellerName}}` / `{{sellerNip}}` / `{{sellerAddress}}` / `{{sellerContact}}` w potwierdzeniu zamówienia to te same dane firmy plus e-mail wsparcia — nazwane inaczej, bo szablon pełni rolę mini-faktury.
+
+## Przywracanie domyślnych {{ id: 'domyslne' }}
+
+Przycisk **Wczytaj domyślne** usuwa Twoje nadpisania wszystkich siedmiu szablonów naraz i przywraca oryginalną treść wbudowaną w serwer. Działanie obejmuje wszystkie szablony jednocześnie — nie da się przywrócić pojedynczego.

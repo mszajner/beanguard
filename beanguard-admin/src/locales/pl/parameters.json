@@ -1,0 +1,42 @@
+{
+  "editModal": {
+    "titleOverwrite": "Nadpisz parametr",
+    "titleEdit": "Edytuj parametr",
+    "close": "Zamknij",
+    "nameLabel": "Nazwa parametru",
+    "valueLabel": "Wartość",
+    "valuePlaceholder": "Wpisz nową wartość…",
+    "genericError": "Błąd podczas zapisywania parametru",
+    "cancel": "Anuluj",
+    "saving": "Zapisywanie…",
+    "save": "Zapisz"
+  },
+  "listPage": {
+    "genericError": "Błąd podczas pobierania parametrów",
+    "heading": "Parametry serwera",
+    "description": "Wszystkie parametry konfiguracyjne serwera przechowywane w bazie danych.",
+    "nameColumn": "Nazwa",
+    "valueColumn": "Wartość",
+    "updatedColumn": "Zaktualizowano",
+    "actionsColumn": "Akcje",
+    "loading": "Pobieranie danych...",
+    "retry": "Spróbuj ponownie",
+    "writeOnlyValue": "••••••• (write-only)",
+    "noUpdateDate": "—",
+    "copied": "Skopiowano!",
+    "copy": "Kopiuj",
+    "overwrite": "Nadpisz",
+    "edit": "Edytuj"
+  },
+  "descriptions": {
+    "MAIL_HOST": "Adres serwera SMTP używanego do wysyłki wszystkich maili transakcyjnych (licencje, zamówienia, przypomnienia o wygaśnięciu). Jeśli puste, wysyłka maili jest wyłączona.",
+    "MAIL_PORT": "Port serwera SMTP (np. 587 dla połączenia z STARTTLS).",
+    "MAIL_USER": "Nazwa użytkownika do uwierzytelnienia na serwerze SMTP.",
+    "MAIL_PASS": "Hasło do uwierzytelnienia na serwerze SMTP (wartość write-only, nigdy nie jest wyświetlana).",
+    "MAIL_FROM": "Adres e-mail nadawcy widoczny w polu \"Od\" wszystkich wysyłanych maili transakcyjnych.",
+    "MAIL_SENDER_NAME": "Nazwa nadawcy wyświetlana obok adresu \"Od\" w wysyłanych mailach.",
+    "MAIL_SMTP_STARTTLS": "Czy połączenie z serwerem SMTP używa szyfrowania STARTTLS (\"true\" / \"false\").",
+    "MAIL_EXPIRY_WARNING_DAYS": "Lista dni przed wygaśnięciem licencji, w których wysyłane jest przypomnienie mailowe, rozdzielona przecinkami (np. \"30,7\").",
+    "RATE_LIMIT_OPEN_RPM": "Maksymalna liczba żądań na minutę z jednego adresu IP dla publicznych endpointów bez uwierzytelnienia (sklep, wyszukiwanie licencji)."
+  }
+}

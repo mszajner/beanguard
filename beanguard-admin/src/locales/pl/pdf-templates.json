@@ -1,0 +1,25 @@
+{
+  "templates": {
+    "licenceCertificate": "Certyfikat licencji",
+    "proFormaInvoice": "Faktura pro-forma"
+  },
+  "editModal": {
+    "close": "Zamknij",
+    "bodyLabel": "Szablon XHTML",
+    "genericError": "Błąd podczas zapisywania szablonu",
+    "cancel": "Anuluj",
+    "saving": "Zapisywanie…",
+    "save": "Zapisz"
+  },
+  "listPage": {
+    "genericLoadError": "Błąd podczas pobierania danych",
+    "resetConfirm": "Przywrócić domyślne szablony PDF? Spowoduje to usunięcie wszystkich niestandardowych szablonów z bazy danych.",
+    "resetError": "Błąd podczas przywracania domyślnych",
+    "heading": "Szablony PDF",
+    "description": "Edytuj wygląd generowanych dokumentów PDF — certyfikatów i faktur.",
+    "resetButton": "Wczytaj domyślne",
+    "loading": "Pobieranie danych...",
+    "retry": "Spróbuj ponownie",
+    "templateColumn": "Szablon"
+  }
+}

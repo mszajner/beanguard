@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009-product-sort-order
+      author: system
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: sort_order
+                  type: INTEGER
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+        - sql:
+            sql: >
+              UPDATE products p
+              SET sort_order = sub.rn
+              FROM (
+                SELECT id, ROW_NUMBER() OVER (ORDER BY created_at) - 1 AS rn
+                FROM products
+              ) sub
+              WHERE p.id = sub.id

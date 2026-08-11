@@ -1,0 +1,11 @@
+.claude
+.idea
+.superpowers
+target
+node_modules
+dist
+build
+.next
+.env.local
+.env
+*.iml

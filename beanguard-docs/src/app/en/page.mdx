@@ -1,0 +1,39 @@
+import { HeroPattern } from '@/components/HeroPattern'
+
+export const metadata = {
+  title: 'BeanGuard — Documentation',
+  description:
+    'BeanGuard documentation — a licensing system for Java/Spring Boot applications: licence server, admin panel, shop, and client library.',
+}
+
+<HeroPattern />
+
+# BeanGuard
+
+BeanGuard is a licensing system for Java applications built on Spring Boot. It issues, encrypts, and verifies licences — you decide which limits and features each one unlocks. {{ className: 'lead' }}
+
+## What it's made of
+
+BeanGuard is four independent modules — run them on their own via Docker, or integrate them into your own application via Maven:
+
+- **[Licence server](/en/server)** (`beanguard-server`) — REST API and a PostgreSQL database. Issues licences and stores the cryptographic keys.
+- **[Admin panel](/en/admin-panel)** (`beanguard-admin`) — manage licences, orders, shop products, branding, and the rest of the server's configuration.
+- **[Shop](/en/shop)** (`beanguard-shop`) — a public storefront where your customers buy and activate licences themselves.
+- **[Client integration](/en/client)** (`beanguard-client`) — a Spring Boot library you add to your application to enforce the limits and features from a purchased licence.
+
+## Getting started
+
+Run the whole stack locally with Docker Compose, or see how to download the individual modules separately.
+
+<div className="not-prose mt-4 flex gap-3">
+  <Button href="/en/quick-start" arrow="right">
+    Quick start
+  </Button>
+  <Button href="/en/download" variant="outline">
+    Download BeanGuard
+  </Button>
+</div>
+
+## How it works
+
+Want to understand the double-encryption mechanism for licences and the data flow between modules? See the [architecture](/en/architecture).

@@ -1,0 +1,308 @@
+export const metadata = {
+  title: 'Protecting keys with ProGuard',
+  description:
+    'How to protect the cryptographic keys in beanguard-client with ProGuard obfuscation.',
+}
+
+export const sections = [
+  { title: 'Why this is necessary', id: 'dlaczego' },
+  { title: 'Step 1 — implement BeanGuardConfiguration', id: 'krok-1' },
+  { title: 'Step 2 — ProGuard in the vendor project', id: 'krok-2' },
+  { title: 'Step 3 — verifying the obfuscation', id: 'krok-3' },
+  { title: 'Step 4 — configuration', id: 'krok-4' },
+  {
+    title: 'Obfuscating beanguard-client together with the application',
+    id: 'licence-registry',
+  },
+  { title: 'What ProGuard protects, and what it doesn’t', id: 'zakres' },
+]
+
+# Protecting keys with ProGuard
+
+How to integrate `beanguard-client` into your own application and protect the cryptographic keys from decompilation with ProGuard obfuscation — in your project. {{ className: 'lead' }}
+
+## Why this is necessary {{ id: 'dlaczego' }}
+
+`beanguard-client` requires an implementation of the `BeanGuardConfiguration` interface — see [Client integration](/en/client). The returned values (server URL, RSA public key, AES secret, licence key and secret) must be **hardcoded in the vendor's compiled code** — they can't come from a configuration file or an environment variable. If an attacker runs a decompiler on your JAR, they'll see them as readable strings — that's why you need to run **your** application through ProGuard.
+
+`beanguard-client` itself is **not obfuscated** — it's an open-source library (Apache 2.0), its source code is publicly available on GitHub, so obfuscating its own internals wouldn't hide anything. All the protection described on this page applies only to the keys **you** embed in your `BeanGuardConfiguration` implementation.
+
+<Note>
+  Even after extracting the keys, an attacker can only **replay** valid
+  licences or use someone else's licence. They **cannot** create new
+  licences or modify their content — the RSA private key never leaves the
+  BeanGuard server's database.
+</Note>
+
+## Step 1 — implement BeanGuardConfiguration {{ id: 'krok-1' }}
+
+Create a class implementing `BeanGuardConfiguration` in your project. Get the keys from the BeanGuard server's admin panel (**Settings → Cryptographic keys** tab), and the licence key/secret from the panel where it was purchased.
+
+```java
+package com.example.myapp.licence;
+
+import io.beanguard.client.config.BeanGuardConfiguration;
+import io.beanguard.client.config.LicenceKeys;
+import io.beanguard.client.config.ServerConfig;
+import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+
+@Component
+public class MyBeanGuardConfiguration implements BeanGuardConfiguration {
+
+    @Override
+    public ServerConfig getServerConfig() {
+        return new ServerConfig(
+            "https://api.beanguard.dev",
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...",
+            "dGhpcyBpcyBhIHNlY3JldCBrZXkgZm9yIEFFUy0yNTY="
+        );
+    }
+
+    @Override
+    public Optional<LicenceKeys> getLicenceKeys() {
+        return Optional.of(new LicenceKeys(
+            "11111111-1111-1111-1111-111111111111",
+            "my-licence-secret"
+        ));
+    }
+
+    @Override
+    public Optional<String> loadLicence() {
+        return Optional.empty();
+    }
+
+    @Override
+    public void saveLicence(String licence) {
+        // save the received licence locally
+    }
+}
+```
+
+Don't put the class in the `io.beanguard.*` package — it's your code, not library code.
+
+<Note>
+  `UsageRegistry` (`io.beanguard.client.usage.UsageRegistry`) is the second
+  and last interface that `beanguard-client` leaves un-obfuscated. Unlike
+  `BeanGuardConfiguration`, implementing it is **optional** — supply your own
+  only if you want to persist usage counters (e.g. in a database) instead of
+  the default in-memory implementation. It contains no secrets, so it doesn't
+  need the ProGuard protection described in this document.
+</Note>
+
+## Step 2 — ProGuard in the vendor project {{ id: 'krok-2' }}
+
+Add `proguard-maven-plugin` to your application's `pom.xml`. We assume you're building a fat JAR (a Spring Boot executable JAR via `spring-boot-maven-plugin`).
+
+<Note>
+  ProGuard and Spring Boot executable JARs aren't directly compatible. The
+  configuration below obfuscates the **thin JAR** (before Spring Boot
+  repackages it). Alternatively, you can extract `BeanGuardConfiguration`
+  into a separate Maven module and obfuscate only that module.
+</Note>
+
+### Option A: separate Maven module (recommended)
+
+Extract the `BeanGuardConfiguration` implementation into a `myapp-licence-keys` module:
+
+```
+myapp/
+├── myapp-app/          ← main Spring Boot application
+└── myapp-licence-keys/ ← only the BeanGuardConfiguration implementation, obfuscated separately
+    └── pom.xml
+```
+
+Add this to `myapp-licence-keys/pom.xml`:
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>com.github.wvengen</groupId>
+            <artifactId>proguard-maven-plugin</artifactId>
+            <version>2.6.1</version>
+            <dependencies>
+                <dependency>
+                    <groupId>com.guardsquare</groupId>
+                    <artifactId>proguard-base</artifactId>
+                    <version>7.5.0</version>
+                </dependency>
+            </dependencies>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>proguard</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <injar>${project.build.finalName}.jar</injar>
+                <outjar>${project.build.finalName}.jar</outjar>
+                <outputDirectory>${project.build.directory}</outputDirectory>
+                <obfuscate>true</obfuscate>
+                <addMavenDescriptor>false</addMavenDescriptor>
+                <libs>
+                    <lib>${java.home}/jmods</lib>
+                </libs>
+                <options>
+                    <option>-dontshrink</option>
+                    <option>-dontoptimize</option>
+                    <option>-keepattributes *Annotation*,Signature,Exceptions</option>
+                    <option>-dontusemixedcaseclassnames</option>
+                    <option>-dontwarn **</option>
+                    <!--
+                        Keep the @Component annotation so Spring can detect the bean via component scan.
+                        The class and method names themselves will be renamed by ProGuard — this is exactly
+                        the class (your implementation) that should be obfuscated, not BeanGuardConfiguration.
+                    -->
+                    <option>-keepclassmembers class * implements io.beanguard.client.config.BeanGuardConfiguration {
+                        @org.springframework.stereotype.Component *;
+                    }</option>
+                </options>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+<Note>
+  You don't need to add a `-keep` rule for `BeanGuardConfiguration` itself —
+  here, `beanguard-client` is purely an external dependency
+  (`-libraryjars`), not something this ProGuard run processes (`-injars`).
+  ProGuard never renames classes outside `-injars` at all, so your code
+  safely compiles and links against the stable, public names from
+  `beanguard-client` without any extra rule.
+</Note>
+
+Add a dependency on the obfuscated module in `myapp-app/pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.example</groupId>
+    <artifactId>myapp-licence-keys</artifactId>
+    <version>${project.version}</version>
+</dependency>
+```
+
+### Option B: keys as a byte array instead of a String
+
+Decompilers like Fernflower or CFR display strings in readable form even after name obfuscation. A byte array is harder to read:
+
+```java
+@Override
+public ServerConfig getServerConfig() {
+    // Each byte is one character of the URL — the decompiler will show an array of numbers, not a string
+    byte[] encoded = {
+        104, 116, 116, 112, 115, 58, 47, 47, 97, 112, 105, 46,
+        98, 101, 97, 110, 103, 117, 97, 114, 100, 46, 100, 101, 118,
+        // ... remaining bytes
+    };
+    return new ServerConfig(new String(encoded), "...", "...");
+}
+```
+
+Generate the byte array from the plain text:
+
+```bash
+python3 -c "
+payload = 'https://api.beanguard.dev'
+print(', '.join(str(b) for b in payload.encode('utf-8')))
+"
+```
+
+You can combine this technique with ProGuard for two layers of obfuscation.
+
+## Step 3 — verifying the obfuscation {{ id: 'krok-3' }}
+
+After building, verify your class name has been changed:
+
+```bash
+jar tf target/myapp-licence-keys-*.jar | grep "com/example"
+```
+
+Correct output — the class name changed to a single letter or a short string:
+
+```
+com/example/myapp/licence/a.class
+```
+
+Incorrect output — the class is still visible under its original name:
+
+```
+com/example/myapp/licence/MyBeanGuardConfiguration.class
+```
+
+Also check that Spring still detects the bean:
+
+```bash
+mvn spring-boot:run
+```
+
+A BeanGuard message confirming the licence loaded correctly should appear in the startup logs.
+
+## Step 4 — configuration {{ id: 'krok-4' }}
+
+`BeanGuardConfiguration` **doesn't come from `application.yml`** — that's intentional. The server URL and keys live in code, in the implementation supplied by your project (Step 1). `beanguard-client` doesn't read any Spring properties for this configuration — the `BeanGuardServer` bean is created automatically as soon as a bean of type `BeanGuardConfiguration` is found in the Spring context.
+
+## Obfuscating beanguard-client together with the application {{ id: 'licence-registry' }}
+
+If you obfuscate your **entire** application in a single ProGuard/R8 pass (typical practice for commercial software, independent of BeanGuard) and you want that same pass to also process `beanguard-client`'s classes — for example to hide the very fact that the application uses a licensing library — you can include the `beanguard-client` jar in your `-injars`. In that case, though, you must explicitly keep a few classes that your code (and Spring) reference by name:
+
+```
+# Spring Boot autoconfiguration entry point — referenced by its fully qualified
+# class name in the META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports resource.
+# ProGuard doesn't rewrite resource files, so this class name must stay unchanged.
+-keep class io.beanguard.client.BeanGuardClientAutoConfiguration { *; }
+
+# The interface you implement (Step 1) and the types you construct directly.
+-keep public interface io.beanguard.client.config.BeanGuardConfiguration { *; }
+-keep public class io.beanguard.client.config.ServerConfig { *; }
+-keep public class io.beanguard.client.config.LicenceKeys { *; }
+
+# Optional extension interface (Step 1) — skip if you don't implement it.
+-keep public interface io.beanguard.client.usage.UsageRegistry { *; }
+
+# Spring must find these methods reflectively by annotation.
+-keepclassmembers class * {
+    @org.springframework.scheduling.annotation.Scheduled *;
+    @org.springframework.context.event.EventListener *;
+}
+
+# AspectJ pointcut annotations must survive obfuscation, otherwise AOP weaving
+# (licence validation) stops working once these classes are included in the pass.
+-keepattributes *Annotation*,Signature,Exceptions,InnerClasses,EnclosingMethod
+```
+
+You can safely leave `LicenceRegistry` and `LicenceStatus` (`io.beanguard.client.registries.*`) without a `-keep` rule — they'll be consistently renamed together with the rest of your program in the same pass, because all your code is in the same `-injars`. If you'd rather keep them readable (e.g. for debugging in production), add:
+
+```
+-keep public interface io.beanguard.client.registries.LicenceRegistry { *; }
+-keep public enum io.beanguard.client.registries.LicenceStatus { *; }
+```
+
+<Note>
+  Don't try to obfuscate `beanguard-client`'s classes in isolation from the
+  rest of your application (a separate pass on just `beanguard-client.jar`)
+  — your compiled code would still reference the original class names, but
+  at runtime would get different (renamed) classes under the same classpath
+  path, which ends in `NoSuchMethodError`/`ClassCastException`. Obfuscating
+  `beanguard-client` only makes sense as part of a single, comprehensive pass
+  that also covers your code.
+
+For most vendors this is unnecessary — Option A from Step 2 (a separate module, with `beanguard-client` as a plain dependency) is simpler and sufficient: it protects your keys, and `beanguard-client` is public open-source code anyway, so there's nothing to hide from anyone.
+
+</Note>
+
+## What ProGuard protects, and what it doesn't {{ id: 'zakres' }}
+
+| Attack vector                          | After obfuscation                                          |
+| --------------------------------------- | ------------------------------------------------------------ |
+| Decompiler reads the class name         | Sees `a.class` instead of `MyBeanGuardConfiguration`         |
+| Decompiler reads method names           | Sees `a()`, `b()` instead of `getServerConfig()`              |
+| Decompiler reads a string's content     | **Still sees the key** — unless you use a byte array          |
+| A Java agent hooks the method at runtime | Can read the key — outside ProGuard CE's scope                |
+| Heap dump of a running JVM              | Can find the key in memory — outside ProGuard CE's scope       |
+
+Protection against full key extraction (Java agents, heap dumps) requires commercial tools (DexGuard, Dotfuscator) or hardware solutions (HSM). For a typical use case, ProGuard obfuscation is a sufficient deterrent.

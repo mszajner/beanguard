@@ -1,0 +1,53 @@
+export const metadata = {
+  title: 'Architektura',
+  description:
+    'Jak moduły BeanGuard współpracują ze sobą i jak zabezpieczone są licencje.',
+}
+
+export const sections = [
+  { title: 'Cztery moduły', id: 'moduly' },
+  { title: 'Jak powstaje licencja', id: 'wydawanie' },
+  { title: 'Podwójne szyfrowanie', id: 'szyfrowanie' },
+  { title: 'Jak klient weryfikuje licencję', id: 'weryfikacja' },
+]
+
+# Architektura
+
+BeanGuard rozdziela odpowiedzialność między cztery moduły: serwer wydaje i przechowuje licencje, panel admina i sklep są jego klientami REST API, a `beanguard-client` weryfikuje licencję po stronie Twojej aplikacji. {{ className: 'lead' }}
+
+## Cztery moduły {{ id: 'moduly' }}
+
+| Moduł              | Co robi                                                                                                                                      |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `beanguard-server` | REST API + PostgreSQL. Jedyne miejsce, gdzie istnieje klucz prywatny RSA używany do podpisywania licencji.                                   |
+| `beanguard-admin`  | Panel administracyjny (SPA) — licencje, użytkownicy, zamówienia, produkty sklepu, branding, klucze kryptograficzne. Rozmawia z serwerem przez REST API. |
+| `beanguard-shop`   | Publiczna witryna dla klientów końcowych — zakup i aktywacja licencji. Korzysta wyłącznie z endpointów `open/` na serwerze, bez logowania.   |
+| `beanguard-client` | Biblioteka dołączana do Twojej aplikacji. Pobiera licencję z serwera, odszyfrowuje ją i udostępnia adnotacje do egzekwowania jej treści.     |
+
+Panel admina i sklep to cienkie wrappery Spring Boot serwujące gotowy frontend React — cała logika biznesowa (licencje, produkty, zamówienia) żyje w `beanguard-server`.
+
+## Jak powstaje licencja {{ id: 'wydawanie' }}
+
+1. Licencja powstaje ręcznie w panelu admina albo automatycznie — przez akceptację zamówienia ze sklepu lub samoobsługowy wniosek o licencję demo — z limitami i funkcjami zakodowanymi jako pary klucz/wartość w polu `claims`.
+2. Serwer podpisuje treść licencji swoim kluczem prywatnym RSA i szyfruje wynik kluczem AES-256-GCM.
+3. Klient — Twoja aplikacja, przez `beanguard-client` — pobiera zaszyfrowaną licencję z serwera po kluczu i sekrecie licencji.
+
+## Podwójne szyfrowanie {{ id: 'szyfrowanie' }}
+
+Licencje BeanGuard to podwójnie zaszyfrowane JWT:
+
+1. **Wewnątrz** — JWS podpisany kluczem RSA (`RS256`). Gwarantuje integralność: nikt bez klucza prywatnego nie podrobi ani nie zmodyfikuje treści licencji.
+2. **Na zewnątrz** — JWE zaszyfrowany kluczem AES-256-GCM. Ukrywa treść licencji przed odczytem bez sekretu.
+
+Klucze (`LICENCE_PUBLIC_KEY`, `LICENCE_PRIVATE_KEY`, `LICENCE_SECRET_KEY`) oraz `LICENCE_ISSUER` są przechowywane w tabeli `parameter` na serwerze. Klucz prywatny RSA **nigdy jej nie opuszcza** — nawet wyciek klucza publicznego i sekretu AES pozwala co najwyżej odtworzyć (replay) już wydaną licencję, nigdy stworzyć nową.
+
+<Note>
+  Niestandardowe pola licencji (limity, flagi funkcji) trafiają do kolumny JSONB
+  `claims` — to na nich operują adnotacje `@RequiresLicenceLimit` i
+  `@RequiresLicenceFeature` opisane w [Adnotacjach
+  licencyjnych](/pl/klient/adnotacje).
+</Note>
+
+## Jak klient weryfikuje licencję {{ id: 'weryfikacja' }}
+
+`beanguard-client` pobiera licencję przy starcie aplikacji i odświeża ją co godzinę. Odszyfrowuje ją kluczem publicznym RSA i sekretem AES podanymi przez Twoją implementację `BeanGuardConfiguration` — zobacz [Integrację klienta](/pl/klient).

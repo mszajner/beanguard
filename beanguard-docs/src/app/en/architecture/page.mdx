@@ -1,0 +1,53 @@
+export const metadata = {
+  title: 'Architecture',
+  description:
+    'How the BeanGuard modules work together and how licences are secured.',
+}
+
+export const sections = [
+  { title: 'Four modules', id: 'moduly' },
+  { title: 'How a licence is issued', id: 'wydawanie' },
+  { title: 'Double encryption', id: 'szyfrowanie' },
+  { title: 'How the client verifies a licence', id: 'weryfikacja' },
+]
+
+# Architecture
+
+BeanGuard splits responsibilities across four modules: the server issues and stores licences, the admin panel and shop are its REST API clients, and `beanguard-client` verifies the licence inside your application. {{ className: 'lead' }}
+
+## Four modules {{ id: 'moduly' }}
+
+| Module              | What it does                                                                                                                                      |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `beanguard-server` | REST API + PostgreSQL. The only place where the RSA private key used to sign licences exists.                                   |
+| `beanguard-admin`  | Admin panel (SPA) — licences, users, orders, shop products, branding, cryptographic keys. Talks to the server via REST API. |
+| `beanguard-shop`   | Public storefront for end customers — purchasing and activating licences. Uses only the server's `open/` endpoints, no login required.   |
+| `beanguard-client` | A library you add to your application. Fetches the licence from the server, decrypts it, and provides annotations to enforce its content.     |
+
+The admin panel and shop are thin Spring Boot wrappers serving a pre-built React frontend — all business logic (licences, products, orders) lives in `beanguard-server`.
+
+## How a licence is issued {{ id: 'wydawanie' }}
+
+1. A licence is created manually in the admin panel, or automatically — by accepting a shop order or a self-service demo licence request — with limits and features encoded as key/value pairs in the `claims` field.
+2. The server signs the licence content with its RSA private key and encrypts the result with an AES-256-GCM key.
+3. The client — your application, via `beanguard-client` — fetches the encrypted licence from the server using the licence key and secret.
+
+## Double encryption {{ id: 'szyfrowanie' }}
+
+BeanGuard licences are doubly-encrypted JWTs:
+
+1. **Inner** — a JWS signed with an RSA key (`RS256`). Guarantees integrity: without the private key, no one can forge or modify the licence content.
+2. **Outer** — a JWE encrypted with an AES-256-GCM key. Hides the licence content from anyone without the secret.
+
+The keys (`LICENCE_PUBLIC_KEY`, `LICENCE_PRIVATE_KEY`, `LICENCE_SECRET_KEY`) and `LICENCE_ISSUER` are stored in the `parameter` table on the server. The RSA private key **never leaves it** — even if the public key and AES secret leak, at most an already-issued licence can be replayed, never a new one created.
+
+<Note>
+  Custom licence fields (limits, feature flags) go into the JSONB `claims`
+  column — the `@RequiresLicenceLimit` and `@RequiresLicenceFeature`
+  annotations described in [Licensing annotations](/en/client/annotations)
+  operate on them.
+</Note>
+
+## How the client verifies a licence {{ id: 'weryfikacja' }}
+
+`beanguard-client` fetches the licence on application startup and refreshes it every hour. It decrypts it using the RSA public key and AES secret supplied by your `BeanGuardConfiguration` implementation — see [Client integration](/en/client).

@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 014-product-certificate-name
+      author: mszajner
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: certificate_name
+                  type: VARCHAR(255)

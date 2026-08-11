@@ -1,0 +1,75 @@
+export const metadata = {
+  title: 'Serwer licencji',
+  description: 'Instalacja i konfiguracja beanguard-server.',
+}
+
+export const sections = [
+  { title: 'Uruchomienie', id: 'uruchomienie' },
+  { title: 'Zmienne środowiskowe', id: 'zmienne' },
+  { title: 'Parametry konfiguracyjne', id: 'parametry' },
+  { title: 'REST API', id: 'api' },
+]
+
+# Serwer licencji
+
+`beanguard-server` to REST API i jedyne miejsce w całym systemie, gdzie przechowywany jest klucz prywatny RSA używany do podpisywania licencji. {{ className: 'lead' }}
+
+## Uruchomienie {{ id: 'uruchomienie' }}
+
+```bash
+docker pull mszajner/beanguard-server:0.1
+docker run -d \
+  -p 8000:80 \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://<host>/beanguard \
+  -e SPRING_DATASOURCE_USERNAME=beanguard \
+  -e SPRING_DATASOURCE_PASSWORD=<haslo> \
+  -e BEANGUARD_ADMIN_URL=https://admin.twojadomena.pl \
+  -e BEANGUARD_SHOP_URL=https://sklep.twojadomena.pl \
+  mszajner/beanguard-server:0.1
+```
+
+Kontener nasłuchuje wewnętrznie na porcie `80` niezależnie od zmapowanego portu hosta.
+
+<Note>
+  Wymagana jest baza PostgreSQL — serwer sam nakłada migracje Liquibase przy
+  starcie, nie trzeba ręcznie tworzyć schematu.
+</Note>
+
+## Zmienne środowiskowe {{ id: 'zmienne' }}
+
+| Zmienna                                                     | Opis                                                                                                                                                       |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SPRING_PROFILES_ACTIVE`                                    | Ustaw na `prod` na produkcji — wyłącza logowanie SQL i dostraja pulę połączeń HikariCP. Serwer odmawia startu, jeśli wykryje `prod` razem z włączonym `show_sql`. |
+| `SPRING_DATASOURCE_URL`                                     | JDBC URL bazy PostgreSQL                                                                                                                                  |
+| `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD` | Dane logowania do bazy                                                                                                                                    |
+| `BEANGUARD_ADMIN_URL`                                       | Publiczny adres panelu admina — używany m.in. w linkach w mailach                                                                                         |
+| `BEANGUARD_SHOP_URL`                                        | Publiczny adres sklepu                                                                                                                                    |
+
+## Parametry konfiguracyjne {{ id: 'parametry' }}
+
+Po pierwszym uruchomieniu reszta konfiguracji żyje w bazie (tabela `parameter`). Prawie każda grupa ma już wygodny ekran w panelu admina:
+
+| Grupa                                                          | Do czego służy                                                                            | Gdzie edytować                                                                     |
+| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `LICENCE_*`                                                     | Klucze RSA/AES i wystawca do podpisywania i szyfrowania **licencji klientów**                | [Klucze kryptograficzne](/pl/panel-admina/klucze-kryptograficzne) (zakładka Licencje) |
+| `LICENCE_DEMO_CLAIMS` / `LICENCE_DEMO_EXPIRATION_DAYS`           | Domyślne `claims` i czas ważności automatycznie wystawianych licencji demo                    | [Licencje](/pl/panel-admina/licencje)                                                 |
+| `TOKEN_*`                                                        | Klucze RSA/AES, wystawca i czas ważności sesji **administratorów panelu**                     | [Klucze kryptograficzne](/pl/panel-admina/klucze-kryptograficzne) (zakładka Token)    |
+| `BRANDING_*`                                                     | Tytuł, logo, favicon, kolor, e-mail wsparcia                                                  | [Branding](/pl/panel-admina/branding)                                                 |
+| `LEGAL_*`                                                        | Dane firmy, waluta i VAT, dokumenty prawne, teksty na certyfikacie i fakturze pro-forma        | [Ustawienia](/pl/panel-admina/ustawienia)                                             |
+| `MAIL_HOST` / `PORT` / `USER` / `PASS` / `FROM` / `SENDER_NAME` / `SMTP_STARTTLS` / `EXPIRY_WARNING_DAYS` | Serwer SMTP i harmonogram przypomnień o wygaśnięciu licencji                | [Parametry](/pl/panel-admina/parametry)                                               |
+| `RATE_LIMIT_OPEN_RPM`                                            | Limit żądań na minutę dla publicznych endpointów bez uwierzytelnienia                         | [Parametry](/pl/panel-admina/parametry)                                               |
+
+<Note>
+  Klucze prywatne (`LICENCE_PRIVATE_KEY`, `TOKEN_PRIVATE_KEY`) i `MAIL_PASS`
+  są write-only — API nigdy nie zwraca ich wartości po zapisaniu, można je
+  tylko nadpisać nową.
+</Note>
+
+## REST API {{ id: 'api' }}
+
+Pełne, interaktywne API dostępne jest przez Swagger UI pod `/swagger-ui.html` uruchomionej instancji serwera. Najważniejsze grupy endpointów:
+
+- `/auth/login` — logowanie do panelu, zwraca token sesji; jedyny endpoint poza `/api/open/**` dostępny bez tokenu.
+- `/api/licences`, `/api/licence-keys`, `/api/token-keys`, `/api/users`, `/api/orders`, `/api/products`, `/api/parameters` — wymagają zalogowania (JWT), używane przez panel admina.
+- `/api/open/licences`, `/api/open/licences/transfer`, `/api/open/shop`, `/api/open/config` — bez uwierzytelnienia, używane przez `beanguard-client` i sklep; objęte limitem `RATE_LIMIT_OPEN_RPM`.

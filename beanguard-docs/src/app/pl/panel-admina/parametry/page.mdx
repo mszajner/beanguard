@@ -1,0 +1,43 @@
+export const metadata = {
+  title: 'Parametry — Panel admina',
+  description:
+    'Pozostałe parametry serwera bez dedykowanego ekranu: SMTP i limit żądań.',
+}
+
+export const sections = [
+  { title: 'Co tu zostało i dlaczego', id: 'zakres' },
+  { title: 'Parametry SMTP', id: 'smtp' },
+  { title: 'Limit żądań', id: 'rate-limit' },
+  { title: 'Edycja i wartości write-only', id: 'edycja' },
+]
+
+# Parametry
+
+Zakładka **Parametry** to surowy widok tabeli `parameter` z bazy — pokazuje jednak tylko te parametry, które nie mają jeszcze własnego, wygodniejszego ekranu gdzie indziej w panelu. {{ className: 'lead' }}
+
+## Co tu zostało i dlaczego {{ id: 'zakres' }}
+
+Większość konfiguracji przeniosła się na dedykowane strony: [Branding](/pl/panel-admina/branding), [Ustawienia](/pl/panel-admina/ustawienia), [Klucze kryptograficzne](/pl/panel-admina/klucze-kryptograficzne) i konfiguracja licencji DEMO w [Licencjach](/pl/panel-admina/licencje). Tutaj zostały tylko parametry SMTP i limit żądań — na razie bez własnego ekranu.
+
+## Parametry SMTP {{ id: 'smtp' }}
+
+| Parametr                | Opis                                                                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `MAIL_HOST`              | Adres serwera SMTP używanego do wysyłki wszystkich maili transakcyjnych. Jeśli puste, wysyłka maili jest wyłączona.      |
+| `MAIL_PORT`               | Port serwera SMTP (np. `587` dla połączenia z STARTTLS).                                                                |
+| `MAIL_USER`               | Nazwa użytkownika do uwierzytelnienia na serwerze SMTP.                                                                |
+| `MAIL_PASS`               | Hasło do uwierzytelnienia na serwerze SMTP — wartość write-only, nigdy nie jest wyświetlana.                            |
+| `MAIL_FROM`               | Adres e-mail nadawcy widoczny w polu „Od” wysyłanych maili.                                                            |
+| `MAIL_SENDER_NAME`        | Nazwa nadawcy wyświetlana obok adresu „Od”.                                                                            |
+| `MAIL_SMTP_STARTTLS`      | Czy połączenie z serwerem SMTP używa szyfrowania STARTTLS (`true` / `false`).                                          |
+| `MAIL_EXPIRY_WARNING_DAYS` | Lista dni przed wygaśnięciem licencji, w których wysyłane jest przypomnienie mailowe, rozdzielona przecinkami (np. `30,7`). |
+
+Zobacz [Szablony maili](/pl/panel-admina/szablony-maili), żeby zmienić treść samych wiadomości.
+
+## Limit żądań {{ id: 'rate-limit' }}
+
+`RATE_LIMIT_OPEN_RPM` — maksymalna liczba żądań na minutę z jednego adresu IP dla publicznych endpointów bez uwierzytelnienia (sklep, wyszukiwanie/aktywacja licencji, samoobsługowe wystawianie DEMO). Chroni te endpointy przed nadużyciem, skoro nie wymagają logowania.
+
+## Edycja i wartości write-only {{ id: 'edycja' }}
+
+Kliknięcie **Edytuj** przy parametrze otwiera modal z nazwą (tylko do odczytu) i polem wartości. Parametry oznaczone jako write-only (np. `MAIL_PASS`) pokazują na liście `••••••• (write-only)` zamiast wartości, a przycisk zamiast **Edytuj** nazywa się **Nadpisz** — nie da się zobaczyć aktualnej wartości, można ją tylko zastąpić nową.

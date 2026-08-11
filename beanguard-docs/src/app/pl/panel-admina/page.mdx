@@ -1,0 +1,82 @@
+export const metadata = {
+  title: 'Panel admina',
+  description:
+    'Uruchomienie beanguard-admin, pierwsze logowanie i przegląd menu panelu.',
+}
+
+export const sections = [
+  { title: 'Uruchomienie', id: 'uruchomienie' },
+  { title: 'Pierwsze logowanie', id: 'logowanie' },
+  { title: 'Menu panelu', id: 'menu' },
+]
+
+# Panel admina
+
+`beanguard-admin` to centralne miejsce do zarządzania Twoim serwerem licencji — licencjami, zamówieniami, produktami sklepu, tożsamością marki, użytkownikami, szablonami maili i PDF, kluczami kryptograficznymi oraz resztą konfiguracji serwera. {{ className: 'lead' }}
+
+## Uruchomienie {{ id: 'uruchomienie' }}
+
+```bash
+docker pull mszajner/beanguard-admin:0.1
+docker run -d \
+  -p 8002:80 \
+  -e BEANGUARD_SERVER_URL=https://api.twojadomena.pl \
+  mszajner/beanguard-admin:0.1
+```
+
+<Note>
+  `beanguard-admin` to cienki serwer Spring Boot serwujący gotowy frontend React
+  — cała logika biznesowa żyje w `beanguard-server`. Adres serwera podajesz przy
+  starcie kontenera przez `BEANGUARD_SERVER_URL` — frontend odczytuje go w
+  runtime z `/config.js`, więc nie trzeba przebudowywać obrazu, żeby wskazać na
+  inny serwer.
+</Note>
+
+## Pierwsze logowanie {{ id: 'logowanie' }}
+
+Przy pierwszym starcie `beanguard-server` (nie panelu admina) automatycznie tworzy konto administratora, jeśli w bazie nie ma jeszcze żadnego użytkownika. Dane logowania — w tym hasło pokazane tylko raz — znajdziesz w logach kontenera serwera:
+
+```bash
+docker compose logs server | grep -i admin
+```
+
+Wejdź na adres panelu (np. `http://localhost:8002` przy lokalnym Docker Compose z [Szybkiego startu](/pl/szybki-start)) i zaloguj się tymi danymi. Zmień hasło od razu po pierwszym logowaniu — nie jest ono nigdzie zapisane w postaci jawnej poza jednorazowym logiem startowym.
+
+<Note>
+  Kolejnych administratorów dodajesz już z poziomu panelu — zobacz
+  [Użytkownicy](/pl/panel-admina/uzytkownicy).
+</Note>
+
+## Menu panelu {{ id: 'menu' }}
+
+Menu boczne dzieli się na trzy grupy. Każda pozycja ma własną, szczegółową podstronę:
+
+### Zarządzanie
+
+| Pozycja                                             | Do czego służy                                                             |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------- |
+| [Licencje](/pl/panel-admina/licencje) | Przegląd, ręczne dodawanie i edycja licencji klientów, transfer, certyfikaty PDF, konfiguracja licencji DEMO. |
+
+### Sklep
+
+| Pozycja                                               | Do czego służy                                                        |
+| ------------------------------------------------------ | ------------------------------------------------------------------------- |
+| [Zamówienia](/pl/panel-admina/zamowienia)                 | Zamówienia złożone w `beanguard-shop` — akceptacja, anulowanie, faktury.  |
+| [Produkty](/pl/panel-admina/produkty)                     | Produkty (limity i funkcje) wystawione na sprzedaż w sklepie.             |
+| [Branding](/pl/panel-admina/branding)                     | Tożsamość marki: nazwa, logo, favicon, kolor, e-mail wsparcia.            |
+| [Ustawienia](/pl/panel-admina/ustawienia)                 | Dane firmy, sprzedaż i płatności, dokumenty prawne, certyfikat licencji.  |
+
+### Administracja
+
+| Pozycja                                                          | Do czego służy                                                    |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| [Użytkownicy](/pl/panel-admina/uzytkownicy)                           | Konta administratorów panelu i ich role.                              |
+| [Szablony maili](/pl/panel-admina/szablony-maili)                     | Treść i temat maili transakcyjnych wysyłanych do klientów.            |
+| [Szablony PDF](/pl/panel-admina/szablony-pdf)                         | Wygląd certyfikatu licencji i faktury pro-forma.                      |
+| [Klucze kryptograficzne](/pl/panel-admina/klucze-kryptograficzne)     | Wystawca i klucze RSA/AES osobno dla licencji i dla sesji adminów.     |
+| [Parametry](/pl/panel-admina/parametry)                               | Pozostałe parametry serwera bez dedykowanego ekranu (SMTP, rate limit). |
+
+<Note>
+  Zmiana ustawień w **Brandingu** wpływa na wygląd panelu i sklepu dopiero po
+  przeładowaniu aplikacji — po zapisaniu zmian panel sam to zaproponuje.
+</Note>

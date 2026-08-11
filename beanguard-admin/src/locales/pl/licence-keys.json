@@ -1,0 +1,54 @@
+{
+  "page": {
+    "heading": "Klucze kryptograficzne",
+    "description": "Klucze używane do podpisywania i szyfrowania wydawanych licencji oraz sesji administratorów."
+  },
+  "tabs": {
+    "licence": "Licencje",
+    "token": "Token"
+  },
+  "issuer": {
+    "heading": "Konfiguracja licencji",
+    "label": "Wystawca",
+    "save": "Zapisz",
+    "confirmTitle": "Zmienić wystawcę licencji?",
+    "confirmMessage": "Zmiana wystawcy unieważnia wszystkie dotychczas wydane licencje. Tej operacji nie można cofnąć.",
+    "confirmLabel": "Zmień wystawcę",
+    "saving": "Zapisywanie…",
+    "genericError": "Nie udało się zapisać wystawcy"
+  },
+  "keys": {
+    "heading": "Klucze podpisywania i szyfrowania",
+    "loading": "Wczytywanie…",
+    "publicKey": "Klucz publiczny (RSA)",
+    "publicKeyDescription": "Służy aplikacjom klienckim (beanguard-client) do zweryfikowania podpisu licencji wydanej przez ten serwer — potwierdza, że licencja jest autentyczna i nie została zmieniona.",
+    "privateKey": "Klucz prywatny (RSA)",
+    "privateKeyDescription": "Używany wyłącznie przez ten serwer do podpisywania wydawanych licencji (JWS, algorytm RS256). Nigdy nie opuszcza serwera.",
+    "secretKey": "Klucz szyfrowania (AES)",
+    "secretKeyDescription": "Szyfruje podpisaną licencję (JWE, AES-256-GCM), dzięki czemu jej zawartość jest czytelna tylko dla serwera i uprawnionej aplikacji klienckiej.",
+    "configured": "Skonfigurowany",
+    "notConfigured": "Nieskonfigurowany",
+    "updatedAt": "Zaktualizowano {{date}}",
+    "copy": "Kopiuj",
+    "copied": "Skopiowano!",
+    "regenerate": "Generuj nowe klucze",
+    "genericError": "Nie udało się wczytać kluczy"
+  },
+  "regenerateModal": {
+    "confirmTitle": "Wygenerować nowe klucze licencyjne?",
+    "confirmWarning": "To nieodwracalnie unieważni WSZYSTKIE dotychczas wydane licencje — aplikacje klienckie nie będą mogły ich zweryfikować ani odszyfrować.",
+    "confirmInputLabel": "Wpisz REGENERUJ aby potwierdzić",
+    "confirmPhrase": "REGENERUJ",
+    "cancel": "Anuluj",
+    "confirm": "Generuj nowe klucze",
+    "generating": "Generowanie…",
+    "genericError": "Nie udało się wygenerować nowych kluczy",
+    "revealTitle": "Wygenerowano nowe klucze",
+    "revealWarning": "Zapisz teraz klucz sekretny — nie będzie ponownie widoczny.",
+    "publicKeyLabel": "Klucz publiczny",
+    "secretKeyLabel": "Klucz sekretny",
+    "copy": "Kopiuj",
+    "copied": "Skopiowano!",
+    "close": "Zamknij"
+  }
+}

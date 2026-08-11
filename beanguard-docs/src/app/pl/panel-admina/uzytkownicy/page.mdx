@@ -1,0 +1,28 @@
+export const metadata = {
+  title: 'Użytkownicy — Panel admina',
+  description: 'Zarządzanie kontami administratorów panelu.',
+}
+
+export const sections = [
+  { title: 'Lista', id: 'lista' },
+  { title: 'Dodawanie', id: 'dodawanie' },
+  { title: 'Edycja i usuwanie', id: 'edycja' },
+]
+
+# Użytkownicy
+
+Zakładka **Użytkownicy** zarządza kontami, które mają dostęp do panelu admina. {{ className: 'lead' }}
+
+## Lista {{ id: 'lista' }}
+
+Tabela pokazuje imię, nazwisko i e-mail każdego konta. Kliknięcie wiersza otwiera modal edycji.
+
+## Dodawanie {{ id: 'dodawanie' }}
+
+Formularz dodawania wymaga imienia, nazwiska, e-maila i hasła (min. 6 znaków) — nowe konto dostaje pełny dostęp do panelu.
+
+## Edycja i usuwanie {{ id: 'edycja' }}
+
+Modal edycji pozwala zmienić imię, nazwisko i e-mail. Pole **Nowe hasło** jest opcjonalne — zostaw je puste, żeby zachować dotychczasowe hasło.
+
+W lewym dolnym rogu modala znajduje się czerwony przycisk **Usuń użytkownika**. Jest nieaktywny, gdy edytowane konto jest **ostatnim** kontem w systemie — panel (i serwer, niezależnie od panelu) nie pozwala usunąć ostatniego administratora, żeby nie zablokować sobie dostępu do własnego serwera. Jeśli w bazie jest więcej niż jedno konto, każde — łącznie z tym utworzonym automatycznie przy pierwszym uruchomieniu serwera — można usunąć bez ograniczeń.

@@ -1,0 +1,48 @@
+{
+  "issuer": {
+    "heading": "Token configuration",
+    "label": "Issuer",
+    "save": "Save",
+    "confirmTitle": "Change token issuer?",
+    "confirmMessage": "Changing the issuer immediately invalidates every active admin session, including your own — you will need to log in again.",
+    "confirmLabel": "Change issuer",
+    "saving": "Saving…",
+    "genericError": "Failed to save the issuer",
+    "expirationLabel": "Expiration time (ms)",
+    "expirationGenericError": "Failed to save the expiration time"
+  },
+  "keys": {
+    "heading": "Signing and encryption keys",
+    "loading": "Loading…",
+    "publicKey": "Public key (RSA)",
+    "publicKeyDescription": "Used by the server to verify the signature of an admin session token — confirms the token has not been forged or modified.",
+    "privateKey": "Private key (RSA)",
+    "privateKeyDescription": "Used by the server to sign session tokens issued after an admin logs in (JWS, RS256 algorithm). Never leaves the server.",
+    "secretKey": "Encryption key (AES)",
+    "secretKeyDescription": "Encrypts the admin session token (JWE, AES-256-GCM), so its contents are unreadable to anyone other than the server.",
+    "configured": "Configured",
+    "notConfigured": "Not configured",
+    "updatedAt": "Updated {{date}}",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "regenerate": "Generate new keys",
+    "genericError": "Failed to load keys"
+  },
+  "regenerateModal": {
+    "confirmTitle": "Generate new token keys?",
+    "confirmWarning": "This immediately invalidates every active admin session, including your own — everyone will need to log in again.",
+    "confirmInputLabel": "Type REGENERATE to confirm",
+    "confirmPhrase": "REGENERATE",
+    "cancel": "Cancel",
+    "confirm": "Generate new keys",
+    "generating": "Generating…",
+    "genericError": "Failed to generate new keys",
+    "revealTitle": "New keys generated",
+    "revealWarning": "Save the secret key now — it will not be shown again.",
+    "publicKeyLabel": "Public key",
+    "secretKeyLabel": "Secret key",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "close": "Close"
+  }
+}

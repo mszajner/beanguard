@@ -1,0 +1,51 @@
+export const metadata = {
+  title: 'Download BeanGuard',
+  description:
+    'Docker images for the server, admin panel, and shop, plus the Maven dependency for the client.',
+}
+
+# Download BeanGuard
+
+You download each module separately — Docker images for the server, admin panel, and shop, and a Maven dependency for the client library. {{ className: 'lead' }}
+
+<Note>
+  BeanGuard hasn't been publicly published to Docker Hub or Maven Central
+  yet. The image names and Maven coordinates below are the intended values —
+  swap them in once publishing is ready.
+</Note>
+
+## Licence server
+
+```bash
+docker pull mszajner/beanguard-server:0.1
+```
+
+Requires PostgreSQL — see the [server documentation](/en/server).
+
+## Admin panel
+
+```bash
+docker pull mszajner/beanguard-admin:0.1
+```
+
+See the [admin panel documentation](/en/admin-panel).
+
+## Shop
+
+```bash
+docker pull mszajner/beanguard-shop:0.1
+```
+
+See the [shop documentation](/en/shop).
+
+## Client (Maven library)
+
+```xml
+<dependency>
+    <groupId>dev.beanguard</groupId>
+    <artifactId>beanguard-client</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
+See [client integration](/en/client).

@@ -1,0 +1,33 @@
+{
+  "templates": {
+    "demoWelcome": "Wiadomość powitalna DEMO",
+    "expiryWarning": "Ostrzeżenie o wygaśnięciu",
+    "expiryWarningDemo": "Ostrzeżenie o wygaśnięciu (DEMO)",
+    "transferConfirm": "Potwierdzenie przeniesienia licencji",
+    "licenceCreated": "Aktywacja licencji",
+    "orderConfirm": "Potwierdzenie zamówienia",
+    "orderCancel": "Anulowanie zamówienia"
+  },
+  "editModal": {
+    "close": "Zamknij",
+    "subjectLabel": "Temat",
+    "bodyLabel": "Treść (HTML)",
+    "genericError": "Błąd podczas zapisywania szablonu",
+    "cancel": "Anuluj",
+    "saving": "Zapisywanie…",
+    "save": "Zapisz"
+  },
+  "listPage": {
+    "genericLoadError": "Błąd podczas pobierania danych",
+    "resetConfirm": "Przywrócić domyślne szablony maili? Spowoduje to usunięcie wszystkich niestandardowych szablonów z bazy danych.",
+    "resetError": "Błąd podczas przywracania domyślnych",
+    "heading": "Szablony maili",
+    "description": "Edytuj temat i treść maili transakcyjnych wysyłanych do klientów.",
+    "resetButton": "Wczytaj domyślne",
+    "loading": "Pobieranie danych...",
+    "retry": "Spróbuj ponownie",
+    "templateColumn": "Szablon",
+    "subjectColumn": "Temat",
+    "noValue": "brak"
+  }
+}

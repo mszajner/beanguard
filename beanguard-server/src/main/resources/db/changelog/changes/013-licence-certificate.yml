@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 013-licence-certificate
+      author: mszajner
+      changes:
+        - addColumn:
+            tableName: licences
+            columns:
+              - column:
+                  name: certificate
+                  type: BYTEA

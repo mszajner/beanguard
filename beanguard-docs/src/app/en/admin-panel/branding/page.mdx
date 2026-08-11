@@ -1,0 +1,41 @@
+export const metadata = {
+  title: 'Branding — Admin panel',
+  description:
+    'Configuring brand identity: title, logo, favicon, colour, and support email.',
+}
+
+export const sections = [
+  { title: 'Basic information', id: 'podstawowe' },
+  { title: 'Visual elements', id: 'wizualne' },
+  { title: 'Reload after saving', id: 'przeladowanie' },
+]
+
+# Branding
+
+The **Branding** tab is the one place where you set the brand identity shown in the admin panel, the shop, transactional emails, and on the PDF licence certificate — without rebuilding any of the Docker images. {{ className: 'lead' }}
+
+## Basic information {{ id: 'podstawowe' }}
+
+| Field                  | Where it appears                                                                                                                                       |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Title**              | Browser tab title for the panel and shop; product name in the subject and body of transactional emails; product name on the PDF licence certificate.              |
+| **Website URL**        | Clickable link on the PDF licence certificate (next to the logo and in the software-download line). Currently not used anywhere else. |
+| **Support email**    | `mailto:` link on the panel's login screen; support contact passed to the shop; seller details on the invoice/order confirmation email.          |
+
+## Visual elements {{ id: 'wizualne' }}
+
+| Field                | Where it appears                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Logo URL**         | Panel sidebar and login screen, shop header, transactional-email header (140px), PDF certificate header. Empty field = the application's default logo. |
+| **Favicon URL**      | Browser tab icon for the panel and shop. Empty field = the server's default icon.                                                                                  |
+| **Primary colour** | A HEX value (e.g. `#f59e0b`) set as the `--color-primary` CSS variable: colours the icons in the panel's page headers, the active sidebar menu item, the focus outline of form fields, and the accent bar and button backgrounds in transactional emails. |
+
+<Note>
+  A preview of the image below the **Logo URL** and **Favicon URL** fields
+  appears as soon as you type a valid address — if the image fails to load,
+  the panel simply doesn't show a thumbnail, it doesn't block saving.
+</Note>
+
+## Reload after saving {{ id: 'przeladowanie' }}
+
+The admin panel loads branding once, when the application starts in the browser — so a settings change isn't visible "live" without a refresh. After saving changes, the panel shows a banner at the bottom of the screen with a **Reload now** button, which refreshes the page and immediately applies the new logo, colour, and title.

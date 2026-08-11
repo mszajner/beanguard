@@ -1,0 +1,31 @@
+{
+  "page": {
+    "heading": "Settings",
+    "description": "Legal and billing details used for invoices, certificates and the shop."
+  },
+  "loading": "Loading…",
+  "genericError": "Failed to load settings",
+  "saved": "Saved!",
+  "saving": "Saving…",
+  "save": "Save",
+  "groups": {
+    "company": "Company details",
+    "sales": "Sales & payments",
+    "documents": "Legal documents",
+    "certificate": "Licence certificate"
+  },
+  "fields": {
+    "currency": "Currency",
+    "termsUrl": "Terms of service URL",
+    "privacyUrl": "Privacy policy URL",
+    "vatRate": "VAT rate (%)",
+    "companyName": "Company name",
+    "companyNip": "Tax ID (NIP)",
+    "companyKrs": "Company registry number (KRS)",
+    "companyAddress": "Company address",
+    "companyPhone": "Company phone",
+    "proFormaPaymentDays": "Pro forma payment term (days)",
+    "bankAccount": "Bank account number",
+    "certificateActivationText": "Licence activation instructions on certificate"
+  }
+}

@@ -1,0 +1,73 @@
+export const metadata = {
+  title: 'Licencje — Panel admina',
+  description:
+    'Przegląd, dodawanie, edycja i konfiguracja licencji DEMO w panelu admina.',
+}
+
+export const sections = [
+  { title: 'Lista i filtrowanie', id: 'lista' },
+  { title: 'Dodawanie licencji', id: 'dodawanie' },
+  { title: 'Edycja licencji', id: 'edycja' },
+  { title: 'Certyfikat PDF i zmiana w sklepie', id: 'certyfikat' },
+  { title: 'Konfiguracja licencji DEMO', id: 'demo' },
+]
+
+# Licencje
+
+Zakładka **Licencje** to lista wszystkich licencji wydanych Twoim klientom — ręcznie z panelu albo automatycznie przez sklep — wraz z narzędziami do ich zarządzania. {{ className: 'lead' }}
+
+## Lista i filtrowanie {{ id: 'lista' }}
+
+Tabela pokazuje klucz licencji, licencjobiorcę, dane kontaktowe oraz termin wygaśnięcia ze statusem:
+
+- **Bezterminowa** — licencja bez daty wygaśnięcia.
+- **Aktywna** — data wygaśnięcia w przyszłości.
+- **Wygasła** — data wygaśnięcia w przeszłości.
+
+Licencje typu `DEMO` mają dodatkowo niebieską plakietkę **DEMO** przy kluczu.
+
+Pole wyszukiwania dopasowuje wpisaną frazę do e-maila, NIP-u, nazwy firmy, adresu (ulica/kod/miasto) i telefonu licencjobiorcy — a jeśli wpiszesz pełny klucz licencji (UUID), wyszuka dokładnie tę licencję. Dodatkowe filtry pozwalają zawęzić listę po typie (`STANDARD` / `DEMO`) i statusie ważności.
+
+## Dodawanie licencji {{ id: 'dodawanie' }}
+
+Przycisk **Dodaj licencję** otwiera formularz z polami:
+
+- **E-mail** i **NIP** (wymagane),
+- **Typ licencji** — `STANDARD` albo `DEMO`,
+- **Data wygaśnięcia** — puste pole oznacza licencję bezterminową,
+- dane firmy: nazwa, telefon, ulica, kod pocztowy, miasto (opcjonalne),
+- **Claims** — dowolna liczba par klucz–wartość definiujących limity i funkcje odblokowane tą licencją; zobacz [Model licencji](/pl/licencje) i [Adnotacje licencyjne](/pl/klient/adnotacje).
+
+<Note>
+  Ręczne dodanie licencji typu `STANDARD` z wypełnionym e-mailem wysyła do
+  klienta mail „Aktywacja licencji” — tak samo jak przy zakupie w sklepie.
+  Wyjątkiem jest typ `DEMO`: ręcznie dodana licencja demo **nie** wysyła
+  żadnego maila — mail powitalny „Wiadomość powitalna DEMO” wychodzi tylko
+  przy automatycznym wystawieniu licencji demo przez publiczny endpoint
+  samoobsługowy, poza panelem. Zobacz [Szablony maili](/pl/panel-admina/szablony-maili).
+</Note>
+
+## Edycja licencji {{ id: 'edycja' }}
+
+Kliknięcie klucza licencji na liście otwiera stronę edycji z tymi samymi polami co formularz dodawania (bez typu, którego nie da się zmienić po utworzeniu), plus:
+
+- **Klucz licencji (UUID)** — identyfikator, tylko do odczytu, kopiowalny jednym kliknięciem,
+- **Kwota zapłacona netto** — widoczna tylko dla licencji powiązanej z zamówieniem ze sklepu.
+
+## Certyfikat PDF i zmiana w sklepie {{ id: 'certyfikat' }}
+
+Przy każdej licencji na liście dostępne są dwie akcje:
+
+- **Pobierz certyfikat PDF** — generuje certyfikat licencji według [szablonu PDF](/pl/panel-admina/szablony-pdf) skonfigurowanego w panelu.
+- **Otwórz formularz zmiany licencji w sklepie** — generuje jednorazowy token i otwiera `beanguard-shop` w nowej karcie zalogowany na tę licencję, tak jakby zrobił to sam klient — przydatne, gdy chcesz w jego imieniu dokupić limit albo funkcję.
+
+## Konfiguracja licencji DEMO {{ id: 'demo' }}
+
+Przycisk **Konfiguracja DEMO** obok **Dodaj licencję** otwiera modal z dwoma parametrami stosowanymi przy automatycznym wystawianiu licencji `DEMO`:
+
+- **Czas ważności (dni)** — parametr `LICENCE_DEMO_EXPIRATION_DAYS`, domyślnie `30`.
+- **Claims** — parametr `LICENCE_DEMO_CLAIMS`, w tej samej tabelarycznej postaci co przy ręcznym dodawaniu licencji; to domyślny zestaw limitów/funkcji, jaki dostaje każda nowa licencja demo.
+
+<Note>
+  Te dwa parametry nie pojawiają się już na liście ogólnych [Parametrów](/pl/panel-admina/parametry) — mają dedykowany ekran właśnie tutaj.
+</Note>

@@ -1,0 +1,39 @@
+export const metadata = {
+  title: 'Sklep',
+  description: 'Instalacja i funkcje beanguard-shop.',
+}
+
+export const sections = [
+  { title: 'Uruchomienie', id: 'uruchomienie' },
+  { title: 'Do czego służy', id: 'funkcje' },
+]
+
+# Sklep
+
+`beanguard-shop` to publiczna witryna, w której Twoi klienci samodzielnie kupują i aktywują licencje na Twój produkt — bez potrzeby kontaktu z Tobą. {{ className: 'lead' }}
+
+## Uruchomienie {{ id: 'uruchomienie' }}
+
+```bash
+docker pull mszajner/beanguard-shop:0.1
+docker run -d \
+  -p 8001:80 \
+  -e BEANGUARD_SERVER_URL=https://api.twojadomena.pl \
+  mszajner/beanguard-shop:0.1
+```
+
+Podobnie jak panel admina, `beanguard-shop` odczytuje adres serwera w runtime (`/config.js`) — nie trzeba przebudowywać obrazu, żeby zmienić `BEANGUARD_SERVER_URL`.
+
+## Do czego służy {{ id: 'funkcje' }}
+
+Sklep korzysta wyłącznie z endpointów `/api/open/shop` na serwerze — nie wymaga logowania po stronie klienta:
+
+- Prezentuje **produkty** skonfigurowane w panelu admina — typu `LIMIT` (podniesienie limitu) albo `FEATURE` (odblokowanie funkcji).
+- Pozwala złożyć **zamówienie** — trafia do panelu admina ze statusem `NEW`, do akceptacji (`ACCEPTED`) lub anulowania (`CANCELED`).
+- Po akceptacji zamówienia wydaje klientowi token licencji, którym aktywuje ją we własnej aplikacji korzystającej z `beanguard-client`.
+
+<Note>
+  Sklep nie zawiera logiki płatności — to warstwa prezentacji i składania
+  zamówień. Rozliczenia i akceptację zamówień prowadzisz ręcznie (lub przez
+  własną integrację) w panelu admina.
+</Note>

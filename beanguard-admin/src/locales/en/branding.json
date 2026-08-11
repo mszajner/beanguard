@@ -1,0 +1,36 @@
+{
+  "page": {
+    "heading": "Branding",
+    "description": "Product identity used across the admin panel, shop, e-mails and certificates."
+  },
+  "loading": "Loading…",
+  "genericError": "Failed to load branding settings",
+  "saved": "Saved!",
+  "saving": "Saving…",
+  "save": "Save",
+  "reloadPrompt": {
+    "message": "Branding settings were saved. Reload the panel to see the changes.",
+    "reloadButton": "Reload now",
+    "dismiss": "Dismiss"
+  },
+  "groups": {
+    "general": "Basic information",
+    "visual": "Visual assets"
+  },
+  "fields": {
+    "title": "Title",
+    "logoUrl": "Logo URL",
+    "websiteUrl": "Website URL",
+    "faviconUrl": "Favicon URL",
+    "supportEmail": "Support email",
+    "primaryColor": "Primary color"
+  },
+  "descriptions": {
+    "title": "The product name shown in the browser tab title of the admin panel and the shop. Injected as the product name in the subject and body of transactional e-mails (e.g. \"Your [Title] licence is ready\") and printed as the product name on the licence certificate PDF.",
+    "logoUrl": "Full URL to the logo image (e.g. a PNG/SVG hosted externally). Shown in the admin panel sidebar and login screen, the shop header, the header of transactional e-mails (140px wide), and the header of the licence certificate PDF. If left empty, the admin panel and shop fall back to the built-in default logo.",
+    "websiteUrl": "The product's website address. Appears as a clickable link on the licence certificate PDF, both next to the logo and in the row describing how to download the software. Not currently used anywhere else.",
+    "faviconUrl": "URL of the icon shown in the browser tab (favicon) for the admin panel and the customer shop. If left empty, the browser falls back to the server's default icon.",
+    "supportEmail": "Support contact e-mail address, shown as a mailto link on the admin panel login screen and passed to the shop as its support contact. Also used as the seller's contact on order confirmation/invoice e-mails.",
+    "primaryColor": "Brand accent colour as a HEX value (e.g. #f59e0b). Sets the --color-primary CSS variable that drives button and active-navigation colours in the admin panel and shop, and is also used as the accent colour in transactional e-mails — the bar under the header and button backgrounds."
+  }
+}

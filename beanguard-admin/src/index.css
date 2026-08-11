@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #f59e0b;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-zinc-700 antialiased;
+  }
+}
+
+@layer components {
+  /* Buttons — Protocol style (rounded-full pills) */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-zinc-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-700 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full bg-zinc-100 px-4 py-1.5 text-sm font-medium text-zinc-900 transition hover:bg-zinc-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-200 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full bg-red-600 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Form fields — ring-based focus, no default border */
+  .input-field {
+    @apply block w-full rounded-lg border-0 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 ring-1 ring-inset ring-zinc-900/10 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-inset;
+    --tw-ring-color: var(--color-primary);
+  }
+  .label-text {
+    @apply mb-1.5 block text-sm font-medium text-zinc-700;
+  }
+
+  /* Tables — Protocol inspired */
+  .table-container {
+    @apply w-full overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-zinc-900/5;
+  }
+  .custom-table {
+    @apply min-w-full;
+  }
+  .custom-table thead {
+    @apply border-b border-zinc-900/5;
+  }
+  .custom-table th {
+    @apply px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 sm:px-6;
+  }
+  .custom-table tbody {
+    @apply divide-y divide-zinc-900/5;
+  }
+  .custom-table td {
+    @apply whitespace-nowrap px-4 py-4 text-sm text-zinc-700 sm:px-6;
+  }
+  .custom-table tbody tr {
+    @apply transition-colors hover:bg-zinc-50/50;
+  }
+
+  /* Modals — Protocol style */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4;
+  }
+  .modal-backdrop {
+    @apply fixed inset-0 bg-zinc-900/50;
+  }
+  .modal-panel {
+    @apply relative flex max-h-[calc(100vh-2rem)] w-full max-w-lg flex-col rounded-t-2xl bg-white shadow-xl ring-1 ring-zinc-900/10 sm:rounded-2xl;
+  }
+  .modal-header {
+    @apply flex shrink-0 items-center justify-between px-5 pb-0 pt-5 sm:px-6 sm:pt-6;
+  }
+  .modal-title {
+    @apply text-base font-semibold text-zinc-900;
+  }
+  .modal-body {
+    @apply flex-1 overflow-y-auto px-5 py-5 sm:px-6;
+  }
+  .modal-footer {
+    @apply flex shrink-0 justify-end gap-3 border-t border-zinc-900/5 bg-zinc-50 px-5 py-4 sm:px-6;
+  }
+}

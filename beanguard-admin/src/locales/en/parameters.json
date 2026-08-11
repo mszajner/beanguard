@@ -1,0 +1,42 @@
+{
+  "editModal": {
+    "titleOverwrite": "Overwrite parameter",
+    "titleEdit": "Edit parameter",
+    "close": "Close",
+    "nameLabel": "Parameter name",
+    "valueLabel": "Value",
+    "valuePlaceholder": "Enter a new value…",
+    "genericError": "Failed to save the parameter",
+    "cancel": "Cancel",
+    "saving": "Saving…",
+    "save": "Save"
+  },
+  "listPage": {
+    "genericError": "Failed to load parameters",
+    "heading": "Server parameters",
+    "description": "All server configuration parameters stored in the database.",
+    "nameColumn": "Name",
+    "valueColumn": "Value",
+    "updatedColumn": "Updated",
+    "actionsColumn": "Actions",
+    "loading": "Loading data...",
+    "retry": "Try again",
+    "writeOnlyValue": "••••••• (write-only)",
+    "noUpdateDate": "—",
+    "copied": "Copied!",
+    "copy": "Copy",
+    "overwrite": "Overwrite",
+    "edit": "Edit"
+  },
+  "descriptions": {
+    "MAIL_HOST": "SMTP server host used to send all transactional e-mails (licences, orders, expiry reminders). If empty, e-mail sending is disabled.",
+    "MAIL_PORT": "SMTP server port (e.g. 587 for a STARTTLS connection).",
+    "MAIL_USER": "Username used to authenticate with the SMTP server.",
+    "MAIL_PASS": "Password used to authenticate with the SMTP server (write-only, never displayed).",
+    "MAIL_FROM": "Sender e-mail address shown in the \"From\" field of every outgoing transactional e-mail.",
+    "MAIL_SENDER_NAME": "Sender display name shown next to the \"From\" address in outgoing e-mails.",
+    "MAIL_SMTP_STARTTLS": "Whether the SMTP connection uses STARTTLS encryption (\"true\" / \"false\").",
+    "MAIL_EXPIRY_WARNING_DAYS": "Comma-separated list of days before expiration when a licence expiry reminder e-mail is sent (e.g. \"30,7\").",
+    "RATE_LIMIT_OPEN_RPM": "Maximum requests per minute per IP address allowed on public, no-auth endpoints (shop, licence lookup)."
+  }
+}

@@ -1,0 +1,75 @@
+export const metadata = {
+  title: 'Licence server',
+  description: 'Installing and configuring beanguard-server.',
+}
+
+export const sections = [
+  { title: 'Getting started', id: 'uruchomienie' },
+  { title: 'Environment variables', id: 'zmienne' },
+  { title: 'Configuration parameters', id: 'parametry' },
+  { title: 'REST API', id: 'api' },
+]
+
+# Licence server
+
+`beanguard-server` is a REST API and the only place in the whole system where the RSA private key used to sign licences is stored. {{ className: 'lead' }}
+
+## Getting started {{ id: 'uruchomienie' }}
+
+```bash
+docker pull mszajner/beanguard-server:0.1
+docker run -d \
+  -p 8000:80 \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://<host>/beanguard \
+  -e SPRING_DATASOURCE_USERNAME=beanguard \
+  -e SPRING_DATASOURCE_PASSWORD=<password> \
+  -e BEANGUARD_ADMIN_URL=https://admin.yourdomain.com \
+  -e BEANGUARD_SHOP_URL=https://shop.yourdomain.com \
+  mszajner/beanguard-server:0.1
+```
+
+The container listens internally on port `80` regardless of the mapped host port.
+
+<Note>
+  A PostgreSQL database is required — the server applies Liquibase
+  migrations itself on startup, no need to create the schema manually.
+</Note>
+
+## Environment variables {{ id: 'zmienne' }}
+
+| Variable                                                     | Description                                                                                                                                                       |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SPRING_PROFILES_ACTIVE`                                    | Set to `prod` in production — disables SQL logging and tunes the HikariCP connection pool. The server refuses to start if it detects `prod` together with `show_sql` enabled. |
+| `SPRING_DATASOURCE_URL`                                     | JDBC URL of the PostgreSQL database                                                                                                                                  |
+| `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD` | Database login credentials                                                                                                                                    |
+| `BEANGUARD_ADMIN_URL`                                       | Public address of the admin panel — used, among other things, in links in emails                                                                                         |
+| `BEANGUARD_SHOP_URL`                                        | Public address of the shop                                                                                                                                    |
+
+## Configuration parameters {{ id: 'parametry' }}
+
+After the first startup, the rest of the configuration lives in the database (the `parameter` table). Almost every group already has a convenient screen in the admin panel:
+
+| Group                                                          | What it's for                                                                            | Where to edit                                                                     |
+| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `LICENCE_*`                                                     | RSA/AES keys and the issuer used to sign and encrypt **customer licences**                | [Cryptographic keys](/en/admin-panel/cryptographic-keys) (Licence tab) |
+| `LICENCE_DEMO_CLAIMS` / `LICENCE_DEMO_EXPIRATION_DAYS`           | Default `claims` and validity period for automatically-issued demo licences                    | [Licences](/en/admin-panel/licences)                                                 |
+| `TOKEN_*`                                                        | RSA/AES keys, issuer, and session lifetime for **panel administrators**                     | [Cryptographic keys](/en/admin-panel/cryptographic-keys) (Token tab)    |
+| `BRANDING_*`                                                     | Title, logo, favicon, colour, support email                                                  | [Branding](/en/admin-panel/branding)                                                 |
+| `LEGAL_*`                                                        | Company details, currency and VAT, legal documents, certificate and pro-forma invoice text        | [Settings](/en/admin-panel/settings)                                             |
+| `MAIL_HOST` / `PORT` / `USER` / `PASS` / `FROM` / `SENDER_NAME` / `SMTP_STARTTLS` / `EXPIRY_WARNING_DAYS` | SMTP server and the schedule for licence-expiry reminders                | [Parameters](/en/admin-panel/parameters)                                               |
+| `RATE_LIMIT_OPEN_RPM`                                            | Requests-per-minute limit for public, unauthenticated endpoints                         | [Parameters](/en/admin-panel/parameters)                                               |
+
+<Note>
+  Private keys (`LICENCE_PRIVATE_KEY`, `TOKEN_PRIVATE_KEY`) and `MAIL_PASS`
+  are write-only — the API never returns their values once saved, you can
+  only overwrite them with a new one.
+</Note>
+
+## REST API {{ id: 'api' }}
+
+The full, interactive API is available via Swagger UI at `/swagger-ui.html` on the running server instance. The main endpoint groups:
+
+- `/auth/login` — logs in to the panel, returns a session token; the only endpoint besides `/api/open/**` available without a token.
+- `/api/licences`, `/api/licence-keys`, `/api/token-keys`, `/api/users`, `/api/orders`, `/api/products`, `/api/parameters` — require login (JWT), used by the admin panel.
+- `/api/open/licences`, `/api/open/licences/transfer`, `/api/open/shop`, `/api/open/config` — no authentication, used by `beanguard-client` and the shop; subject to the `RATE_LIMIT_OPEN_RPM` limit.

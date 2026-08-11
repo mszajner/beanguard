@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010-product-required
+      author: system
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: required
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

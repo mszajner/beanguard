@@ -1,0 +1,54 @@
+{
+  "form": {
+    "nameLabel": "Name *",
+    "namePlaceholder": "e.g. Additional users",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Optional description",
+    "certificateNameLabel": "Name shown on the licence certificate",
+    "certificateNamePlaceholder": "e.g. Standard licence",
+    "typeLabel": "Type *",
+    "claimLabel": "Claim *",
+    "claimPlaceholder": "e.g. users",
+    "priceMonthlyLabel": "Monthly price (PLN) *",
+    "priceYearlyLabel": "Yearly price (PLN) *",
+    "pricePlaceholder": "0.00",
+    "enabledLabel": "Visible in the shop",
+    "requiredLabel": "Required (pre-selected, cannot be unchecked)"
+  },
+  "addModal": {
+    "title": "Add product",
+    "genericError": "Failed to add the product",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "add": "Add product"
+  },
+  "editModal": {
+    "title": "Edit product",
+    "genericError": "Failed to save the product",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "save": "Save changes",
+    "delete": "Delete product"
+  },
+  "listPage": {
+    "dragHandleAriaLabel": "Drag to reorder",
+    "requiredBadge": "required",
+    "enabledYes": "Yes",
+    "enabledNo": "No",
+    "genericError": "Failed to load products",
+    "deleteError": "Failed to delete the product",
+    "heading": "Products",
+    "description": "Manage the products and prices available in the shop.",
+    "addButton": "Add product",
+    "nameColumn": "Name",
+    "typeColumn": "Type",
+    "claimColumn": "Claim",
+    "priceMonthlyColumn": "Price/mo",
+    "priceYearlyColumn": "Price/yr",
+    "enabledColumn": "Visible",
+    "loading": "Loading data...",
+    "noProducts": "No products",
+    "deleteModalTitle": "Delete product",
+    "deleteModalMessage": "Are you sure you want to delete this product?"
+  }
+}

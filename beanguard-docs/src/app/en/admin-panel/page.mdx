@@ -1,0 +1,83 @@
+export const metadata = {
+  title: 'Admin panel',
+  description:
+    'Running beanguard-admin, the first login, and a tour of the panel menu.',
+}
+
+export const sections = [
+  { title: 'Getting started', id: 'uruchomienie' },
+  { title: 'First login', id: 'logowanie' },
+  { title: 'Panel menu', id: 'menu' },
+]
+
+# Admin panel
+
+`beanguard-admin` is the central place for managing your licence server — licences, orders, shop products, brand identity, users, mail and PDF templates, cryptographic keys, and the rest of the server's configuration. {{ className: 'lead' }}
+
+## Getting started {{ id: 'uruchomienie' }}
+
+```bash
+docker pull mszajner/beanguard-admin:0.1
+docker run -d \
+  -p 8002:80 \
+  -e BEANGUARD_SERVER_URL=https://api.yourdomain.com \
+  mszajner/beanguard-admin:0.1
+```
+
+<Note>
+  `beanguard-admin` is a thin Spring Boot server serving a pre-built React
+  frontend — all business logic lives in `beanguard-server`. You supply the
+  server address at container startup via `BEANGUARD_SERVER_URL` — the
+  frontend reads it at runtime from `/config.js`, so you don't need to
+  rebuild the image to point it at a different server.
+</Note>
+
+## First login {{ id: 'logowanie' }}
+
+On its first startup, `beanguard-server` (not the admin panel) automatically creates an administrator account if there's no user in the database yet. You'll find the login credentials — including the password, shown only once — in the server container's logs:
+
+```bash
+docker compose logs server | grep -i admin
+```
+
+Go to the panel's address (e.g. `http://localhost:8002` for a local Docker Compose setup from [Quick start](/en/quick-start)) and log in with those credentials. Change the password right after your first login — it's never stored anywhere in plain text outside that one-time startup log.
+
+<Note>
+  You add further administrators from within the panel itself — see
+  [Users](/en/admin-panel/users).
+</Note>
+
+## Panel menu {{ id: 'menu' }}
+
+The sidebar menu is split into three groups. Each item has its own detailed subpage:
+
+### Management
+
+| Item                                             | What it's for                                                             |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------- |
+| [Licences](/en/admin-panel/licences) | Browsing, manually adding and editing customer licences, transfers, PDF certificates, DEMO licence configuration. |
+
+### Shop
+
+| Item                                               | What it's for                                                        |
+| ------------------------------------------------------ | ------------------------------------------------------------------------- |
+| [Orders](/en/admin-panel/orders)                 | Orders placed in `beanguard-shop` — acceptance, cancellation, invoices.  |
+| [Products](/en/admin-panel/products)                     | Products (limits and features) offered for sale in the shop.             |
+| [Branding](/en/admin-panel/branding)                     | Brand identity: name, logo, favicon, colour, support email.            |
+| [Settings](/en/admin-panel/settings)                 | Company details, sales and payments, legal documents, licence certificate.  |
+
+### Administration
+
+| Item                                                          | What it's for                                                    |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| [Users](/en/admin-panel/users)                           | Panel administrator accounts and their roles.                              |
+| [Mail templates](/en/admin-panel/mail-templates)                     | Content and subject of transactional emails sent to customers.            |
+| [PDF templates](/en/admin-panel/pdf-templates)                         | The look of the licence certificate and pro-forma invoice.                      |
+| [Cryptographic keys](/en/admin-panel/cryptographic-keys)     | Issuer and RSA/AES keys, separately for licences and for admin sessions.     |
+| [Parameters](/en/admin-panel/parameters)                               | Remaining server parameters without a dedicated screen (SMTP, rate limit). |
+
+<Note>
+  Changes to **Branding** settings only affect the panel's and shop's
+  appearance after the application reloads — the panel will offer to do this
+  once you save your changes.
+</Note>

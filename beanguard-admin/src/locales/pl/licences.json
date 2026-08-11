@@ -1,0 +1,82 @@
+{
+  "addModal": {
+    "title": "Dodaj nową licencję",
+    "close": "Zamknij",
+    "genericError": "Błąd podczas dodawania licencji",
+    "typeLabel": "Typ licencji",
+    "cancel": "Anuluj",
+    "adding": "Dodawanie...",
+    "add": "Dodaj"
+  },
+  "demoModal": {
+    "title": "Konfiguracja licencji DEMO",
+    "close": "Zamknij",
+    "expirationLabel": "Czas ważności (dni)",
+    "cancel": "Anuluj",
+    "saving": "Zapisywanie...",
+    "save": "Zapisz",
+    "genericError": "Błąd podczas zapisywania konfiguracji licencji DEMO"
+  },
+  "editPage": {
+    "heading": "Edytuj licencję",
+    "back": "Wróć do listy licencji",
+    "genericLoadError": "Błąd podczas pobierania licencji",
+    "genericSaveError": "Błąd podczas zapisywania licencji",
+    "keyLabel": "Klucz licencji (UUID)",
+    "netAmountLabel": "Kwota zapłacona netto",
+    "cancel": "Anuluj",
+    "saving": "Zapisywanie...",
+    "save": "Zapisz"
+  },
+  "form": {
+    "emailLabel": "Adres e-mail",
+    "vatIdLabel": "NIP",
+    "expirationLabel": "Data wygaśnięcia",
+    "companyNameLabel": "Firma",
+    "phoneLabel": "Telefon",
+    "streetLabel": "Ulica",
+    "postCodeLabel": "Kod pocztowy",
+    "cityLabel": "Miasto"
+  },
+  "claimsEditor": {
+    "heading": "Claims (flagi funkcji)",
+    "keyColumn": "Klucz",
+    "valueColumn": "Wartość",
+    "keyPlaceholder": "np. pdf-export",
+    "valuePlaceholder": "np. true",
+    "keyAriaLabel": "Klucz claim {{index}}",
+    "valueAriaLabel": "Wartość claim {{index}}",
+    "removeAriaLabel": "Usuń claim {{index}}",
+    "addButton": "Dodaj claim"
+  },
+  "listPage": {
+    "heading": "Licencje",
+    "description": "Przeglądaj, wyszukuj i zarządzaj licencjami wydanymi klientom.",
+    "addButton": "Dodaj licencję",
+    "demoConfigButton": "Konfiguracja DEMO",
+    "searchPlaceholder": "Szukaj…",
+    "typeFilterAll": "Wszystkie",
+    "typeFilterStandard": "Standardowe",
+    "expirationFilterAll": "Wszystkie",
+    "expirationFilterActive": "Aktywne",
+    "expirationFilterExpired": "Wygasłe",
+    "keyColumn": "Klucz",
+    "licenseeColumn": "Licencjobiorca",
+    "contactColumn": "Kontakt",
+    "expirationColumn": "Wygasa / Status",
+    "loading": "Pobieranie danych...",
+    "noResultsForQuery": "Brak wyników dla podanej frazy",
+    "noData": "Brak danych do wyświetlenia",
+    "downloadCertificateTitle": "Pobierz certyfikat PDF",
+    "vatIdPrefix": "NIP: ",
+    "openShopTitle": "Otwórz formularz zmiany licencji w sklepie",
+    "genericError": "Błąd podczas pobierania licencji",
+    "downloadCertificateError": "Nie udało się pobrać certyfikatu: ",
+    "openShopError": "Nie udało się otworzyć sklepu: ",
+    "unknownError": "Nieznany błąd",
+    "pageLabel": "Strona {{current}} z {{total}}",
+    "statusUnlimited": "Bezterminowa",
+    "statusActive": "Aktywna",
+    "statusExpired": "Wygasła"
+  }
+}

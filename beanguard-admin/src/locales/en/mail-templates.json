@@ -1,0 +1,33 @@
+{
+  "templates": {
+    "demoWelcome": "DEMO welcome message",
+    "expiryWarning": "Expiry warning",
+    "expiryWarningDemo": "Expiry warning (DEMO)",
+    "transferConfirm": "Licence transfer confirmation",
+    "licenceCreated": "Licence activation",
+    "orderConfirm": "Order confirmation",
+    "orderCancel": "Order cancellation"
+  },
+  "editModal": {
+    "close": "Close",
+    "subjectLabel": "Subject",
+    "bodyLabel": "Body (HTML)",
+    "genericError": "Failed to save the template",
+    "cancel": "Cancel",
+    "saving": "Saving…",
+    "save": "Save"
+  },
+  "listPage": {
+    "genericLoadError": "Failed to load data",
+    "resetConfirm": "Restore the default mail templates? This will delete all customized templates from the database.",
+    "resetError": "Failed to restore defaults",
+    "heading": "Mail templates",
+    "description": "Edit the subject and body of transactional e-mails sent to customers.",
+    "resetButton": "Restore defaults",
+    "loading": "Loading data...",
+    "retry": "Try again",
+    "templateColumn": "Template",
+    "subjectColumn": "Subject",
+    "noValue": "none"
+  }
+}

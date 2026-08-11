@@ -1,0 +1,38 @@
+{
+  "form": {
+    "firstNameLabel": "First name",
+    "lastNameLabel": "Last name",
+    "emailLabel": "Email address"
+  },
+  "addModal": {
+    "title": "Add new user",
+    "genericError": "Failed to add the user",
+    "passwordLabel": "Password",
+    "cancel": "Cancel",
+    "adding": "Adding...",
+    "add": "Add"
+  },
+  "editModal": {
+    "title": "Edit user",
+    "genericError": "Failed to save the user",
+    "newPasswordLabel": "New password",
+    "newPasswordPlaceholder": "Leave blank to keep unchanged",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "save": "Save",
+    "delete": "Delete user"
+  },
+  "listPage": {
+    "genericError": "Failed to load users",
+    "deleteError": "Failed to delete the user",
+    "heading": "Users",
+    "description": "Manage admin panel accounts and their permissions.",
+    "addButton": "Add user",
+    "userColumn": "User",
+    "loading": "Loading data...",
+    "noData": "No data to display",
+    "cannotDeleteLastAdmin": "The last remaining administrator cannot be deleted",
+    "deleteModalTitle": "Delete user",
+    "deleteModalMessage": "Are you sure you want to delete this user? This action cannot be undone."
+  }
+}

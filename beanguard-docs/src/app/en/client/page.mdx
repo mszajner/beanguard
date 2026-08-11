@@ -1,0 +1,111 @@
+export const metadata = {
+  title: 'Client integration',
+  description: 'Adding beanguard-client to a Spring Boot application.',
+}
+
+export const sections = [
+  { title: 'Maven dependency', id: 'zaleznosc' },
+  { title: 'Implementing BeanGuardConfiguration', id: 'konfiguracja' },
+  { title: 'Reading licence status', id: 'status' },
+]
+
+# Client integration
+
+`beanguard-client` is a Spring Boot library you add to your own application so it fetches, decrypts, and enforces the content of a licence issued by your `beanguard-server`. {{ className: 'lead' }}
+
+## Maven dependency {{ id: 'zaleznosc' }}
+
+```xml
+<dependency>
+    <groupId>dev.beanguard</groupId>
+    <artifactId>beanguard-client</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
+`beanguard-client` registers itself as a Spring Boot autoconfiguration — it requires no additional `@Enable*` annotation in your application.
+
+## Implementing BeanGuardConfiguration {{ id: 'konfiguracja' }}
+
+All server connection configuration and your application's licence identity come from a single bean implementing `BeanGuardConfiguration`:
+
+```java
+package com.example.myapp.licence;
+
+import io.beanguard.client.config.BeanGuardConfiguration;
+import io.beanguard.client.config.LicenceKeys;
+import io.beanguard.client.config.ServerConfig;
+import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+
+@Component
+public class MyBeanGuardConfiguration implements BeanGuardConfiguration {
+
+    @Override
+    public ServerConfig getServerConfig() {
+        return new ServerConfig(
+            "https://api.beanguard.dev",
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...", // LICENCE_PUBLIC_KEY from the admin panel
+            "dGhpcyBpcyBhIHNlY3JldCBrZXkgZm9yIEFFUy0yNTY=" // LICENCE_SECRET_KEY from the admin panel
+        );
+    }
+
+    @Override
+    public Optional<LicenceKeys> getLicenceKeys() {
+        return Optional.of(new LicenceKeys(
+            "11111111-1111-1111-1111-111111111111", // licence key
+            "my-licence-secret" // licence secret
+        ));
+    }
+
+    @Override
+    public Optional<String> loadLicence() {
+        // load the last saved licence, e.g. from a file or your application's database
+        return Optional.empty();
+    }
+
+    @Override
+    public void saveLicence(String licence) {
+        // save the received licence so it survives a restart without a server connection
+    }
+}
+```
+
+- **`getServerConfig()`** — your `beanguard-server` address, the RSA public key (`LICENCE_PUBLIC_KEY`), and the AES secret (`LICENCE_SECRET_KEY`) generated in the admin panel, **Settings → Cryptographic keys** tab.
+- **`getLicenceKeys()`** — the key and secret of your customer's specific licence. Return `Optional.empty()` if no licence has been assigned yet.
+- **`loadLicence()` / `saveLicence()`** — a local cache of the last received licence, so the application keeps working even without a momentary connection to the server.
+
+<Note>
+  Don't put this class in the `io.beanguard.*` package. If you want to
+  protect the keys with ProGuard against decompilation, see [Protecting keys
+  with ProGuard](/en/client/key-protection).
+</Note>
+
+## Reading licence status {{ id: 'status' }}
+
+When `BeanGuardConfiguration` is present in the context, the autoconfiguration registers a `LicenceRegistry` — the licence is fetched on application startup and refreshed every hour:
+
+```java
+import io.beanguard.client.registries.LicenceRegistry;
+import io.beanguard.client.registries.LicenceStatus;
+import org.springframework.stereotype.Component;
+
+@Component
+class LicenceBanner {
+
+    private final LicenceRegistry licenceRegistry;
+
+    LicenceBanner(LicenceRegistry licenceRegistry) {
+        this.licenceRegistry = licenceRegistry;
+    }
+
+    boolean isLicenceValid() {
+        return licenceRegistry.getStatus() == LicenceStatus.LOADED;
+    }
+}
+```
+
+`LicenceStatus` takes the values `NOT_LOADED`, `MISSING_KEY`, `WRONG_KEY`, `WRONG_SECRET`, `EXPIRED`, `LOADED` — use them, for instance, to show a "licence expired" banner in your application.
+
+Method-level annotations enforce the limits and features from the licence — see [Licensing annotations](/en/client/annotations).

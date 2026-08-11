@@ -1,0 +1,94 @@
+export const metadata = {
+  title: 'Licensing annotations',
+  description:
+    'Enforcing licences in Spring Boot: @RequiresValidLicence, @RequiresLicenceLimit, @RequiresLicenceFeature, @DecreasesLicenceLimit.',
+}
+
+export const sections = [
+  { title: '@RequiresValidLicence', id: 'valid' },
+  { title: '@RequiresLicenceFeature', id: 'feature' },
+  { title: '@RequiresLicenceLimit', id: 'limit' },
+  { title: '@DecreasesLicenceLimit', id: 'decrease' },
+  { title: 'Tracking limit usage', id: 'usage' },
+  { title: 'Exception handling', id: 'wyjatki' },
+]
+
+# Licensing annotations
+
+`beanguard-client` provides four annotations from the `io.beanguard.client.annotations` package for declaratively securing Spring Boot methods based on the content of the active licence. {{ className: 'lead' }}
+
+## @RequiresValidLicence {{ id: 'valid' }}
+
+Blocks the method if the current licence isn't valid:
+
+```java
+import io.beanguard.client.annotations.RequiresValidLicence;
+
+@RequiresValidLicence
+public void exportReport() {
+    // only runs with a valid licence
+}
+```
+
+Throws `io.beanguard.client.exceptions.MissingOrInvalidLicence` (no message) if `LicenceRegistry.getStatus().isValid()` returns `false`.
+
+## @RequiresLicenceFeature {{ id: 'feature' }}
+
+Blocks the method if the licence's `claims` don't contain a flag with the given name set to `"true"`:
+
+```java
+import io.beanguard.client.annotations.RequiresLicenceFeature;
+
+@RequiresLicenceFeature("advanced-reports")
+public void generateAdvancedReport() {
+    // requires claims["advanced-reports"] == "true"
+}
+```
+
+Throws `MissingLicenceFeature` with the missing feature's name as the message — both for an invalid licence and for a missing entry or a `"false"` value for the given flag.
+
+## @RequiresLicenceLimit {{ id: 'limit' }}
+
+Checks whether current usage of the given limit (tracked via `UsageRegistry`) hasn't yet reached the value from the licence, and **after** the method executes, increments the usage counter by 1:
+
+```java
+import io.beanguard.client.annotations.RequiresLicenceLimit;
+
+@RequiresLicenceLimit("active-users")
+public void createUser(UserRequest request) {
+    // only runs when usage < limit from claims["active-users"]
+    // after execution: usage increases by 1
+}
+```
+
+The limit is an integer stored as a string in `claims` (e.g. `claims["active-users"] = "10"`) — a missing entry in `claims` is treated as a limit of `0`. Exceeding it throws `LicenceLimitExceeded` with a message in the format `"<name>:<current usage>:<limit>"`.
+
+## @DecreasesLicenceLimit {{ id: 'decrease' }}
+
+Decreases the usage counter for the given limit **after** the method executes — use it when deleting a resource counted by `@RequiresLicenceLimit`:
+
+```java
+import io.beanguard.client.annotations.DecreasesLicenceLimit;
+
+@DecreasesLicenceLimit("active-users")
+public void deleteUser(UUID userId) {
+    // after execution: usage decreases by 1
+}
+```
+
+<Note>
+  The limit/feature name (`"active-users"`, `"advanced-reports"`) is any
+  string you choose yourself — it just has to match the key in the licence's
+  `claims`. You enter the same string as the **Claim** field on a [shop
+  product](/en/admin-panel/products), or directly in the `claims` table when
+  manually adding or editing a licence in the [admin
+  panel](/en/admin-panel/licences).
+</Note>
+
+## Tracking limit usage {{ id: 'usage' }}
+
+By default, `UsageRegistry` counts usage in memory — the counter resets on application restart. If you need a persistent counter (e.g. in a database), supply your own bean implementing `io.beanguard.client.usage.UsageRegistry`. Alongside `BeanGuardConfiguration`, it's the only interface left un-obfuscated in `beanguard-client`, so you can safely implement it in your own code.
+
+## Exception handling {{ id: 'wyjatki' }}
+
+All three exceptions — `MissingOrInvalidLicence`, `MissingLicenceFeature`, `LicenceLimitExceeded` — are `RuntimeException`s thrown inside your application. Catch them with your own `@ControllerAdvice` or similar mechanism to return a readable message to the user instead of a 500 error.

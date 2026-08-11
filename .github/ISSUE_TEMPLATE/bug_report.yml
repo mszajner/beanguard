@@ -1,0 +1,72 @@
+name: Bug report
+description: Something in BeanGuard doesn't work as documented
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+        **Questions and configuration help belong in
+        [Discussions → Q&A](../../discussions/categories/q-a)** — issues opened
+        as questions will be converted.
+
+        ⚠️ **Do not report security vulnerabilities here.**
+        See [SECURITY.md](../../blob/main/SECURITY.md) for private reporting.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - beanguard-server
+        - beanguard-spring-boot-starter (client)
+        - beanguard-admin
+        - beanguard-shop
+        - Documentation / examples
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: beanguard-version
+    attributes:
+      label: BeanGuard version
+      description: Version of the affected component (e.g. 0.1.0). For the server, visible in the admin UI footer or startup log.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Java version, Spring Boot version, OS / deployment (Docker? bare metal?)
+      placeholder: "Java 21, Spring Boot 3.4.2, Docker Compose on Ubuntu 24.04"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+      placeholder: |
+        1. Issued a license with a seat limit of 5
+        2. Started the client application
+        3. Expected: license validates
+        4. Instead: startup fails with ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / stack trace
+      description: |
+        Paste relevant log output. This will be automatically formatted as code.
+        **Redact license keys, tokens, and customer data before pasting.**
+      render: text
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant configuration
+      description: |
+        The `beanguard:` section of your `application.yml` (client) or server
+        configuration, **with secrets redacted**.
+      render: yaml

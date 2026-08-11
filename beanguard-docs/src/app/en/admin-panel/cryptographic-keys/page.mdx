@@ -1,0 +1,49 @@
+export const metadata = {
+  title: 'Cryptographic keys — Admin panel',
+  description:
+    'Issuer, RSA/AES keys, and their regeneration — separately for licences and administrator sessions.',
+}
+
+export const sections = [
+  { title: 'Two tabs, two independent key sets', id: 'zakladki' },
+  { title: 'Issuer / configuration', id: 'wystawca' },
+  { title: 'Key pairs', id: 'klucze' },
+  { title: 'Key regeneration', id: 'regeneracja' },
+]
+
+# Cryptographic keys
+
+The **Cryptographic keys** tab manages two independent sets of RSA/AES keys: one for signing and encrypting **licences**, the other for signing and encrypting **panel administrator sessions**. {{ className: 'lead' }}
+
+## Two tabs, two independent key sets {{ id: 'zakladki' }}
+
+- **Licence** — the `LICENCE_PUBLIC_KEY` / `LICENCE_PRIVATE_KEY` / `LICENCE_SECRET_KEY` keys the server uses to sign and encrypt licences issued to customers. The public key and AES secret go into [`beanguard-client`](/en/client)'s configuration in your application.
+- **Token** — the `TOKEN_PUBLIC_KEY` / `TOKEN_PRIVATE_KEY` / `TOKEN_SECRET_KEY` keys the server uses to sign and encrypt panel administrators' session tokens (unrelated to customer licences).
+
+The mechanism and form on both tabs are identical — they only differ in what regeneration invalidates.
+
+## Issuer / configuration {{ id: 'wystawca' }}
+
+The **Issuer** field is stored in the content of the signed JWT (`LICENCE_ISSUER` / `TOKEN_ISSUER`) and is checked during verification. Changing the issuer has irreversible consequences:
+
+- on the **Licence** tab — it invalidates every licence issued so far (customers stop verifying correctly),
+- on the **Token** tab — it immediately logs out every administrator, including you.
+
+The **Token** tab additionally has a **Validity period (ms)** field (`TOKEN_EXPIRATION`, default `86400000` — 24h) — after this time, an administrator's session token stops being valid and they need to log in again. Both fields have separate save buttons.
+
+## Key pairs {{ id: 'klucze' }}
+
+The **Signing and encryption keys** section shows the status (configured / not configured) and last-changed date for three keys:
+
+- **Public key (RSA)** — verifies the signature; copyable.
+- **Private key (RSA)** — signs; never leaves the server, no preview or copying.
+- **Encryption key (AES)** — encrypts/decrypts the content; copyable (like the public key, the value isn't shown outright — the **Copy** button copies it directly to the clipboard).
+
+## Key regeneration {{ id: 'regeneracja' }}
+
+The **Generate new keys** button requires typing a confirmation phrase (`REGENERATE`) — only then does the generate button activate. The effects are immediate and irreversible:
+
+- **Licence** — every licence issued so far stops verifying for customers (the new public key + secret needs to be delivered to them again).
+- **Token** — every active administrator session (including yours) expires immediately.
+
+After generating, the panel shows the new **public key** and **encryption key** once — with a warning to copy the secret now, since it won't be shown in that same place again (though from that point on it's also available to copy directly from the key list, as described above). The private key is never shown, even here.

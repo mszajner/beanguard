@@ -1,0 +1,36 @@
+{
+  "page": {
+    "heading": "Branding",
+    "description": "Tożsamość produktu używana w panelu admina, sklepie, mailach i certyfikatach."
+  },
+  "loading": "Wczytywanie…",
+  "genericError": "Nie udało się wczytać ustawień brandingu",
+  "saved": "Zapisano!",
+  "saving": "Zapisywanie…",
+  "save": "Zapisz",
+  "reloadPrompt": {
+    "message": "Ustawienia brandingu zostały zapisane. Przeładuj panel, aby zobaczyć zmiany.",
+    "reloadButton": "Przeładuj teraz",
+    "dismiss": "Zamknij"
+  },
+  "groups": {
+    "general": "Podstawowe informacje",
+    "visual": "Elementy wizualne"
+  },
+  "fields": {
+    "title": "Tytuł",
+    "logoUrl": "Logo URL",
+    "websiteUrl": "Website URL",
+    "faviconUrl": "Favicon URL",
+    "supportEmail": "E-mail wsparcia",
+    "primaryColor": "Kolor podstawowy"
+  },
+  "descriptions": {
+    "title": "Nazwa produktu widoczna w tytule karty przeglądarki panelu admina i sklepu. Wstawiana jako nazwa produktu w temacie i treści maili transakcyjnych (np. \"Twoja licencja [Tytuł] jest gotowa\") oraz jako nazwa produktu na certyfikacie licencji PDF.",
+    "logoUrl": "Pełny adres URL do obrazu logo (np. PNG/SVG na zewnętrznym hostingu). Wyświetlane w panelu bocznym i na ekranie logowania panelu admina, w nagłówku sklepu, w nagłówku maili transakcyjnych (szerokość 140px) oraz w nagłówku certyfikatu licencji PDF. Jeśli puste, panel admina i sklep pokazują domyślne logo aplikacji.",
+    "websiteUrl": "Adres strony internetowej produktu. Pojawia się jako klikalny link na certyfikacie licencji PDF — zarówno przy logo, jak i w wierszu z informacją o pobraniu oprogramowania. Nie jest obecnie wykorzystywany nigdzie indziej.",
+    "faviconUrl": "Adres URL ikony wyświetlanej na karcie przeglądarki (favicon) dla panelu admina i sklepu klienta. Jeśli puste, przeglądarka korzysta z domyślnej ikony serwera.",
+    "supportEmail": "Adres e-mail kontaktu z obsługą, pokazywany jako link mailto na stronie logowania panelu admina oraz przekazywany do sklepu jako kontakt wsparcia. Wykorzystywany też jako dane sprzedawcy na fakturze/potwierdzeniu zamówienia w mailu.",
+    "primaryColor": "Kolor akcentu marki w formacie HEX (np. #f59e0b). Ustawiany jako zmienna CSS --color-primary sterująca kolorem przycisków i aktywnych elementów nawigacji w panelu admina i sklepie, a także jako kolor akcentu w mailach transakcyjnych — pasek pod nagłówkiem i tło przycisków."
+  }
+}

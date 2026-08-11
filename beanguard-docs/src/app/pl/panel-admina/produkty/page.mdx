@@ -1,0 +1,38 @@
+export const metadata = {
+  title: 'Produkty — Panel admina',
+  description:
+    'Konfiguracja produktów sprzedawanych w beanguard-shop: typy, ceny, kolejność, obowiązkowość.',
+}
+
+export const sections = [
+  { title: 'Lista i kolejność', id: 'lista' },
+  { title: 'Typ produktu: LIMIT czy FEATURE', id: 'typ' },
+  { title: 'Pola produktu', id: 'pola' },
+  { title: 'Produkty obowiązkowe', id: 'obowiazkowe' },
+]
+
+# Produkty
+
+Zakładka **Produkty** definiuje, co Twoi klienci mogą kupić w [sklepie](/pl/sklep) — każdy produkt odpowiada jednemu wpisowi w `claims` licencji. {{ className: 'lead' }}
+
+## Lista i kolejność {{ id: 'lista' }}
+
+Tabela pokazuje nazwę, typ, powiązany `claim`, ceny miesięczną i roczną oraz widoczność produktu. Kolejność wierszy (uchwyt po lewej, przeciągnij i upuść) to jednocześnie kolejność wyświetlania produktów w sklepie — zmiana zapisuje się od razu po puszczeniu.
+
+## Typ produktu: LIMIT czy FEATURE {{ id: 'typ' }}
+
+- **LIMIT** — zakup podnosi wartość liczbową w `claims` o kupioną ilość, np. `claims["active-users"]`. Klient może kupić więcej niż 1 sztukę na raz.
+- **FEATURE** — zakup ustawia flagę w `claims` na `"true"`, np. `claims["advanced-reports"] = "true"`. To pozycja jednorazowa — sklep pozwala ją tylko zaznaczyć albo odznaczyć, bez ilości.
+
+Wartość pola **Claim** musi być identyczna z nazwą, po którą sięgasz w swojej aplikacji przez [adnotacje licencyjne](/pl/klient/adnotacje) (`@RequiresLicenceLimit`, `@RequiresLicenceFeature`).
+
+## Pola produktu {{ id: 'pola' }}
+
+- **Nazwa** i **Opis** — widoczne dla klienta w sklepie.
+- **Nazwa na certyfikacie** — opcjonalna, czytelna etykieta tego `claim` na [certyfikacie licencji PDF](/pl/panel-admina/szablony-pdf); jeśli puste, dana pozycja w ogóle nie pojawia się na certyfikacie.
+- **Cena miesięczna** / **Cena roczna** — osobne stawki dla obu okresów rozliczeniowych dostępnych w sklepie.
+- **Widoczny** — czy produkt jest w ogóle wyświetlany w sklepie; wyłączenie nie wpływa na już wykupione licencje.
+
+## Produkty obowiązkowe {{ id: 'obowiazkowe' }}
+
+Zaznaczenie **Obowiązkowy** sprawia, że produkt jest domyślnie zaznaczony w formularzu sklepu i klient **nie może** go odznaczyć — dla typu `LIMIT` wymusza też zakup co najmniej jednej sztuki. Używaj tego dla bazowej funkcjonalności, którą musi mieć każda licencja.

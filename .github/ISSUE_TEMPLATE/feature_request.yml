@@ -1,0 +1,45 @@
+name: Feature request
+description: Propose a concrete improvement to BeanGuard
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Not sure yet, or want to discuss an idea first? Start in
+        [Discussions → Ideas](../../discussions/categories/ideas) — that's the
+        better place for open-ended proposals.
+
+        A note on scope: BeanGuard is maintained by a solo developer and driven
+        by real production needs. Well-described requests are welcome, but
+        features outside my own use cases are most likely to happen **if you're
+        willing to contribute them** — please say so below if you are.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the licensing scenario, not the solution. "As a vendor of X, I need to ... because ..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How do you imagine this working? API sketch, config example, admin UI change — anything concrete helps.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Workarounds you tried, or why existing features don't cover this.
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Are you willing to contribute this feature?
+      options:
+        - "Yes, with guidance"
+        - "Maybe"
+        - "No"
+    validations:
+      required: true

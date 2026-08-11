@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: '${SPRING_DATASOURCE_URL}'
+    username: '${SPRING_DATASOURCE_USERNAME}'
+    password: '${SPRING_DATASOURCE_PASSWORD}'
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+  jpa:
+    show_sql: false

@@ -1,0 +1,39 @@
+export const metadata = {
+  title: 'Settings — Admin panel',
+  description:
+    'Company details, sales and payments, legal documents, and the certificate activation text.',
+}
+
+export const sections = [
+  { title: 'Company details', id: 'firma' },
+  { title: 'Sales & payments', id: 'sprzedaz' },
+  { title: 'Legal documents', id: 'dokumenty' },
+  { title: 'Licence certificate', id: 'certyfikat' },
+]
+
+# Settings
+
+The **Settings** tab groups your company's legal and billing details — used on pro-forma invoices, licence certificates, and in transactional emails. {{ className: 'lead' }}
+
+## Company details {{ id: 'firma' }}
+
+Company name, tax ID (NIP), KRS, phone, and address — the seller details that appear on the [licence certificate](/en/admin-panel/pdf-templates) and pro-forma invoice, and in the footer of transactional emails. The **Bank account number** is used only on the pro-forma invoice, as payment details.
+
+<Note>
+  The **Company registry number (KRS)** field is optional — an empty value
+  simply omits that row on the pro-forma invoice.
+</Note>
+
+## Sales & payments {{ id: 'sprzedaz' }}
+
+- **Currency** — the currency code (e.g. `PLN`) used in the shop to display prices, on the pro-forma invoice, and in the calculations in the order confirmation email.
+- **VAT rate (%)** — used when converting net/gross prices in the shop, on the pro-forma invoice, and in the order confirmation email.
+- **Pro forma payment term (days)** — the number of days from issuing the pro-forma invoice to the payment due date shown on the document.
+
+## Legal documents {{ id: 'dokumenty' }}
+
+**Terms of service URL** and **Privacy policy URL** — the addresses of your legal documents, exposed to the [shop](/en/shop) via the public configuration endpoint (`/api/open/config`), so it can link them, e.g. in the footer or the order form.
+
+## Licence certificate {{ id: 'certyfikat' }}
+
+**Licence activation instructions on certificate** — any text inserted into the [PDF certificate template](/en/admin-panel/pdf-templates) as the `{{ activationText }}` placeholder (use double curly braces in the template, like the other placeholders) — typically a short instruction on where in your application to paste the received licence key.
