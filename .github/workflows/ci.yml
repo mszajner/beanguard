@@ -62,9 +62,8 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           IMAGE="${DOCKERHUB_USERNAME}/beanguard-${{ matrix.service }}"
-          TAG="${GITHUB_REF#refs/tags/}"
-          VERSION="${TAG#v}"
-          echo "tags=${IMAGE}:${TAG},${IMAGE}:${VERSION}" >> "$GITHUB_OUTPUT"
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "tags=${IMAGE}:${VERSION}" >> "$GITHUB_OUTPUT"
 
       # beanguard-server builds its JAR *inside* its (multi-stage) Dockerfile,
       # so it needs the whole reactor as build context (root pom + api +

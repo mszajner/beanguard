@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Docker image tags dropped the `v`-prefixed variant — each release now gets a single `X.Y.Z` tag instead of both `vX.Y.Z` and `X.Y.Z`.
+
 ### Fixed
 
 - Maven Central rejected the `v0.1.0` `beanguard-api`/`beanguard-client` deployment: the plugin uploads each module's raw `pom.xml` as written, so the `<url>`, `<scm>`, and `<developers>` inherited from the parent — and dependency versions coming from its `<dependencyManagement>` — weren't actually present in the deployed file. Added `flatten-maven-plugin` (in the `release` profile) to generate a self-contained pom with everything resolved before deploy, and gave `beanguard-api`/`beanguard-client` their own explicit `<url>`/`<scm>` so Maven's default child-path inheritance doesn't turn them into `.../beanguard-client`-style broken URLs.
