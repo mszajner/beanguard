@@ -5,13 +5,21 @@
     <parent>
         <groupId>dev.beanguard</groupId>
         <artifactId>beanguard</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>beanguard-api</artifactId>
     <name>BeanGuard API</name>
     <description>Shared DTOs, exceptions, and validators for BeanGuard licence server/client communication.</description>
+    <url>https://github.com/mszajner/beanguard</url>
+
+    <scm>
+        <connection>scm:git:git@github.com:mszajner/beanguard.git</connection>
+        <developerConnection>scm:git:git@github.com:mszajner/beanguard.git</developerConnection>
+        <url>https://github.com/mszajner/beanguard</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <licenses>
         <license>
@@ -97,6 +105,10 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>flatten-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>

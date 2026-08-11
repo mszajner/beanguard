@@ -89,7 +89,7 @@ Teraz, przed pierwszą publikacją, jest najlepszy moment — nic jeszcze nie je
 ## Faza 4 — Weryfikacja
 
 - [x] 🧍 Zrób pierwszy realny push do GitHuba i obserwuj, czy `ci.yml` faktycznie przechodzi (checklist już to flagował jako nigdy nie przetestowane na żywo). *(Zweryfikowane 2026-08-11 przez `gh run list`: oba przebiegi na `main` zielone — `test-java` i `test-frontend` (macierz 3x) przechodzą, `publish`/`publish-maven` poprawnie pominięte, bo to nie jest push taga.)*
-- [ ] 🧍 Wypchnij pierwszy tag (np. `v0.1.0`) i sprawdź, czy obrazy trafiają na Docker Hub, a `deploy` faktycznie wysyła paczkę do Central Portal (i czy trzeba ją tam ręcznie kliknąć "Publish").
+- [x] 🧍 Wypchnij pierwszy tag (np. `v0.1.0`) i sprawdź, czy obrazy trafiają na Docker Hub, a `deploy` faktycznie wysyła paczkę do Central Portal (i czy trzeba ją tam ręcznie kliknąć "Publish"). *(Zrobione 2026-08-11: tag `v0.1.0` wypchnięty. Docker Hub — sukces, wszystkie 4 obrazy opublikowane. Maven Central — deployment odrzucony przez walidację Central (brak `<url>`/`<scm>`/`<developers>` i wersji zależności w surowym, niespłaszczonym pom.xml modułów — Central sprawdza wgrany plik, nie efektywny pom z dziedziczeniem). Naprawione dodaniem `flatten-maven-plugin` do profilu `release` — wymaga kolejnego taga (np. `v0.1.1`), żeby ponowić próbę.)*
 - [ ] 🤖 Jeśli coś w CI nie zadziała za pierwszym razem — pomogę to naprawić na podstawie logów z GitHub Actions.
 - [ ] 🤖 Dodam do README badge'y (build status, wersja Maven Central, Docker pulls) — ma sens dopiero po pierwszym zielonym przebiegu.
 

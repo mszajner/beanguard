@@ -4,7 +4,7 @@
 
     <groupId>dev.beanguard</groupId>
     <artifactId>beanguard</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>BeanGuard</name>
@@ -205,6 +205,38 @@
                         <publishingServerId>central</publishingServerId>
                         <autoPublish>false</autoPublish>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <!--
+                        Central rejects the raw, unresolved pom.xml: it checks
+                        the pom as deployed, not the effective pom, so
+                        inherited <url>/<scm>/<developers> from this parent
+                        and dependency versions from <dependencyManagement>
+                        don't count unless flattened into a self-contained
+                        pom first.
+                    -->
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>1.7.0</version>
+                    <configuration>
+                        <flattenMode>ossrh</flattenMode>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>flatten</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>flatten</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>flatten-clean</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>com.github.eirslett</groupId>
