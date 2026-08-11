@@ -88,7 +88,7 @@ Teraz, przed pierwszą publikacją, jest najlepszy moment — nic jeszcze nie je
 
 ## Faza 4 — Weryfikacja
 
-- [ ] 🧍 Zrób pierwszy realny push do GitHuba i obserwuj, czy `ci.yml` faktycznie przechodzi (checklist już to flagował jako nigdy nie przetestowane na żywo).
+- [x] 🧍 Zrób pierwszy realny push do GitHuba i obserwuj, czy `ci.yml` faktycznie przechodzi (checklist już to flagował jako nigdy nie przetestowane na żywo). *(Zweryfikowane 2026-08-11 przez `gh run list`: oba przebiegi na `main` zielone — `test-java` i `test-frontend` (macierz 3x) przechodzą, `publish`/`publish-maven` poprawnie pominięte, bo to nie jest push taga.)*
 - [ ] 🧍 Wypchnij pierwszy tag (np. `v0.1.0`) i sprawdź, czy obrazy trafiają na Docker Hub, a `deploy` faktycznie wysyła paczkę do Central Portal (i czy trzeba ją tam ręcznie kliknąć "Publish").
 - [ ] 🤖 Jeśli coś w CI nie zadziała za pierwszym razem — pomogę to naprawić na podstawie logów z GitHub Actions.
 - [ ] 🤖 Dodam do README badge'y (build status, wersja Maven Central, Docker pulls) — ma sens dopiero po pierwszym zielonym przebiegu.
