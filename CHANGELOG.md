@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-12
+
+### Added
+
+- A marketing landing page at `/en` and `/pl` (replacing the previous docs-style homepage), with a hero showcasing the double-encrypted licence token, a problem/audience/how-it-works breakdown, a client integration snippet, and links to Docker Hub, Maven Central, and GitHub.
+- A cookie consent banner (shown only when `GA_ID` is configured) that gates Google Analytics behind Google Consent Mode v2 — `analytics_storage` stays denied until the visitor opts in, with English and Polish translations.
+
 ### Changed
 
 - Docker images now also get an `X.Y-latest` tag alongside `X.Y.Z` (e.g. `v0.1.2` → `0.1.2` and `0.1-latest`), so vendors can track a minor version without pinning to an exact patch.
+
+### Fixed
+
+- Removed the outdated "images are placeholders" notices from the quick-start docs — the project is genuinely published on Docker Hub now.
 
 ## [0.1.1] - 2026-08-11
 
@@ -48,6 +59,7 @@ First public release.
 
 Initial internal release — predates the public repository and was never tagged or published anywhere.
 
-[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/mszajner/beanguard/releases/tag/v0.1.2
 [0.1.1]: https://github.com/mszajner/beanguard/releases/tag/v0.1.1
 [0.1.0]: https://github.com/mszajner/beanguard/releases/tag/v0.1.0

@@ -31,7 +31,7 @@ services:
       - beanguard-db:/var/lib/postgresql/data
 
   server:
-    image: mszajner/beanguard-server:0.1.0
+    image: mszajner/beanguard-server:0.1.2
     depends_on:
       - postgres
     environment:
@@ -44,7 +44,7 @@ services:
       - '8000:80'
 
   admin:
-    image: mszajner/beanguard-admin:0.1.0
+    image: mszajner/beanguard-admin:0.1.2
     depends_on:
       - server
     environment:
@@ -53,7 +53,7 @@ services:
       - '8002:80'
 
   shop:
-    image: mszajner/beanguard-shop:0.1.0
+    image: mszajner/beanguard-shop:0.1.2
     depends_on:
       - server
     environment:
