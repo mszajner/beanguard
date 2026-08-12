@@ -4,6 +4,7 @@ import Script from 'next/script'
 
 import { Providers } from '@/app/providers'
 import { Analytics } from '@/components/Analytics'
+import { CookieConsentBanner } from '@/components/CookieConsentBanner'
 import { defaultLocale, isLocale } from '@/lib/i18n'
 
 import '@/styles/tailwind.css'
@@ -26,7 +27,8 @@ export default async function RootLayout({
 
   const headersList = await headers()
   const headerLocale = headersList.get('x-locale')
-  const lang = headerLocale && isLocale(headerLocale) ? headerLocale : defaultLocale
+  const lang =
+    headerLocale && isLocale(headerLocale) ? headerLocale : defaultLocale
 
   return (
     <html lang={lang} className="h-full" suppressHydrationWarning>
@@ -41,12 +43,19 @@ export default async function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               window.gtag = gtag;
+              gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
               gtag('js', new Date());
               gtag('config', '${gaId}', { send_page_view: false });
             `}</Script>
           </>
         )}
         <Analytics gaId={gaId} />
+        {gaId && <CookieConsentBanner locale={lang} />}
         <Providers>
           <div className="w-full">{children}</div>
         </Providers>

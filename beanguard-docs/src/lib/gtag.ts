@@ -18,3 +18,9 @@ export function trackPageView(gaId: string, path: string) {
 export function trackEvent(name: string, params?: Record<string, string>) {
   call('event', name, params)
 }
+
+export function updateConsent(granted: boolean) {
+  call('consent', 'update', {
+    analytics_storage: granted ? 'granted' : 'denied',
+  })
+}
