@@ -106,7 +106,7 @@ Docker must be running (Testcontainers). Never push without a passing test run.
 
 ## Releasing
 
-Pushing a version tag (`vX.Y.Z`) triggers `publish` (Docker images to Docker Hub) and `publish-maven` (`beanguard-api`/`beanguard-client` to Maven Central) in `.github/workflows/ci.yml` — both gated to `refs/tags/v*`. Docker images are tagged `X.Y.Z` only (no `v` prefix).
+Pushing a version tag (`vX.Y.Z`) triggers `publish` (Docker images to Docker Hub) and `publish-maven` (`beanguard-api`/`beanguard-client` to Maven Central) in `.github/workflows/ci.yml` — both gated to `refs/tags/v*`. Docker images get two tags, no `v` prefix: `X.Y.Z` and `X.Y-latest` (e.g. `v0.1.2` → `0.1.2` and `0.1-latest`).
 
 Before tagging:
 1. Bump `<version>` from `X.Y.Z-SNAPSHOT` to `X.Y.Z` in all four `pom.xml` files (root, `beanguard-api`, `beanguard-client`, `beanguard-server`).

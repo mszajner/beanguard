@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Docker images now also get an `X.Y-latest` tag alongside `X.Y.Z` (e.g. `v0.1.2` → `0.1.2` and `0.1-latest`), so vendors can track a minor version without pinning to an exact patch.
+
 ## [0.1.1] - 2026-08-11
 
 First successful Maven Central release — `dev.beanguard:beanguard-api:0.1.1` and `beanguard-client:0.1.1` are live (`v0.1.0` uploaded but never got approved, see below).
