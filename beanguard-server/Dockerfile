@@ -20,7 +20,7 @@ COPY beanguard-client/src beanguard-client/src
 COPY beanguard-server/src beanguard-server/src
 RUN mvn -B -pl beanguard-server -am clean package -DskipTests
 
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 ENV TZ=Europe/Warsaw
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update && apt-get install -y --no-install-recommends bash wget \
