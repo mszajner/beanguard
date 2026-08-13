@@ -16,7 +16,7 @@
     "@headlessui/react": "^2.2.6",
     "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
-    "@next/mdx": "^15",
+    "@next/mdx": "^15.5.23",
     "@sindresorhus/slugify": "^2.2.1",
     "@tailwindcss/postcss": "^4.1.15",
     "@tailwindcss/typography": "^0.5.16",
@@ -29,7 +29,7 @@
     "framer-motion": "^12.23.11",
     "mdast-util-to-string": "^4.0.0",
     "mdx-annotations": "^0.1.4",
-    "next": "^15",
+    "next": "^15.5.23",
     "next-themes": "^0.4.6",
     "prettier-plugin-organize-imports": "^4.2.0",
     "react": "^19",
@@ -53,9 +53,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9.32.0",
-    "eslint-config-next": "^15",
+    "eslint-config-next": "^15.5.23",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
-    "sharp": "0.34.3"
+    "sharp": "0.35.3"
   }
 }
