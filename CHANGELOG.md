@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Removed the outdated "images are placeholders" notices from the quick-start docs — the project is genuinely published on Docker Hub now.
+- Removed some vulnerabilities in server and docs
+- Fixed addresses in docker-compose.yml in docs
 
 ## [0.1.1] - 2026-08-11
 
