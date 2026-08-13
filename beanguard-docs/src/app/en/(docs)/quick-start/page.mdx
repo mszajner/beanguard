@@ -48,7 +48,7 @@ services:
     depends_on:
       - server
     environment:
-      BEANGUARD_SERVER_URL: http://server:80
+      BEANGUARD_SERVER_URL: http://localhost:8000
     ports:
       - '8002:80'
 
@@ -57,7 +57,7 @@ services:
     depends_on:
       - server
     environment:
-      BEANGUARD_SERVER_URL: http://server:80
+      BEANGUARD_SERVER_URL: http://localhost:8000
     ports:
       - '8001:80'
 
