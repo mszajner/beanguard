@@ -23,7 +23,7 @@ directly):
 - `BEANGUARD_SERVER_PUBLIC_KEY` — the server's `LICENCE_PUBLIC_KEY`
 - `BEANGUARD_SERVER_SECRET_KEY` — the server's `LICENCE_SECRET_KEY`
 
-`beanguard.demo.server.url` defaults to `http://localhost:8080`.
+`beanguard.demo.server.url` defaults to `http://localhost:8000`.
 
 ## Persistence profiles
 
