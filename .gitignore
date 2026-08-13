@@ -10,3 +10,4 @@ build
 .env
 *.iml
 .flattened-pom.xml
+beanguard-demo-data/

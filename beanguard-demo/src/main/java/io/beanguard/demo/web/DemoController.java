@@ -7,7 +7,6 @@ import io.beanguard.client.config.LicenceKeys;
 import io.beanguard.client.registries.LicenceRegistry;
 import io.beanguard.client.registries.LicenceStatus;
 import io.beanguard.client.server.BeanGuardServer;
-import io.beanguard.client.server.BeanGuardServerException;
 import io.beanguard.demo.config.DemoProperties;
 import io.beanguard.demo.licence.DemoLicenceKeyStore;
 import jakarta.validation.Valid;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Base64;
@@ -69,7 +67,7 @@ public class DemoController {
                     new LicenceDemoCreateRequest(form.getEmail(), form.getVatId()));
             licenceKeyStore.storeLicenceKeys(new LicenceKeys(licence.getKey().toString(), licence.getSecret()));
             licenceRegistry.refreshLicence();
-        } catch (BeanGuardServerException e) {
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error",
                     "Nie udało się wygenerować licencji demo: " + e.getMessage());
         }
@@ -98,7 +96,7 @@ public class DemoController {
                     .retrieve()
                     .body(LicenceTokenResponse.class);
             return "redirect:" + response.getShopUrl();
-        } catch (RestClientException e) {
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error",
                     "Nie udało się połączyć ze sklepem: " + e.getMessage());
             return "redirect:/";

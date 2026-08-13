@@ -5,7 +5,7 @@ repository are licensed under different terms:
 
 | Component | Directory                                                                     | License |
 |---|-------------------------------------------------------------------------------|---|
-| BeanGuard Client | `beanguard-api/`, `beanguard-client/`                                         | [Apache License 2.0](licenses/LICENSE-APACHE-2.0.txt) |
+| BeanGuard Client | `beanguard-api/`, `beanguard-client/`, `beanguard-demo/`                      | [Apache License 2.0](licenses/LICENSE-APACHE-2.0.txt) |
 | BeanGuard Server | `beanguard-admin/`, `beanguard-docs/`, `beanguard-server/`, `beanguard-shop/` | [Business Source License 1.1](licenses/LICENSE-BUSL-1.1.txt) |
 
 ## What this means in practice

@@ -18,6 +18,7 @@ Four independent modules, each runnable on its own:
 | [`beanguard-admin`](beanguard-admin) | Admin panel — manage users, licence templates, orders, parameters. | React + Vite |
 | [`beanguard-shop`](beanguard-shop) | Public storefront — customers self-serve purchase and activate licences. | React + Vite |
 | [`beanguard-client`](beanguard-client) | Library you add to your own app to read licence status and enforce limits/features. | Spring Boot |
+| [`beanguard-demo`](beanguard-demo) | Example app demonstrating `beanguard-client` integration (generate a demo licence, view/refresh/extend it). | Spring Boot |
 | [`beanguard-docs`](beanguard-docs) | Documentation site. | Next.js + MDX |
 | [`beanguard-api`](beanguard-api) | Shared DTOs and validators used by server and client. | Java library |
 

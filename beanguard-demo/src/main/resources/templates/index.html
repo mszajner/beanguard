@@ -53,7 +53,8 @@
         <dt>Firma</dt>
         <dd th:text="${licence.companyName}"></dd>
         <dt>Adres</dt>
-        <dd th:text="${licence.street} + ', ' + ${licence.postCode} + ' ' + ${licence.city}"></dd>
+        <dd th:if="${licence.street != null}" th:text="${licence.street} + ', ' + ${licence.postCode} + ' ' + ${licence.city}"></dd>
+        <dd th:if="${licence.street == null}">—</dd>
         <dt>NIP</dt>
         <dd th:text="${licence.vatId}"></dd>
         <dt>Email</dt>

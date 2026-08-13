@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `beanguard-demo` — a runnable example Spring Boot + Thymeleaf app demonstrating `beanguard-client`: generate a demo licence, view its details, refresh it, and deep-link into `beanguard-shop` to extend it.
+
+### Fixed
+
+- `LicenceTokenResponse` (`beanguard-api`) was missing a no-args constructor, so generic Jackson deserialization of it failed. Added `@NoArgsConstructor`/`@AllArgsConstructor`, matching the pattern already used by `LicenceDemoCreateRequest`.
+
 ## [0.1.2] - 2026-08-12
 
 ### Added
