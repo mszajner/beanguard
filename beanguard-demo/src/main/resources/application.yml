@@ -1,0 +1,16 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: beanguard-demo
+  profiles:
+    active: file
+
+beanguard:
+  demo:
+    server:
+      url: http://localhost:8080
+      public-key: ${BEANGUARD_SERVER_PUBLIC_KEY:}
+      secret-key: ${BEANGUARD_SERVER_SECRET_KEY:}
+    storage-path: ./beanguard-demo-data
