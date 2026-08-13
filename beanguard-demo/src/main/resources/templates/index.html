@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pl">
+<head>
+    <meta charset="UTF-8"/>
+    <title>BeanGuard Demo</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 640px; margin: 3rem auto; padding: 0 1rem; color: #1f2933; background: #f8fafc; }
+        h1 { font-size: 1.5rem; }
+        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; margin-top: 1rem; }
+        .status { font-size: 0.9rem; color: #64748b; margin-bottom: 1rem; }
+        .error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1rem; }
+        label { display: block; font-weight: 600; margin-top: 1rem; }
+        input[type=text], input[type=email] { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; }
+        .field-error { color: #b91c1c; font-size: 0.85rem; margin-top: 0.25rem; }
+        button, .btn { display: inline-block; margin-top: 1.5rem; margin-right: 0.75rem; padding: 0.6rem 1.2rem; border: none; border-radius: 6px; background: #2563eb; color: #fff; font-weight: 600; cursor: pointer; text-decoration: none; }
+        button.secondary { background: #475569; }
+        dl { display: grid; grid-template-columns: 10rem 1fr; row-gap: 0.5rem; column-gap: 1rem; margin: 0; }
+        dt { font-weight: 600; color: #475569; }
+        dd { margin: 0; }
+        .claims-list { list-style: none; padding: 0; margin: 0; }
+    </style>
+</head>
+<body>
+<h1>BeanGuard Demo</h1>
+
+<div class="error" th:if="${error}" th:text="${error}"></div>
+
+<div class="card" th:if="${licence == null}">
+    <p class="status" th:switch="${status.name()}">
+        <span th:case="'MISSING_KEY'">Brak wczytanej licencji — klucz nie został jeszcze skonfigurowany.</span>
+        <span th:case="'EXPIRED'">Licencja demo wygasła — wygeneruj nową.</span>
+        <span th:case="'WRONG_KEY'">Nieprawidłowy klucz licencji.</span>
+        <span th:case="'WRONG_SECRET'">Nieprawidłowy sekret licencji.</span>
+        <span th:case="*">Brak wczytanej licencji.</span>
+    </p>
+    <form th:action="@{/demo-licence}" th:object="${form}" method="post">
+        <label for="email">Email</label>
+        <input type="email" id="email" th:field="*{email}"/>
+        <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+        <label for="vatId">NIP</label>
+        <input type="text" id="vatId" th:field="*{vatId}"/>
+        <div class="field-error" th:if="${#fields.hasErrors('vatId')}" th:errors="*{vatId}"></div>
+
+        <button type="submit">Wygeneruj licencję demo</button>
+    </form>
+</div>
+
+<div class="card" th:if="${licence != null}">
+    <dl>
+        <dt>Klucz</dt>
+        <dd th:text="${licence.key}"></dd>
+        <dt>Firma</dt>
+        <dd th:text="${licence.companyName}"></dd>
+        <dt>Adres</dt>
+        <dd th:text="${licence.street} + ', ' + ${licence.postCode} + ' ' + ${licence.city}"></dd>
+        <dt>NIP</dt>
+        <dd th:text="${licence.vatId}"></dd>
+        <dt>Email</dt>
+        <dd th:text="${licence.email}"></dd>
+        <dt>Telefon</dt>
+        <dd th:text="${licence.phoneNumber}"></dd>
+        <dt>Typ</dt>
+        <dd th:text="${licence.type}"></dd>
+        <dt>Kwota netto</dt>
+        <dd th:text="${licence.netAmount}"></dd>
+        <dt>Ważna do</dt>
+        <dd th:text="${licence.expiration}"></dd>
+    </dl>
+
+    <h3>Claims</h3>
+    <ul class="claims-list">
+        <li th:each="claim : ${licence.claims}" th:text="${claim.key} + ': ' + ${claim.value}"></li>
+        <li th:if="${licence.claims == null or #maps.isEmpty(licence.claims)}">Brak dodatkowych claimów.</li>
+    </ul>
+
+    <a class="btn" th:href="@{/extend}" target="_blank">Przedłuż licencję</a>
+    <form th:action="@{/refresh}" method="post" style="display: inline;">
+        <button type="submit" class="secondary">Odśwież licencję</button>
+    </form>
+</div>
+</body>
+</html>
