@@ -2,7 +2,7 @@
 
 ## Modules
 
-Multi-module Maven project. Root `pom.xml` aggregates all modules.
+Multi-module Maven project. Root `pom.xml` aggregates `beanguard-api`, `beanguard-client`, and `beanguard-server`.
 
 | Module | Root package | Description |
 |--------|-------------|-------------|
@@ -13,9 +13,9 @@ Multi-module Maven project. Root `pom.xml` aggregates all modules.
 | `beanguard-shop` | `dev.beanguard.shop` | Customer shop: Spring Boot serving React SPA (minimal Java) |
 | `beanguard-demo` | `dev.beanguard.demo` | Runnable example app showing `beanguard-client` usage (demo-licence form → licence details → refresh/extend) |
 
-Build order across modules: `api → client → server/admin/shop/demo`.
+Build order across the reactor: `api → client → server`. `beanguard-admin` and `beanguard-shop` build independently (npm, not Maven modules). `beanguard-demo` is also **not** a reactor module — it's a standalone Maven project depending on a published `beanguard-client` release from Maven Central rather than the in-repo SNAPSHOT, the same way an external vendor's app would. See `beanguard-demo/pom.xml` and `beanguard-demo/README.md`.
 
-`beanguard-server`, `beanguard-admin`, `beanguard-shop` have `Dockerfile`s — CI/CD builds Docker images for deployment.
+`beanguard-server`, `beanguard-admin`, `beanguard-shop`, `beanguard-demo` have `Dockerfile`s — CI/CD builds Docker images for deployment (`beanguard-demo`'s is not yet wired into CI).
 
 ## Commands
 
@@ -110,10 +110,11 @@ Docker must be running (Testcontainers). Never push without a passing test run.
 Pushing a version tag (`vX.Y.Z`) triggers `publish` (Docker images to Docker Hub) and `publish-maven` (`beanguard-api`/`beanguard-client` to Maven Central) in `.github/workflows/ci.yml` — both gated to `refs/tags/v*`. Docker images get two tags, no `v` prefix: `X.Y.Z` and `X.Y-latest` (e.g. `v0.1.2` → `0.1.2` and `0.1-latest`).
 
 Before tagging:
-1. Bump `<version>` from `X.Y.Z-SNAPSHOT` to `X.Y.Z` in all five `pom.xml` files (root, `beanguard-api`, `beanguard-client`, `beanguard-server`, `beanguard-demo`).
+1. Bump `<version>` from `X.Y.Z-SNAPSHOT` to `X.Y.Z` in the four reactor `pom.xml` files (root, `beanguard-api`, `beanguard-client`, `beanguard-server`).
 2. Update the hardcoded version references in `beanguard-docs` (PL+EN) so they point at the new `X.Y.Z`:
    - Docker image tags (`docker pull mszajner/beanguard-*:X.Y.Z` and the `docker-compose` snippets) in `download`/`pobierz`, `quick-start`/`szybki-start`, `server`/`serwer`, `shop`/`sklep`, `admin-panel`/`panel-admina`.
    - The example Maven `<dependency>` version in `download`/`pobierz` and `client`/`klient`.
 3. Update `CHANGELOG.md`: rename `[Unreleased]` to `[X.Y.Z] - YYYY-MM-DD`, add a fresh empty `[Unreleased]` above it, and update the `[Unreleased]`/`[X.Y.Z]` compare links at the bottom.
 4. Run `mvn test`, commit, tag `vX.Y.Z`, push both the commit and the tag.
-5. Bump `<version>` to the next `X.Y.(Z+1)-SNAPSHOT` in the same five `pom.xml` files, commit, push.
+5. Bump `<version>` to the next `X.Y.(Z+1)-SNAPSHOT` in the same four reactor `pom.xml` files, commit, push.
+6. Once `beanguard-api`/`beanguard-client:X.Y.Z` are live on Maven Central, bump `beanguard-demo/pom.xml`'s `beanguard-client.version` property to `X.Y.Z` — it's pinned to a published release, not the reactor version, and won't pick up the new one automatically.

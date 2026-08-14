@@ -44,13 +44,18 @@ services:
       NODE_ENV: 'development'
     ports:
       - "8002:80"
-#  demo:
-#    hostname: demo
-#    build:
-#      context: .
-#    env_file: .env
-#    ports:
-#      - "8090:8090"
+  demo:
+    hostname: demo
+    build:
+      context: .
+    depends_on:
+      - server
+    environment:
+      BEANGUARD_DEMO_SERVER_URL: http://server
+      BEANGUARD_SERVER_PUBLIC_KEY: ${BEANGUARD_SERVER_PUBLIC_KEY}
+      BEANGUARD_SERVER_SECRET_KEY: ${BEANGUARD_SERVER_SECRET_KEY}
+    ports:
+      - "8090:80"
 
 volumes:
   postgres_data:

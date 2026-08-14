@@ -2,6 +2,9 @@
 # (it needs the whole Maven reactor: root pom + beanguard-api +
 # beanguard-client + beanguard-server). Everything below is irrelevant to
 # that build and would otherwise bloat the Docker build context.
+#
+# beanguard-demo/Dockerfile is unaffected - it's a standalone Maven project
+# and builds with beanguard-demo/ itself as the context, not the repo root.
 
 .git
 .github

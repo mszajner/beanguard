@@ -4,6 +4,11 @@ Runnable example Spring Boot app showing `beanguard-client` in action: fetching 
 licence, displaying its details, refreshing it, and deep-linking into
 `beanguard-shop` to extend it.
 
+This is a standalone Maven project, not part of the repo's root reactor — it
+depends on a published `dev.beanguard:beanguard-client` release from Maven
+Central (pinned in `pom.xml`), the same way an external application would,
+rather than the in-repo SNAPSHOT.
+
 ## Prerequisites
 
 A running `beanguard-server` (see the root `CLAUDE.md` "Run server locally" section):
@@ -36,6 +41,7 @@ Switch with `--spring.profiles.active=file` or by editing `application.yml`.
 
 ## Run
 
-    mvn -pl beanguard-demo spring-boot:run
+    cd beanguard-demo
+    mvn spring-boot:run
 
 Then open http://localhost:8090.

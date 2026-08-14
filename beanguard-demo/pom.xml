@@ -2,21 +2,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Deliberately NOT parented by the repo's root pom.xml: beanguard-demo
+         is a standalone example of integrating beanguard-client, the same
+         way a real vendor's app would - it depends on a published release
+         from Maven Central (see the beanguard-client dependency below), not
+         the in-repo reactor SNAPSHOT. -->
     <parent>
-        <groupId>dev.beanguard</groupId>
-        <artifactId>beanguard</artifactId>
-        <version>0.1.3-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.0</version>
+        <relativePath/>
     </parent>
 
+    <groupId>dev.beanguard</groupId>
     <artifactId>beanguard-demo</artifactId>
+    <version>0.1.3-SNAPSHOT</version>
+
     <name>BeanGuard Demo</name>
     <description>Runnable example Spring Boot app showing beanguard-client capabilities.</description>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <!-- Pinned to the latest published beanguard-client release - bump
+             this by hand after a new dev.beanguard:beanguard-client version
+             ships (see "Releasing" in the root CLAUDE.md). NOTE: as of this
+             writing, 0.1.1 is the latest version actually on Maven Central
+             (0.1.2 is tagged/documented but never synced - check the
+             publish-maven CI job for that tag). This also means beanguard-demo
+             won't currently compile: 0.1.1 still has io.beanguard.* packages,
+             pre-dating the io.beanguard -> dev.beanguard rename in this repo's
+             source. Bump this once a release with dev.beanguard.* packages
+             (0.1.3+) is confirmed live on Central. -->
+        <beanguard-client.version>0.1.1</beanguard-client.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>dev.beanguard</groupId>
             <artifactId>beanguard-client</artifactId>
+            <version>${beanguard-client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -18,11 +18,14 @@
         <relativePath/>
     </parent>
 
+    <!-- beanguard-demo is intentionally NOT a reactor module: it's a
+         standalone example app that depends on a published beanguard-client
+         release from Maven Central, not the in-repo SNAPSHOT, so it builds
+         and versions independently. See beanguard-demo/pom.xml. -->
     <modules>
         <module>beanguard-api</module>
         <module>beanguard-client</module>
         <module>beanguard-server</module>
-        <module>beanguard-demo</module>
     </modules>
 
     <developers>
