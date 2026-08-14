@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-08-14
+
 ### Added
 
 - `beanguard-demo` — a runnable example Spring Boot + Thymeleaf app demonstrating `beanguard-client`: generate a demo licence, view its details, refresh it, deep-link into `beanguard-shop` to extend it, and transfer it to a new machine (email-confirmed, recovers a licence key/secret lost e.g. on a `memory`-profile restart). Licence key/secret persistence is pluggable via the `memory` (default) or `file` Spring profile.
@@ -78,7 +80,8 @@ First public release.
 
 Initial internal release — predates the public repository and was never tagged or published anywhere.
 
-[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/mszajner/beanguard/releases/tag/v0.1.3
 [0.1.2]: https://github.com/mszajner/beanguard/releases/tag/v0.1.2
 [0.1.1]: https://github.com/mszajner/beanguard/releases/tag/v0.1.1
 [0.1.0]: https://github.com/mszajner/beanguard/releases/tag/v0.1.0

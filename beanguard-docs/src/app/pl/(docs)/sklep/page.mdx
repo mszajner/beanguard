@@ -15,11 +15,11 @@ export const sections = [
 ## Uruchomienie {{ id: 'uruchomienie' }}
 
 ```bash
-docker pull mszajner/beanguard-shop:0.1.2
+docker pull mszajner/beanguard-shop:0.1.3
 docker run -d \
   -p 8001:80 \
   -e BEANGUARD_SERVER_URL=https://api.twojadomena.pl \
-  mszajner/beanguard-shop:0.1.2
+  mszajner/beanguard-shop:0.1.3
 ```
 
 Podobnie jak panel admina, `beanguard-shop` odczytuje adres serwera w runtime (`/config.js`) — nie trzeba przebudowywać obrazu, żeby zmienić `BEANGUARD_SERVER_URL`.
