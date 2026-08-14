@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Breaking:** Java packages renamed from `io.beanguard` to `dev.beanguard` across `beanguard-api`, `beanguard-client`, `beanguard-server`, and `beanguard-demo`, aligning them with the Maven `groupId` (already `dev.beanguard`). Update your imports and any `BeanGuardConfiguration`/`ProGuard` rules referencing the old package.
+- `beanguard-demo`'s configuration properties moved from `beanguard.demo.*` to `beanguard.server.*`/`beanguard.storage-path` (dropped the redundant `demo` prefix level); `beanguard.server.url` is now also overridable via `BEANGUARD_SERVER_URL`, not just editable in `application.yml`.
 
 ### Fixed
 

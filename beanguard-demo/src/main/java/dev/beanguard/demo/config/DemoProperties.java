@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "beanguard.demo")
+@ConfigurationProperties(prefix = "beanguard")
 public class DemoProperties {
 
     private Server server = new Server();
