@@ -25,7 +25,7 @@
 
 <div class="error" th:if="${error}" th:text="${error}"></div>
 
-<div class="card" th:if="${licence == null}">
+<div class="card" th:if="${licence == null and pendingTransfer == null}">
     <p class="status" th:switch="${status.name()}">
         <span th:case="'MISSING_KEY'">Brak wczytanej licencji — klucz nie został jeszcze skonfigurowany.</span>
         <span th:case="'EXPIRED'">Licencja demo wygasła — wygeneruj nową.</span>
@@ -43,6 +43,33 @@
         <div class="field-error" th:if="${#fields.hasErrors('vatId')}" th:errors="*{vatId}"></div>
 
         <button type="submit">Wygeneruj licencję demo</button>
+    </form>
+</div>
+
+<div class="card" th:if="${licence == null and pendingTransfer == null}">
+    <p class="status">Masz już licencję z innej instalacji? Przenieś ją na tę maszynę.</p>
+    <form th:action="@{/transfer}" th:object="${transferForm}" method="post">
+        <label for="licenceKey">Klucz licencji</label>
+        <input type="text" id="licenceKey" th:field="*{licenceKey}"/>
+        <div class="field-error" th:if="${#fields.hasErrors('licenceKey')}" th:errors="*{licenceKey}"></div>
+
+        <button type="submit" class="secondary">Przenieś licencję</button>
+    </form>
+</div>
+
+<div class="card" th:if="${pendingTransfer != null}">
+    <p class="status">Wysłaliśmy link potwierdzający na adres e-mail przypisany do tej licencji. Po kliknięciu w link sprawdź status poniżej.</p>
+    <dl>
+        <dt>Klucz licencji</dt>
+        <dd th:text="${pendingTransfer.licenceKey()}"></dd>
+        <dt>Token wygasa</dt>
+        <dd th:text="${pendingTransfer.expiresAt()}"></dd>
+    </dl>
+    <form th:action="@{/transfer/check}" method="post" style="display: inline;">
+        <button type="submit">Sprawdź status</button>
+    </form>
+    <form th:action="@{/transfer/cancel}" method="post" style="display: inline;">
+        <button type="submit" class="secondary">Anuluj</button>
     </form>
 </div>
 
