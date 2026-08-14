@@ -17,21 +17,29 @@ export const sections = [
 
 ## Uruchomienie {{ id: 'uruchomienie' }}
 
-Potrzebujesz działającego `beanguard-server` (zobacz [Szybki start](/pl/szybki-start)) oraz jego klucza publicznego licencji i sekretu AES z zakładki **[Klucze kryptograficzne](/pl/panel-admina/klucze-kryptograficzne)** w panelu admina:
+Potrzebujesz działającego `beanguard-server` (zobacz [Szybki start](/pl/szybki-start)). Uruchom aplikację — bez żadnej wcześniejszej konfiguracji:
 
 ```bash
-BEANGUARD_SERVER_PUBLIC_KEY="..." \
-BEANGUARD_SERVER_SECRET_KEY="..." \
-mvn -pl beanguard-demo spring-boot:run
+cd beanguard-demo
+mvn spring-boot:run
 ```
 
-Następnie otwórz `http://localhost:8090`. Adres serwera (`beanguard.demo.server.url`, domyślnie `http://localhost:8000`) i port możesz zamiast zmiennych środowiskowych zmienić bezpośrednio w `beanguard-demo/src/main/resources/application.yml`.
+Następnie otwórz `http://localhost:8090`. Gdy połączenie z serwerem nie jest jeszcze skonfigurowane, najprostszy sposób to zwinięty panel **Połączenie z serwerem** na górze strony: wklej adres serwera oraz klucz publiczny/sekret AES z zakładki **[Klucze kryptograficzne](/pl/panel-admina/klucze-kryptograficzne)** w panelu admina i kliknij **Zapisz i połącz ponownie** — bez restartu.
+
+<Note>
+  Ten panel zapisuje prawdziwy sekret kryptograficzny (klucz AES) po
+  stronie serwera bez dodatkowej ochrony. W porządku do lokalnej
+  demonstracji, ale nie kopiuj tego wzorca do produkcyjnej aplikacji
+  klienckiej.
+</Note>
+
+Alternatywnie możesz ustawić `BEANGUARD_SERVER_URL` / `BEANGUARD_SERVER_PUBLIC_KEY` / `BEANGUARD_SERVER_SECRET_KEY` jako zmienne środowiskowe (albo edytować `beanguard-demo/src/main/resources/application.yml`) przed uruchomieniem — to staje się wartością domyślną, dopóki coś nie zostanie zapisane przez panel, który wtedy ma pierwszeństwo.
 
 ## Profile trwałości {{ id: 'profile' }}
 
 | Profil | Zachowanie |
 | --- | --- |
-| `memory` (domyślny) | Klucz/sekret licencji i ewentualne oczekujące przeniesienie żyją tylko w pamięci — restart aplikacji je czyści i ponownie pojawia się formularz licencji demo. |
+| `memory` (domyślny) | Połączenie z serwerem (jeśli ustawione przez panel), klucz/sekret licencji i ewentualne oczekujące przeniesienie żyją tylko w pamięci — restart aplikacji je czyści i ponownie pojawia się formularz licencji demo. |
 | `file` | Zapisywane do `./beanguard-demo-data/` (względem katalogu roboczego) — przetrwa restart. |
 
 Profil zmienisz flagą `--spring.profiles.active=file` albo edytując `spring.profiles.active` w `application.yml`.
@@ -52,7 +60,7 @@ Profil zmienisz flagą `--spring.profiles.active=file` albo edytując `spring.pr
 
 ## Gdzie szukać w kodzie {{ id: 'kod' }}
 
-- `FileBeanGuardConfiguration` / `InMemoryBeanGuardConfiguration` (`dev.beanguard.demo.licence`) — dwie implementacje `BeanGuardConfiguration` stojące za profilami `file`/`memory`. Porównaj je z przykładem w [Implementacji BeanGuardConfiguration](/pl/klient#konfiguracja).
+- `FileBeanGuardConfiguration` / `InMemoryBeanGuardConfiguration` (`dev.beanguard.demo.licence`) — dwie implementacje `BeanGuardConfiguration` stojące za profilami `file`/`memory`, w tym `updateServerConfig()` stojące za panelem **Połączenie z serwerem**. Porównaj je z przykładem w [Implementacji BeanGuardConfiguration](/pl/klient#konfiguracja).
 - `DemoController` — jedyna klasa rozmawiająca bezpośrednio z `LicenceRegistry` i `BeanGuardServer`; wzór dla wzorca [Odczytu statusu licencji](/pl/klient#status) we własnej aplikacji.
 
 <Note>

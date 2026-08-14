@@ -17,21 +17,28 @@ export const sections = [
 
 ## Running it {{ id: 'uruchomienie' }}
 
-You need a running `beanguard-server` (see [Quick start](/en/quick-start)) and its licence public key and AES secret from **[Cryptographic keys](/en/admin-panel/cryptographic-keys)** in the admin panel:
+You need a running `beanguard-server` (see [Quick start](/en/quick-start)). Start the app — no configuration required beforehand:
 
 ```bash
-BEANGUARD_SERVER_PUBLIC_KEY="..." \
-BEANGUARD_SERVER_SECRET_KEY="..." \
-mvn -pl beanguard-demo spring-boot:run
+cd beanguard-demo
+mvn spring-boot:run
 ```
 
-Then open `http://localhost:8090`. The server address (`beanguard.demo.server.url`, default `http://localhost:8000`) and the port can be changed in `beanguard-demo/src/main/resources/application.yml` instead of via environment variables if you prefer.
+Then open `http://localhost:8090`. With no server connection configured yet, the **Server connection** panel (collapsed, at the top of the page) is the easiest way to set one up: paste in the server URL and the public key/AES secret from **[Cryptographic keys](/en/admin-panel/cryptographic-keys)** in the admin panel, then click **Save & reconnect** — no restart needed.
+
+<Note>
+  That panel stores a real cryptographic secret (the AES key) server-side
+  without any extra protection. Fine for a local demo, not a pattern to
+  copy into a production client app.
+</Note>
+
+Alternatively, set `BEANGUARD_SERVER_URL` / `BEANGUARD_SERVER_PUBLIC_KEY` / `BEANGUARD_SERVER_SECRET_KEY` as environment variables (or edit `beanguard-demo/src/main/resources/application.yml`) before starting — this becomes the default until something's saved via the panel, which then takes precedence.
 
 ## Persistence profiles {{ id: 'profile' }}
 
 | Profile | Behaviour |
 | --- | --- |
-| `memory` (default) | The licence key/secret and any pending transfer live only in memory — restarting the app clears them and the demo licence form reappears. |
+| `memory` (default) | The server connection (if set via the panel), licence key/secret, and any pending transfer all live only in memory — restarting the app clears them and the demo licence form reappears. |
 | `file` | Persisted to `./beanguard-demo-data/` (relative to the working directory) — survives restarts. |
 
 Switch profiles with `--spring.profiles.active=file`, or edit `spring.profiles.active` in `application.yml`.
@@ -52,7 +59,7 @@ Switch profiles with `--spring.profiles.active=file`, or edit `spring.profiles.a
 
 ## Where to look in the code {{ id: 'kod' }}
 
-- `FileBeanGuardConfiguration` / `InMemoryBeanGuardConfiguration` (`dev.beanguard.demo.licence`) — the two `BeanGuardConfiguration` implementations behind the `file`/`memory` profiles. Compare them to the [Implementing BeanGuardConfiguration](/en/client#konfiguracja) example.
+- `FileBeanGuardConfiguration` / `InMemoryBeanGuardConfiguration` (`dev.beanguard.demo.licence`) — the two `BeanGuardConfiguration` implementations behind the `file`/`memory` profiles, including `updateServerConfig()` behind the **Server connection** panel. Compare them to the [Implementing BeanGuardConfiguration](/en/client#konfiguracja) example.
 - `DemoController` — the only class talking to `LicenceRegistry` and `BeanGuardServer` directly; a template for the [Reading licence status](/en/client#status) pattern in your own app.
 
 <Note>
