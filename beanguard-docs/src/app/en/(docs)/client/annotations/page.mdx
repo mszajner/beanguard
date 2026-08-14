@@ -15,14 +15,14 @@ export const sections = [
 
 # Licensing annotations
 
-`beanguard-client` provides four annotations from the `io.beanguard.client.annotations` package for declaratively securing Spring Boot methods based on the content of the active licence. {{ className: 'lead' }}
+`beanguard-client` provides four annotations from the `dev.beanguard.client.annotations` package for declaratively securing Spring Boot methods based on the content of the active licence. {{ className: 'lead' }}
 
 ## @RequiresValidLicence {{ id: 'valid' }}
 
 Blocks the method if the current licence isn't valid:
 
 ```java
-import io.beanguard.client.annotations.RequiresValidLicence;
+import dev.beanguard.client.annotations.RequiresValidLicence;
 
 @RequiresValidLicence
 public void exportReport() {
@@ -30,14 +30,14 @@ public void exportReport() {
 }
 ```
 
-Throws `io.beanguard.client.exceptions.MissingOrInvalidLicence` (no message) if `LicenceRegistry.getStatus().isValid()` returns `false`.
+Throws `dev.beanguard.client.exceptions.MissingOrInvalidLicence` (no message) if `LicenceRegistry.getStatus().isValid()` returns `false`.
 
 ## @RequiresLicenceFeature {{ id: 'feature' }}
 
 Blocks the method if the licence's `claims` don't contain a flag with the given name set to `"true"`:
 
 ```java
-import io.beanguard.client.annotations.RequiresLicenceFeature;
+import dev.beanguard.client.annotations.RequiresLicenceFeature;
 
 @RequiresLicenceFeature("advanced-reports")
 public void generateAdvancedReport() {
@@ -52,7 +52,7 @@ Throws `MissingLicenceFeature` with the missing feature's name as the message �
 Checks whether current usage of the given limit (tracked via `UsageRegistry`) hasn't yet reached the value from the licence, and **after** the method executes, increments the usage counter by 1:
 
 ```java
-import io.beanguard.client.annotations.RequiresLicenceLimit;
+import dev.beanguard.client.annotations.RequiresLicenceLimit;
 
 @RequiresLicenceLimit("active-users")
 public void createUser(UserRequest request) {
@@ -68,7 +68,7 @@ The limit is an integer stored as a string in `claims` (e.g. `claims["active-use
 Decreases the usage counter for the given limit **after** the method executes — use it when deleting a resource counted by `@RequiresLicenceLimit`:
 
 ```java
-import io.beanguard.client.annotations.DecreasesLicenceLimit;
+import dev.beanguard.client.annotations.DecreasesLicenceLimit;
 
 @DecreasesLicenceLimit("active-users")
 public void deleteUser(UUID userId) {
@@ -87,7 +87,7 @@ public void deleteUser(UUID userId) {
 
 ## Tracking limit usage {{ id: 'usage' }}
 
-By default, `UsageRegistry` counts usage in memory — the counter resets on application restart. If you need a persistent counter (e.g. in a database), supply your own bean implementing `io.beanguard.client.usage.UsageRegistry`. Alongside `BeanGuardConfiguration`, it's the only interface left un-obfuscated in `beanguard-client`, so you can safely implement it in your own code.
+By default, `UsageRegistry` counts usage in memory — the counter resets on application restart. If you need a persistent counter (e.g. in a database), supply your own bean implementing `dev.beanguard.client.usage.UsageRegistry`. Alongside `BeanGuardConfiguration`, it's the only interface left un-obfuscated in `beanguard-client`, so you can safely implement it in your own code.
 
 ## Exception handling {{ id: 'wyjatki' }}
 

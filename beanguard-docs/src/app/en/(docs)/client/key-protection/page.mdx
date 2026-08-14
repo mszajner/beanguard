@@ -41,9 +41,9 @@ Create a class implementing `BeanGuardConfiguration` in your project. Get the ke
 ```java
 package com.example.myapp.licence;
 
-import io.beanguard.client.config.BeanGuardConfiguration;
-import io.beanguard.client.config.LicenceKeys;
-import io.beanguard.client.config.ServerConfig;
+import dev.beanguard.client.config.BeanGuardConfiguration;
+import dev.beanguard.client.config.LicenceKeys;
+import dev.beanguard.client.config.ServerConfig;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -80,10 +80,10 @@ public class MyBeanGuardConfiguration implements BeanGuardConfiguration {
 }
 ```
 
-Don't put the class in the `io.beanguard.*` package — it's your code, not library code.
+Don't put the class in the `dev.beanguard.*` package — it's your code, not library code.
 
 <Note>
-  `UsageRegistry` (`io.beanguard.client.usage.UsageRegistry`) is the second
+  `UsageRegistry` (`dev.beanguard.client.usage.UsageRegistry`) is the second
   and last interface that `beanguard-client` leaves un-obfuscated. Unlike
   `BeanGuardConfiguration`, implementing it is **optional** — supply your own
   only if you want to persist usage counters (e.g. in a database) instead of
@@ -157,7 +157,7 @@ Add this to `myapp-licence-keys/pom.xml`:
                         The class and method names themselves will be renamed by ProGuard — this is exactly
                         the class (your implementation) that should be obfuscated, not BeanGuardConfiguration.
                     -->
-                    <option>-keepclassmembers class * implements io.beanguard.client.config.BeanGuardConfiguration {
+                    <option>-keepclassmembers class * implements dev.beanguard.client.config.BeanGuardConfiguration {
                         @org.springframework.stereotype.Component *;
                     }</option>
                 </options>
@@ -254,15 +254,15 @@ If you obfuscate your **entire** application in a single ProGuard/R8 pass (typic
 # Spring Boot autoconfiguration entry point — referenced by its fully qualified
 # class name in the META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports resource.
 # ProGuard doesn't rewrite resource files, so this class name must stay unchanged.
--keep class io.beanguard.client.BeanGuardClientAutoConfiguration { *; }
+-keep class dev.beanguard.client.BeanGuardClientAutoConfiguration { *; }
 
 # The interface you implement (Step 1) and the types you construct directly.
--keep public interface io.beanguard.client.config.BeanGuardConfiguration { *; }
--keep public class io.beanguard.client.config.ServerConfig { *; }
--keep public class io.beanguard.client.config.LicenceKeys { *; }
+-keep public interface dev.beanguard.client.config.BeanGuardConfiguration { *; }
+-keep public class dev.beanguard.client.config.ServerConfig { *; }
+-keep public class dev.beanguard.client.config.LicenceKeys { *; }
 
 # Optional extension interface (Step 1) — skip if you don't implement it.
--keep public interface io.beanguard.client.usage.UsageRegistry { *; }
+-keep public interface dev.beanguard.client.usage.UsageRegistry { *; }
 
 # Spring must find these methods reflectively by annotation.
 -keepclassmembers class * {
@@ -275,11 +275,11 @@ If you obfuscate your **entire** application in a single ProGuard/R8 pass (typic
 -keepattributes *Annotation*,Signature,Exceptions,InnerClasses,EnclosingMethod
 ```
 
-You can safely leave `LicenceRegistry` and `LicenceStatus` (`io.beanguard.client.registries.*`) without a `-keep` rule — they'll be consistently renamed together with the rest of your program in the same pass, because all your code is in the same `-injars`. If you'd rather keep them readable (e.g. for debugging in production), add:
+You can safely leave `LicenceRegistry` and `LicenceStatus` (`dev.beanguard.client.registries.*`) without a `-keep` rule — they'll be consistently renamed together with the rest of your program in the same pass, because all your code is in the same `-injars`. If you'd rather keep them readable (e.g. for debugging in production), add:
 
 ```
--keep public interface io.beanguard.client.registries.LicenceRegistry { *; }
--keep public enum io.beanguard.client.registries.LicenceStatus { *; }
+-keep public interface dev.beanguard.client.registries.LicenceRegistry { *; }
+-keep public enum dev.beanguard.client.registries.LicenceStatus { *; }
 ```
 
 <Note>

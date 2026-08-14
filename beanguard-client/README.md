@@ -14,7 +14,7 @@ Spring Boot autoconfiguration you add to your own application to enforce licence
 
 ## Usage
 
-1. Implement `io.beanguard.client.config.BeanGuardConfiguration` — a single bean providing your server URL + cryptographic keys (`getServerConfig()`), your licence key/secret (`getLicenceKeys()`), and a local cache for the last-received licence (`loadLicence()` / `saveLicence()`).
+1. Implement `dev.beanguard.client.config.BeanGuardConfiguration` — a single bean providing your server URL + cryptographic keys (`getServerConfig()`), your licence key/secret (`getLicenceKeys()`), and a local cache for the last-received licence (`loadLicence()` / `saveLicence()`).
 2. The autoconfiguration picks that bean up automatically and registers `LicenceRegistry`, which fetches the licence at startup and refreshes it hourly.
 3. Enforce licence terms declaratively:
 
@@ -40,12 +40,12 @@ The values you return from `BeanGuardConfiguration` (server URL, RSA public key,
 
 ## Package structure
 
-- `io.beanguard.client.config` — `BeanGuardConfiguration`, `ServerConfig`, `LicenceKeys`.
-- `io.beanguard.client.annotations` — the four enforcement annotations.
-- `io.beanguard.client.aspects` — the AOP aspects that implement them.
-- `io.beanguard.client.exceptions` — `MissingOrInvalidLicence`, `MissingLicenceFeature`, `LicenceLimitExceeded`.
-- `io.beanguard.client.registries` — `LicenceRegistry` / `LicenceStatus`, the one supported way to read licence state programmatically (e.g. to show an "expired" banner in your UI).
-- `io.beanguard.client.usage` — `UsageRegistry`, tracks per-key usage counters for `@RequiresLicenceLimit`/`@DecreasesLicenceLimit`. Ships with an in-memory default; implement your own to persist counters (e.g. in your own database).
+- `dev.beanguard.client.config` — `BeanGuardConfiguration`, `ServerConfig`, `LicenceKeys`.
+- `dev.beanguard.client.annotations` — the four enforcement annotations.
+- `dev.beanguard.client.aspects` — the AOP aspects that implement them.
+- `dev.beanguard.client.exceptions` — `MissingOrInvalidLicence`, `MissingLicenceFeature`, `LicenceLimitExceeded`.
+- `dev.beanguard.client.registries` — `LicenceRegistry` / `LicenceStatus`, the one supported way to read licence state programmatically (e.g. to show an "expired" banner in your UI).
+- `dev.beanguard.client.usage` — `UsageRegistry`, tracks per-key usage counters for `@RequiresLicenceLimit`/`@DecreasesLicenceLimit`. Ships with an in-memory default; implement your own to persist counters (e.g. in your own database).
 
 ## License
 

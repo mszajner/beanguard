@@ -32,9 +32,9 @@ All server connection configuration and your application's licence identity come
 ```java
 package com.example.myapp.licence;
 
-import io.beanguard.client.config.BeanGuardConfiguration;
-import io.beanguard.client.config.LicenceKeys;
-import io.beanguard.client.config.ServerConfig;
+import dev.beanguard.client.config.BeanGuardConfiguration;
+import dev.beanguard.client.config.LicenceKeys;
+import dev.beanguard.client.config.ServerConfig;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -77,7 +77,7 @@ public class MyBeanGuardConfiguration implements BeanGuardConfiguration {
 - **`loadLicence()` / `saveLicence()`** — a local cache of the last received licence, so the application keeps working even without a momentary connection to the server.
 
 <Note>
-  Don't put this class in the `io.beanguard.*` package. If you want to
+  Don't put this class in the `dev.beanguard.*` package. If you want to
   protect the keys with ProGuard against decompilation, see [Protecting keys
   with ProGuard](/en/client/key-protection).
 </Note>
@@ -87,8 +87,8 @@ public class MyBeanGuardConfiguration implements BeanGuardConfiguration {
 When `BeanGuardConfiguration` is present in the context, the autoconfiguration registers a `LicenceRegistry` — the licence is fetched on application startup and refreshed every hour:
 
 ```java
-import io.beanguard.client.registries.LicenceRegistry;
-import io.beanguard.client.registries.LicenceStatus;
+import dev.beanguard.client.registries.LicenceRegistry;
+import dev.beanguard.client.registries.LicenceStatus;
 import org.springframework.stereotype.Component;
 
 @Component

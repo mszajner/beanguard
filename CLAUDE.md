@@ -6,12 +6,12 @@ Multi-module Maven project. Root `pom.xml` aggregates all modules.
 
 | Module | Root package | Description |
 |--------|-------------|-------------|
-| `beanguard-api` | `io.beanguard.api` | Shared DTOs, annotations (`@RequiresValidLicence`, `@RequiresLicenceLimit`, `@DecreasesLicenceLimit`), exceptions, validators |
-| `beanguard-client` | `io.beanguard.client` | Spring Boot autoconfiguration for client apps |
-| `beanguard-server` | `io.beanguard.server` | Licence server: Spring Boot REST API + PostgreSQL |
-| `beanguard-admin` | `io.beanguard.admin` | Admin panel: Spring Boot serving React SPA (minimal Java) |
-| `beanguard-shop` | `io.beanguard.shop` | Customer shop: Spring Boot serving React SPA (minimal Java) |
-| `beanguard-demo` | `io.beanguard.demo` | Runnable example app showing `beanguard-client` usage (demo-licence form → licence details → refresh/extend) |
+| `beanguard-api` | `dev.beanguard.api` | Shared DTOs, annotations (`@RequiresValidLicence`, `@RequiresLicenceLimit`, `@DecreasesLicenceLimit`), exceptions, validators |
+| `beanguard-client` | `dev.beanguard.client` | Spring Boot autoconfiguration for client apps |
+| `beanguard-server` | `dev.beanguard.server` | Licence server: Spring Boot REST API + PostgreSQL |
+| `beanguard-admin` | `dev.beanguard.admin` | Admin panel: Spring Boot serving React SPA (minimal Java) |
+| `beanguard-shop` | `dev.beanguard.shop` | Customer shop: Spring Boot serving React SPA (minimal Java) |
+| `beanguard-demo` | `dev.beanguard.demo` | Runnable example app showing `beanguard-client` usage (demo-licence form → licence details → refresh/extend) |
 
 Build order across modules: `api → client → server/admin/shop/demo`.
 
@@ -37,7 +37,7 @@ npm install && npm run dev             # admin/shop proxy API calls to a running
 
 ## Architecture — beanguard-server
 
-Package structure under `io.beanguard.server`:
+Package structure under `dev.beanguard.server`:
 
 ```
 controllers/
