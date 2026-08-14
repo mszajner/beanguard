@@ -13,8 +13,11 @@
         .status { font-size: 0.9rem; color: #64748b; margin-bottom: 1rem; }
         .error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1rem; }
         label { display: block; font-weight: 600; margin-top: 1rem; }
-        input[type=text], input[type=email] { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; }
+        input[type=text], input[type=email], input[type=password], textarea { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+        textarea { resize: vertical; }
         .field-error { color: #b91c1c; font-size: 0.85rem; margin-top: 0.25rem; }
+        summary { font-weight: 600; cursor: pointer; }
+        .hint { font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; }
         button, .btn { display: inline-block; margin-top: 1.5rem; margin-right: 0.75rem; padding: 0.6rem 1.2rem; border: none; border-radius: 6px; background: #2563eb; color: #fff; font-weight: 600; cursor: pointer; text-decoration: none; }
         button.secondary { background: #475569; }
         dl { display: grid; grid-template-columns: 10rem 1fr; row-gap: 0.5rem; column-gap: 1rem; margin: 0; }
@@ -31,6 +34,26 @@
 </span>
 
 <div class="error" th:if="${error}" th:text="${error}"></div>
+
+<details class="card">
+    <summary th:text="#{demo.serverConfig.title}">Server connection</summary>
+    <form th:action="@{/server-config}" th:object="${serverConfigForm}" method="post">
+        <label for="serverUrl" th:text="#{demo.serverConfig.url}">Server URL</label>
+        <input type="text" id="serverUrl" th:field="*{url}"/>
+        <div class="field-error" th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></div>
+
+        <label for="serverPublicKey" th:text="#{demo.serverConfig.publicKey}">Public key</label>
+        <textarea id="serverPublicKey" th:field="*{publicKey}" rows="3"></textarea>
+        <div class="field-error" th:if="${#fields.hasErrors('publicKey')}" th:errors="*{publicKey}"></div>
+
+        <label for="serverSecretKey" th:text="#{demo.serverConfig.secretKey}">Secret key</label>
+        <input type="password" id="serverSecretKey" th:field="*{secretKey}"/>
+        <div class="field-error" th:if="${#fields.hasErrors('secretKey')}" th:errors="*{secretKey}"></div>
+
+        <button type="submit" th:text="#{demo.serverConfig.save}">Save &amp; reconnect</button>
+    </form>
+    <p class="hint" th:text="#{demo.serverConfig.warning}"></p>
+</details>
 
 <div class="card" th:if="${licence == null and pendingTransfer == null}">
     <p class="status" th:switch="${status.name()}">

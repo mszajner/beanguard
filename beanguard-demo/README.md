@@ -22,20 +22,28 @@ and `LICENCE_SECRET_KEY`.
 
 ## Configuration
 
-Set these before running (env vars, or edit `src/main/resources/application.yml`
-directly):
+The server URL, public key, and secret key can be set two ways:
 
-- `BEANGUARD_SERVER_PUBLIC_KEY` — the server's `LICENCE_PUBLIC_KEY`
-- `BEANGUARD_SERVER_SECRET_KEY` — the server's `LICENCE_SECRET_KEY`
-
-`beanguard.demo.server.url` defaults to `http://localhost:8000`.
+- **In the app** — the "Server connection" panel on the main page (collapsed
+  by default) lets you paste in all three and hit **Save & reconnect**,
+  no restart needed. This is the easiest way to demo the app, but keep in
+  mind it's storing a real cryptographic secret (the AES `secretKey`)
+  server-side without any extra protection — fine for a local demo, not a
+  pattern to copy into a production client app.
+- **Before running** (env vars, or edit `src/main/resources/application.yml`
+  directly) — takes effect as the default until something's saved via the
+  form above, which then takes precedence:
+  - `BEANGUARD_SERVER_URL` — defaults to `http://localhost:8000`
+  - `BEANGUARD_SERVER_PUBLIC_KEY` — the server's `LICENCE_PUBLIC_KEY`
+  - `BEANGUARD_SERVER_SECRET_KEY` — the server's `LICENCE_SECRET_KEY`
 
 ## Persistence profiles
 
-- `memory` (default) — kept in memory only; a restart clears the licence and
-  the form reappears.
-- `file` — the generated demo licence's key/secret persist to
-  `./beanguard-demo-data/`, surviving app restarts.
+- `memory` (default) — kept in memory only; a restart clears the licence, any
+  server connection saved via the form, and the demo-licence form reappears.
+- `file` — the generated demo licence's key/secret, and any server
+  connection saved via the form, persist to `./beanguard-demo-data/`,
+  surviving app restarts.
 
 Switch with `--spring.profiles.active=file` or by editing `application.yml`.
 

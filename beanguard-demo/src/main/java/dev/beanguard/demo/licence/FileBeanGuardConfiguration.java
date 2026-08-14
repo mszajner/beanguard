@@ -24,6 +24,7 @@ public class FileBeanGuardConfiguration implements DemoLicenceKeyStore {
     private final Path keysFile;
     private final Path licenceFile;
     private final Path pendingTransferFile;
+    private final Path serverConfigFile;
 
     public FileBeanGuardConfiguration(DemoProperties properties) {
         this.properties = properties;
@@ -31,6 +32,7 @@ public class FileBeanGuardConfiguration implements DemoLicenceKeyStore {
         this.keysFile = storagePath.resolve("licence-keys.properties");
         this.licenceFile = storagePath.resolve("licence.raw");
         this.pendingTransferFile = storagePath.resolve("pending-transfer.properties");
+        this.serverConfigFile = storagePath.resolve("server-config.properties");
         try {
             Files.createDirectories(storagePath);
         } catch (IOException e) {
@@ -40,8 +42,35 @@ public class FileBeanGuardConfiguration implements DemoLicenceKeyStore {
 
     @Override
     public ServerConfig getServerConfig() {
+        if (Files.exists(serverConfigFile)) {
+            Properties props = new Properties();
+            try (var reader = Files.newBufferedReader(serverConfigFile, StandardCharsets.UTF_8)) {
+                props.load(reader);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            String url = props.getProperty("url");
+            String key = props.getProperty("key");
+            String secret = props.getProperty("secret");
+            if (url != null && key != null && secret != null) {
+                return new ServerConfig(url, key, secret);
+            }
+        }
         DemoProperties.Server server = properties.getServer();
         return new ServerConfig(server.getUrl(), server.getPublicKey(), server.getSecretKey());
+    }
+
+    @Override
+    public void updateServerConfig(ServerConfig config) {
+        Properties props = new Properties();
+        props.setProperty("url", config.getUrl());
+        props.setProperty("key", config.getKey());
+        props.setProperty("secret", config.getSecret());
+        try (var writer = Files.newBufferedWriter(serverConfigFile, StandardCharsets.UTF_8)) {
+            props.store(writer, "BeanGuard demo server connection (set via the UI, overrides application.yml)");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Override

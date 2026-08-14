@@ -15,6 +15,7 @@ import java.util.UUID;
 public class InMemoryBeanGuardConfiguration implements DemoLicenceKeyStore {
 
     private final DemoProperties properties;
+    private volatile ServerConfig serverConfig;
     private volatile LicenceKeys licenceKeys;
     private volatile String rawLicence;
     private volatile PendingTransfer pendingTransfer;
@@ -25,8 +26,16 @@ public class InMemoryBeanGuardConfiguration implements DemoLicenceKeyStore {
 
     @Override
     public ServerConfig getServerConfig() {
+        if (serverConfig != null) {
+            return serverConfig;
+        }
         DemoProperties.Server server = properties.getServer();
         return new ServerConfig(server.getUrl(), server.getPublicKey(), server.getSecretKey());
+    }
+
+    @Override
+    public void updateServerConfig(ServerConfig config) {
+        this.serverConfig = config;
     }
 
     @Override

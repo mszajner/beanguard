@@ -2,12 +2,15 @@ package dev.beanguard.demo.licence;
 
 import dev.beanguard.client.config.BeanGuardConfiguration;
 import dev.beanguard.client.config.LicenceKeys;
+import dev.beanguard.client.config.ServerConfig;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface DemoLicenceKeyStore extends BeanGuardConfiguration {
+
+    void updateServerConfig(ServerConfig config);
 
     void storeLicenceKeys(LicenceKeys keys);
 

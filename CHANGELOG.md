@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `beanguard-demo` — a runnable example Spring Boot + Thymeleaf app demonstrating `beanguard-client`: generate a demo licence, view its details, refresh it, deep-link into `beanguard-shop` to extend it, and transfer it to a new machine (email-confirmed, recovers a licence key/secret lost e.g. on a `memory`-profile restart). Licence key/secret persistence is pluggable via the `memory` (default) or `file` Spring profile.
+- `beanguard-demo` — a "Server connection" panel lets you set the server URL, public key, and secret key from the app itself and reconnect immediately, no restart needed, instead of only via env vars/`application.yml`. Persisted the same way as the demo licence (`memory`/`file` profile).
 - Client integration docs — an "Example app" page (EN+PL) walking through running `beanguard-demo`, its `memory`/`file` persistence profiles, and what it lets you exercise (issuing, refreshing, extending, and transferring a licence).
 
 ### Changed

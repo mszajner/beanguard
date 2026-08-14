@@ -7,10 +7,10 @@ import dev.beanguard.api.models.licence.LicenceTransferInitResponse;
 import dev.beanguard.api.models.licence.LicenceTransferStatusResponse;
 import dev.beanguard.api.models.shop.LicenceTokenResponse;
 import dev.beanguard.client.config.LicenceKeys;
+import dev.beanguard.client.config.ServerConfig;
 import dev.beanguard.client.registries.LicenceRegistry;
 import dev.beanguard.client.registries.LicenceStatus;
 import dev.beanguard.client.server.BeanGuardServer;
-import dev.beanguard.demo.config.DemoProperties;
 import dev.beanguard.demo.licence.DemoLicenceKeyStore;
 import dev.beanguard.demo.licence.DemoLicenceKeyStore.PendingTransfer;
 import jakarta.validation.Valid;
@@ -36,19 +36,16 @@ public class DemoController {
     private final LicenceRegistry licenceRegistry;
     private final BeanGuardServer beanGuardServer;
     private final DemoLicenceKeyStore licenceKeyStore;
-    private final DemoProperties properties;
     private final MessageSource messageSource;
     private final RestClient restClient = RestClient.create();
 
     public DemoController(LicenceRegistry licenceRegistry,
                            BeanGuardServer beanGuardServer,
                            DemoLicenceKeyStore licenceKeyStore,
-                           DemoProperties properties,
                            MessageSource messageSource) {
         this.licenceRegistry = licenceRegistry;
         this.beanGuardServer = beanGuardServer;
         this.licenceKeyStore = licenceKeyStore;
-        this.properties = properties;
         this.messageSource = messageSource;
     }
 
@@ -56,10 +53,22 @@ public class DemoController {
         return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
     }
 
+    private DemoServerConfigForm prefilledServerConfigForm() {
+        ServerConfig current = licenceKeyStore.getServerConfig();
+        DemoServerConfigForm form = new DemoServerConfigForm();
+        form.setUrl(current.getUrl());
+        form.setPublicKey(current.getKey());
+        // secretKey is intentionally left blank - never echo a stored secret back into the form
+        return form;
+    }
+
     @GetMapping("/")
     public String index(Model model) {
         LicenceStatus status = licenceRegistry.getStatus();
         model.addAttribute("status", status);
+        if (!model.containsAttribute("serverConfigForm")) {
+            model.addAttribute("serverConfigForm", prefilledServerConfigForm());
+        }
         if (status == LicenceStatus.LOADED) {
             model.addAttribute("licence", licenceRegistry.getLicence());
             return "index";
@@ -76,6 +85,20 @@ public class DemoController {
             }
         }
         return "index";
+    }
+
+    @PostMapping("/server-config")
+    public String updateServerConfig(@Valid @ModelAttribute("serverConfigForm") DemoServerConfigForm form,
+                                       BindingResult bindingResult,
+                                       RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "serverConfigForm", bindingResult);
+            redirectAttributes.addFlashAttribute("serverConfigForm", form);
+            return "redirect:/";
+        }
+        licenceKeyStore.updateServerConfig(new ServerConfig(form.getUrl(), form.getPublicKey(), form.getSecretKey()));
+        licenceRegistry.refreshLicence();
+        return "redirect:/";
     }
 
     @PostMapping("/demo-licence")
@@ -115,7 +138,7 @@ public class DemoController {
         }
         try {
             LicenceTransferInitResponse response = restClient.post()
-                    .uri(properties.getServer().getUrl() + "/api/open/licences/transfer")
+                    .uri(licenceKeyStore.getServerConfig().getUrl() + "/api/open/licences/transfer")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(new LicenceTransferInitRequest(form.getLicenceKey()))
                     .retrieve()
@@ -136,7 +159,7 @@ public class DemoController {
         PendingTransfer transfer = pending.get();
         try {
             LicenceTransferStatusResponse response = restClient.get()
-                    .uri(properties.getServer().getUrl() + "/api/open/licences/transfer/" + transfer.token())
+                    .uri(licenceKeyStore.getServerConfig().getUrl() + "/api/open/licences/transfer/" + transfer.token())
                     .retrieve()
                     .body(LicenceTransferStatusResponse.class);
             switch (response.status()) {
@@ -177,7 +200,7 @@ public class DemoController {
             String credentials = licence.getKey() + ":" + licence.getSecret();
             String authorization = "KeySecret " + Base64.getEncoder().encodeToString(credentials.getBytes());
             LicenceTokenResponse response = restClient.post()
-                    .uri(properties.getServer().getUrl() + "/api/open/licences/token")
+                    .uri(licenceKeyStore.getServerConfig().getUrl() + "/api/open/licences/token")
                     .header(HttpHeaders.AUTHORIZATION, authorization)
                     .retrieve()
                     .body(LicenceTokenResponse.class);
