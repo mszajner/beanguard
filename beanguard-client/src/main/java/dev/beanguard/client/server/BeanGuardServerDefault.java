@@ -5,6 +5,7 @@ import dev.beanguard.api.models.licence.LicenceDemoCreateRequest;
 import dev.beanguard.client.config.BeanGuardConfiguration;
 import dev.beanguard.client.config.LicenceKeys;
 import dev.beanguard.client.config.ServerConfig;
+import io.micrometer.common.util.StringUtils;
 import okhttp3.*;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -69,6 +70,10 @@ public class BeanGuardServerDefault implements BeanGuardServer {
                 if (response.isSuccessful()) {
                     return response.body().string();
                 } else {
+                    String responseBody = response.body().string();
+                    if (StringUtils.isNotEmpty(responseBody)) {
+                        throw new BeanGuardServerException(responseBody, null);
+                    }
                     throw new RuntimeException("Response is missing");
                 }
             }
@@ -96,6 +101,10 @@ public class BeanGuardServerDefault implements BeanGuardServer {
                 if (response.isSuccessful()) {
                     return response.body().string();
                 } else {
+                    String responseBody = response.body().string();
+                    if (StringUtils.isNotEmpty(responseBody)) {
+                        throw new BeanGuardServerException(responseBody, null);
+                    }
                     throw new RuntimeException("Response is missing");
                 }
             }
