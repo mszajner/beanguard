@@ -34,7 +34,7 @@
              pre-dating the io.beanguard -> dev.beanguard rename in this repo's
              source. Bump this once a release with dev.beanguard.* packages
              (0.1.3+) is confirmed live on Central. -->
-        <beanguard-client.version>0.1.1</beanguard-client.version>
+        <beanguard-client.version>0.1.3</beanguard-client.version>
     </properties>
 
     <dependencies>
