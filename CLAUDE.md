@@ -29,7 +29,7 @@ mvn test -Dtest=LicenceAcceptanceSpec  # single Spock spec
 # Run server locally:
 cd beanguard-server
 docker-compose up -d
-mvn spring-boot:run                    # Swagger: http://localhost:8080/swagger-ui.html
+mvn spring-boot:run                    # Swagger: http://localhost:8000/swagger-ui.html
 
 # Frontend dev (inside beanguard-admin, beanguard-shop, or beanguard-docs):
 npm install && npm run dev             # admin/shop proxy API calls to a running beanguard-server

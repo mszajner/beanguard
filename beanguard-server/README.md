@@ -5,11 +5,11 @@ REST API + PostgreSQL. Issues, signs, and encrypts licences; stores licence temp
 ## Run locally
 
 ```bash
-docker compose up -d db   # from repo root
+docker compose up -d postgres   # from repo root
 mvn spring-boot:run
 ```
 
-Swagger UI: http://localhost:8080/swagger-ui.html once running (default port from `application.yml`; the Docker image itself listens on port 80, see `Dockerfile`).
+Swagger UI: http://localhost:8000/swagger-ui.html once running (default port from `application.yml`; the Docker image itself listens on port 80, see `Dockerfile`).
 
 Migrations (Liquibase, `src/main/resources/db/changelog/`) run automatically at startup — no manual schema setup needed. If no admin user exists yet, `ServerInitializationService` also creates one (`admin@beanguard.dev`) with a randomly generated password, logged **once** at startup (`WARN` level) and never stored in plain text. Log in and change it immediately — see [../SECURITY.md](../SECURITY.md).
 
