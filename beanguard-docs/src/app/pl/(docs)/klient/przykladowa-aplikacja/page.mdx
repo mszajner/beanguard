@@ -1,0 +1,63 @@
+export const metadata = {
+  title: 'Przykładowa aplikacja: beanguard-demo',
+  description:
+    'Uruchomienie aplikacji beanguard-demo, żeby zobaczyć integrację z beanguard-client działającą od początku do końca.',
+}
+
+export const sections = [
+  { title: 'Uruchomienie', id: 'uruchomienie' },
+  { title: 'Profile trwałości', id: 'profile' },
+  { title: 'Co możesz przetestować', id: 'test' },
+  { title: 'Gdzie szukać w kodzie', id: 'kod' },
+]
+
+# Przykładowa aplikacja: beanguard-demo
+
+`beanguard-demo` to niewielka, uruchamialna aplikacja Spring Boot w tym samym repozytorium co `beanguard-client` — najszybszy sposób, żeby zobaczyć pełną integrację (pobranie licencji, odczyt statusu, odświeżenie, przedłużenie, przeniesienie) w działaniu, zanim wpięsz ją we własną aplikację. {{ className: 'lead' }}
+
+## Uruchomienie {{ id: 'uruchomienie' }}
+
+Potrzebujesz działającego `beanguard-server` (zobacz [Szybki start](/pl/szybki-start)) oraz jego klucza publicznego licencji i sekretu AES z zakładki **[Klucze kryptograficzne](/pl/panel-admina/klucze-kryptograficzne)** w panelu admina:
+
+```bash
+BEANGUARD_SERVER_PUBLIC_KEY="..." \
+BEANGUARD_SERVER_SECRET_KEY="..." \
+mvn -pl beanguard-demo spring-boot:run
+```
+
+Następnie otwórz `http://localhost:8090`. Adres serwera (`beanguard.demo.server.url`, domyślnie `http://localhost:8000`) i port możesz zamiast zmiennych środowiskowych zmienić bezpośrednio w `beanguard-demo/src/main/resources/application.yml`.
+
+## Profile trwałości {{ id: 'profile' }}
+
+| Profil | Zachowanie |
+| --- | --- |
+| `memory` (domyślny) | Klucz/sekret licencji i ewentualne oczekujące przeniesienie żyją tylko w pamięci — restart aplikacji je czyści i ponownie pojawia się formularz licencji demo. |
+| `file` | Zapisywane do `./beanguard-demo-data/` (względem katalogu roboczego) — przetrwa restart. |
+
+Profil zmienisz flagą `--spring.profiles.active=file` albo edytując `spring.profiles.active` w `application.yml`.
+
+<Note>
+  Profil `memory` to dobry sposób, żeby zobaczyć, jak Twoja własna aplikacja
+  zachowuje się, gdy `loadLicence()` po restarcie nie ma nic w cache'u.
+  To też powód, dla którego istnieje opisany niżej mechanizm przeniesienia —
+  to właśnie ścieżka odzyskania sekretu licencji utraconego w ten sposób.
+</Note>
+
+## Co możesz przetestować {{ id: 'test' }}
+
+1. **Wygeneruj licencję demo** — gdy żadna licencja nie jest wczytana, aplikacja pokazuje formularz z e-mailem i numerem NIP. Jego wysłanie wywołuje samoobsługowy endpoint serwera, który wystawia licencję `DEMO` (zobacz [Licencje demo](/pl/licencje#demo)) i od razu pokazuje jej `claims`, termin ważności i klucz.
+2. **Odśwież** — pobiera bieżącą licencję z serwera na żądanie, zamiast czekać na cogodzinne automatyczne odświeżenie w `beanguard-client`. Przydatne zaraz po edycji claimów albo przedłużeniu licencji w panelu admina.
+3. **Przedłuż** — przekierowuje do `beanguard-shop` z tożsamością licencji w adresie, tą samą ścieżką, którą przechodzi klient kupujący przedłużenie.
+4. **Przenieś na nową maszynę** — ekran ze stanem pustym ma też drugi formularz do wpisania *istniejącego* klucza licencji, symulujący reinstalację (albo odzyskanie licencji z profilu `memory` utraconej przy restarcie). Serwer wysyła mailem link potwierdzający — jeśli uruchamiasz własny `docker-compose.yml` serwera, sprawdź go w [Mailpit](http://localhost:8025) — trzeba go raz otworzyć, a potem kliknąć **Sprawdź status** na stronie demo, żeby odebrać nowy sekret.
+
+## Gdzie szukać w kodzie {{ id: 'kod' }}
+
+- `FileBeanGuardConfiguration` / `InMemoryBeanGuardConfiguration` (`dev.beanguard.demo.licence`) — dwie implementacje `BeanGuardConfiguration` stojące za profilami `file`/`memory`. Porównaj je z przykładem w [Implementacji BeanGuardConfiguration](/pl/klient#konfiguracja).
+- `DemoController` — jedyna klasa rozmawiająca bezpośrednio z `LicenceRegistry` i `BeanGuardServer`; wzór dla wzorca [Odczytu statusu licencji](/pl/klient#status) we własnej aplikacji.
+
+<Note>
+  `DemoLicenceKeyStore` rozszerza `BeanGuardConfiguration` o kilka
+  dodatkowych metod (`storeLicenceKeys`, obsługa oczekującego przeniesienia)
+  używanych wyłącznie przez własne ekrany aplikacji demo — nie są częścią
+  kontraktu `beanguard-client`, więc Twoja implementacja ich nie potrzebuje.
+</Note>

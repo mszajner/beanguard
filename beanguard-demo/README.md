@@ -27,12 +27,12 @@ directly):
 
 ## Persistence profiles
 
-- `file` (default) — the generated demo licence's key/secret persist to
+- `memory` (default) — kept in memory only; a restart clears the licence and
+  the form reappears.
+- `file` — the generated demo licence's key/secret persist to
   `./beanguard-demo-data/`, surviving app restarts.
-- `memory` — kept in memory only; a restart clears the licence and the form
-  reappears.
 
-Switch with `--spring.profiles.active=memory` or by editing `application.yml`.
+Switch with `--spring.profiles.active=file` or by editing `application.yml`.
 
 ## Run
 

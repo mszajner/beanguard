@@ -279,6 +279,10 @@ const navigationByLocale: Record<Locale, Array<NavGroup>> = {
       title: 'Integracja klienta',
       links: [
         { title: 'Instalacja i konfiguracja', href: '/pl/klient' },
+        {
+          title: 'Przykładowa aplikacja',
+          href: '/pl/klient/przykladowa-aplikacja',
+        },
         { title: 'Adnotacje licencyjne', href: '/pl/klient/adnotacje' },
         {
           title: 'Ochrona kluczy ProGuardem',
@@ -340,6 +344,7 @@ const navigationByLocale: Record<Locale, Array<NavGroup>> = {
       title: 'Client integration',
       links: [
         { title: 'Installation & configuration', href: '/en/client' },
+        { title: 'Example app', href: '/en/client/example-app' },
         { title: 'Licensing annotations', href: '/en/client/annotations' },
         {
           title: 'Protecting keys with ProGuard',

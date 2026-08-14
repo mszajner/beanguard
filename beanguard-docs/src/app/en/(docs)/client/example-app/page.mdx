@@ -1,0 +1,63 @@
+export const metadata = {
+  title: 'Example app: beanguard-demo',
+  description:
+    'Running the beanguard-demo Spring Boot app to see a beanguard-client integration end to end.',
+}
+
+export const sections = [
+  { title: 'Running it', id: 'uruchomienie' },
+  { title: 'Persistence profiles', id: 'profile' },
+  { title: 'What you can test', id: 'test' },
+  { title: 'Where to look in the code', id: 'kod' },
+]
+
+# Example app: beanguard-demo
+
+`beanguard-demo` is a small, runnable Spring Boot app in the same repository as `beanguard-client` — the fastest way to see a full integration (fetching a licence, reading its status, refreshing, extending, transferring) working before you wire one into your own app. {{ className: 'lead' }}
+
+## Running it {{ id: 'uruchomienie' }}
+
+You need a running `beanguard-server` (see [Quick start](/en/quick-start)) and its licence public key and AES secret from **[Cryptographic keys](/en/admin-panel/cryptographic-keys)** in the admin panel:
+
+```bash
+BEANGUARD_SERVER_PUBLIC_KEY="..." \
+BEANGUARD_SERVER_SECRET_KEY="..." \
+mvn -pl beanguard-demo spring-boot:run
+```
+
+Then open `http://localhost:8090`. The server address (`beanguard.demo.server.url`, default `http://localhost:8000`) and the port can be changed in `beanguard-demo/src/main/resources/application.yml` instead of via environment variables if you prefer.
+
+## Persistence profiles {{ id: 'profile' }}
+
+| Profile | Behaviour |
+| --- | --- |
+| `memory` (default) | The licence key/secret and any pending transfer live only in memory — restarting the app clears them and the demo licence form reappears. |
+| `file` | Persisted to `./beanguard-demo-data/` (relative to the working directory) — survives restarts. |
+
+Switch profiles with `--spring.profiles.active=file`, or edit `spring.profiles.active` in `application.yml`.
+
+<Note>
+  The `memory` profile is a good way to see how your own app behaves when
+  `loadLicence()` has nothing cached yet after a restart. It's also why the
+  transfer flow below exists — it's the recovery path for a licence secret
+  lost that way.
+</Note>
+
+## What you can test {{ id: 'test' }}
+
+1. **Get a demo licence** — with no licence loaded, the app shows a form asking for an email and VAT/NIP number. Submitting it calls the server's self-service endpoint, which issues a `DEMO` licence (see [Demo licences](/en/licence-model#demo)) and immediately displays its `claims`, expiration, and key.
+2. **Refresh** — re-fetches the current licence from the server on demand, instead of waiting for `beanguard-client`'s hourly automatic refresh. Useful right after editing claims or extending the licence from the admin panel.
+3. **Extend** — redirects into `beanguard-shop` carrying the licence's identity, the same path an end customer follows to buy an extension.
+4. **Transfer to a new machine** — the empty-state screen also has a second form for entering an *existing* licence key, simulating a reinstall (or recovering a `memory`-profile licence lost on restart). The server emails a confirmation link — if you're running the server's own `docker-compose.yml`, check [Mailpit](http://localhost:8025) for it — that has to be opened once; then click **Check status** on the demo page to pick up the new secret.
+
+## Where to look in the code {{ id: 'kod' }}
+
+- `FileBeanGuardConfiguration` / `InMemoryBeanGuardConfiguration` (`dev.beanguard.demo.licence`) — the two `BeanGuardConfiguration` implementations behind the `file`/`memory` profiles. Compare them to the [Implementing BeanGuardConfiguration](/en/client#konfiguracja) example.
+- `DemoController` — the only class talking to `LicenceRegistry` and `BeanGuardServer` directly; a template for the [Reading licence status](/en/client#status) pattern in your own app.
+
+<Note>
+  `DemoLicenceKeyStore` extends `BeanGuardConfiguration` with a few extra
+  methods (`storeLicenceKeys`, pending-transfer bookkeeping) used only by the
+  demo app's own screens — they aren't part of the `beanguard-client`
+  contract, so your own implementation doesn't need them.
+</Note>
