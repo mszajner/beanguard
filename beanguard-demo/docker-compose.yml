@@ -17,9 +17,7 @@ services:
       - "1025:1025"
   server:
     hostname: server
-    build:
-      context: .
-      dockerfile: beanguard-server/Dockerfile
+    image: mszajner/beanguard-server:0.1-latest
     depends_on:
       - postgres
       - mailpit
@@ -28,8 +26,7 @@ services:
       - "8000:80"
   shop:
     hostname: shop
-    build:
-      context: beanguard-shop
+    image: mszajner/beanguard-shop:0.1-latest
     depends_on:
       - server
     env_file: .env
@@ -39,8 +36,7 @@ services:
       - "8001:80"
   admin:
     hostname: admin
-    build:
-      context: beanguard-admin
+    image: mszajner/beanguard-admin:0.1-latest
     depends_on:
       - server
     env_file: .env
@@ -48,14 +44,13 @@ services:
       NODE_ENV: 'development'
     ports:
       - "8002:80"
-  docs:
-    hostname: docs
-    build:
-      context: beanguard-docs
-    environment:
-      NODE_ENV: 'development'
-    ports:
-      - "8003:80"
+#  demo:
+#    hostname: demo
+#    build:
+#      context: .
+#    env_file: .env
+#    ports:
+#      - "8090:8090"
 
 volumes:
   postgres_data:
