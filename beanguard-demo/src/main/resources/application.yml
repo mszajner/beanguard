@@ -6,6 +6,8 @@ spring:
     name: beanguard-demo
   profiles:
     active: memory
+  messages:
+    fallback-to-system-locale: false
 
 beanguard:
   demo:

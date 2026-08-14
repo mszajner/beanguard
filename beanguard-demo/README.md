@@ -39,6 +39,13 @@ directly):
 
 Switch with `--spring.profiles.active=file` or by editing `application.yml`.
 
+## Language
+
+English and Polish, via `messages.properties`/`messages_pl.properties`. Falls
+back to the browser's `Accept-Language` header (English if unsupported); the
+`EN`/`PL` links in the page header switch explicitly and persist the choice
+in a `beanguard-demo-lang` cookie. See `LocaleConfig`.
+
 ## Run
 
     cd beanguard-demo

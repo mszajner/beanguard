@@ -14,6 +14,8 @@ import dev.beanguard.demo.config.DemoProperties;
 import dev.beanguard.demo.licence.DemoLicenceKeyStore;
 import dev.beanguard.demo.licence.DemoLicenceKeyStore.PendingTransfer;
 import jakarta.validation.Valid;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -35,16 +37,23 @@ public class DemoController {
     private final BeanGuardServer beanGuardServer;
     private final DemoLicenceKeyStore licenceKeyStore;
     private final DemoProperties properties;
+    private final MessageSource messageSource;
     private final RestClient restClient = RestClient.create();
 
     public DemoController(LicenceRegistry licenceRegistry,
                            BeanGuardServer beanGuardServer,
                            DemoLicenceKeyStore licenceKeyStore,
-                           DemoProperties properties) {
+                           DemoProperties properties,
+                           MessageSource messageSource) {
         this.licenceRegistry = licenceRegistry;
         this.beanGuardServer = beanGuardServer;
         this.licenceKeyStore = licenceKeyStore;
         this.properties = properties;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String code, Object... args) {
+        return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
     }
 
     @GetMapping("/")
@@ -84,8 +93,7 @@ public class DemoController {
             licenceKeyStore.storeLicenceKeys(new LicenceKeys(licence.getKey().toString(), licence.getSecret()));
             licenceRegistry.refreshLicence();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Nie udało się wygenerować licencji demo: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", msg("demo.error.generate", e.getMessage()));
         }
         return "redirect:/";
     }
@@ -114,8 +122,7 @@ public class DemoController {
                     .body(LicenceTransferInitResponse.class);
             licenceKeyStore.storePendingTransfer(response.transferToken(), form.getLicenceKey(), response.expiresAt());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Nie udało się rozpocząć przeniesienia licencji: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", msg("demo.error.transferInit", e.getMessage()));
         }
         return "redirect:/";
     }
@@ -141,16 +148,14 @@ public class DemoController {
                 }
                 case "EXPIRED" -> {
                     licenceKeyStore.clearPendingTransfer();
-                    redirectAttributes.addFlashAttribute("error",
-                            "Token przeniesienia wygasł. Spróbuj ponownie.");
+                    redirectAttributes.addFlashAttribute("error", msg("demo.error.transferExpired"));
                 }
                 default -> {
                     // still PENDING — the waiting view re-renders as-is, nothing to flash
                 }
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Nie udało się sprawdzić statusu przeniesienia: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", msg("demo.error.transferCheck", e.getMessage()));
         }
         return "redirect:/";
     }
@@ -165,7 +170,7 @@ public class DemoController {
     public String extend(RedirectAttributes redirectAttributes) {
         Licence licence = licenceRegistry.getLicence();
         if (licence == null) {
-            redirectAttributes.addFlashAttribute("error", "Brak wczytanej licencji do przedłużenia.");
+            redirectAttributes.addFlashAttribute("error", msg("demo.error.noLicenceToExtend"));
             return "redirect:/";
         }
         try {
@@ -178,8 +183,7 @@ public class DemoController {
                     .body(LicenceTokenResponse.class);
             return "redirect:" + response.getShopUrl();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Nie udało się połączyć ze sklepem: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", msg("demo.error.extend", e.getMessage()));
             return "redirect:/";
         }
     }

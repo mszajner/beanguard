@@ -10,6 +10,6 @@ import java.util.UUID;
 @Setter
 public class DemoLicenceTransferRequestForm {
 
-    @NotNull
+    @NotNull(message = "{demo.validation.licenceKey}")
     private UUID licenceKey;
 }

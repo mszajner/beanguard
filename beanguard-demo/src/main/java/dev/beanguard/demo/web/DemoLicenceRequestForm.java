@@ -10,11 +10,11 @@ import lombok.Setter;
 @Setter
 public class DemoLicenceRequestForm {
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "{demo.validation.notBlank}")
+    @Email(message = "{demo.validation.email}")
     private String email;
 
-    @NotBlank
-    @PolishNIP
+    @NotBlank(message = "{demo.validation.notBlank}")
+    @PolishNIP(message = "{demo.validation.vatId}")
     private String vatId;
 }
