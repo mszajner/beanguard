@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `LicenceTokenResponse` (`beanguard-api`) was missing a no-args constructor, so generic Jackson deserialization of it failed. Added `@NoArgsConstructor`/`@AllArgsConstructor`, matching the pattern already used by `LicenceDemoCreateRequest`.
 - `beanguard-client`'s HTTP calls (`createDemoLicence`, `getLicence`) discarded the server's actual error response body on failure, always throwing a generic "Response is missing" `RuntimeException` even when the server sent back a meaningful error message. Now throws `BeanGuardServerException` with that body as the message.
+- Licence `type` and `netAmount` were never included in the encrypted licence token, so `beanguard-client` (and `beanguard-demo`, which displays them) could never actually receive these fields. `LicenceEncryptor` (server) and `LicenceDecryptor` (client) now carry both.
 
 ## [0.1.2] - 2026-08-12
 

@@ -1,6 +1,7 @@
 package dev.beanguard.client.server;
 
 import dev.beanguard.api.models.licence.Licence;
+import dev.beanguard.api.models.licence.LicenceType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwe;
 import io.jsonwebtoken.Jwts;
@@ -8,6 +9,7 @@ import lombok.SneakyThrows;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PublicKey;
@@ -57,8 +59,13 @@ public class LicenceDecryptor {
                         && !entry.getKey().equals("vatId")
                         && !entry.getKey().equals("email")
                         && !entry.getKey().equals("phoneNumber")
+                        && !entry.getKey().equals("type")
+                        && !entry.getKey().equals("netAmount")
                 )
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> (String) entry.getValue()));
+
+        String type = claims.get("type", String.class);
+        String netAmount = claims.get("netAmount", String.class);
 
         return Licence.builder()
                 .key(UUID.fromString(claims.getSubject()))
@@ -71,6 +78,8 @@ public class LicenceDecryptor {
                 .vatId(claims.get("vatId", String.class))
                 .email(claims.get("email", String.class))
                 .phoneNumber(claims.get("phoneNumber", String.class))
+                .type(type != null ? LicenceType.valueOf(type) : null)
+                .netAmount(netAmount != null ? new BigDecimal(netAmount) : null)
                 .claims(claimsMap)
                 .updatedAt(claims.getIssuedAt().toInstant())
                 .build();
