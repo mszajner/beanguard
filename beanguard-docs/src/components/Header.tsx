@@ -11,6 +11,7 @@ import {
 } from '@/components/MobileNavigation'
 import { MobileSearch, Search } from '@/components/Search'
 import { useSiteConfig } from '@/components/SiteConfig'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { ui } from '@/lib/i18n'
 import { CloseButton } from '@headlessui/react'
 
@@ -94,6 +95,7 @@ export const Header = forwardRef<
         <div className="hidden md:block md:h-5 md:w-px md:bg-zinc-900/10 md:dark:bg-white/15" />
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
+          <ThemeToggle />
           <MobileSearch />
         </div>
       </div>
