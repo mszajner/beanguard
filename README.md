@@ -6,11 +6,11 @@
 
 BeanGuard is a licensing system for Java/Spring Boot applications. It issues, encrypts, and verifies licences — you decide what limits and features each one unlocks in your own product.
 
-Full documentation: **[beanguard-docs](beanguard-docs)** (deployed at [beanguard.dev](https://beanguard.dev) once published).
+Full documentation: **[beanguard-docs](beanguard-docs)**
 
 ## Architecture
 
-Four independent modules, each runnable on its own:
+Independent modules, each runnable on its own:
 
 | Module | What it is | Stack |
 |---|---|---|
@@ -46,7 +46,7 @@ On first boot, `beanguard-server` runs its own database migrations (Liquibase) a
 
 ## Integrating BeanGuard into your own app
 
-Add `beanguard-client` as a Maven dependency, implement `BeanGuardConfiguration` with your server URL and keys (generated in the admin panel under **Settings → Cryptographic keys**), and use `@RequiresValidLicence`, `@RequiresLicenceFeature`, `@RequiresLicenceLimit`, and `@DecreasesLicenceLimit` to enforce licence terms declaratively. Full walkthrough, including protecting your embedded keys with ProGuard: **[beanguard-docs → Integracja klienta](beanguard-docs)**.
+Add `beanguard-client` as a Maven dependency, implement `BeanGuardConfiguration` with your server URL and keys (generated in the admin panel under **Settings → Cryptographic keys**), and use `@RequiresValidLicence`, `@RequiresLicenceFeature`, `@RequiresLicenceLimit`, and `@DecreasesLicenceLimit` to enforce licence terms declaratively. Full walkthrough, including protecting your embedded keys with ProGuard: **[proguard-vendor-guide](docs/proguard-vendor-guide.md)**.
 
 ## Development
 
