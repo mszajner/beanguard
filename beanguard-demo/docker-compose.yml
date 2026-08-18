@@ -50,6 +50,8 @@ services:
       context: .
     depends_on:
       - server
+    environment:
+      BEANGUARD_SERVER_URL: http://server
     ports:
       - "8090:80"
 
