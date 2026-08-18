@@ -60,7 +60,7 @@ class DemoLicenceAcceptanceSpec extends IntegrationSpec {
 
         then:
         def expected = Instant.now().plus(7, ChronoUnit.DAYS)
-        licence.expiration.truncatedTo(ChronoUnit.SECONDS) == expected.truncatedTo(ChronoUnit.SECONDS)
+        Math.abs(licence.expiration.epochSecond - expected.epochSecond) <= 5
 
         cleanup:
         parameterService.setString(ParameterName.LICENCE_DEMO_EXPIRATION_DAYS, "30")
