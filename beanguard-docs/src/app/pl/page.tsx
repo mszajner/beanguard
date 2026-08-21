@@ -269,7 +269,7 @@ export default function Home() {
                     </span>
                     {'\n'}
                     <span className="text-emerald-300">
-                      @IncreasesLicenceLimit
+                      @RequiresLicenceLimit
                     </span>
                     (<span className="text-sky-300">&quot;seats&quot;</span>)
                     {'\n'}
