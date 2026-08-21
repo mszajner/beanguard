@@ -132,7 +132,13 @@
         <li th:if="${licence.claims == null or #maps.isEmpty(licence.claims)}" th:text="#{demo.licence.noClaims}"></li>
     </ul>
 
+    <p class="status" th:text="#{demo.licence.usersUsage(${usersUsage}, ${usersLimit})}"></p>
+
     <a class="btn" th:href="@{/extend}" target="_blank" th:text="#{demo.licence.extend}">Extend licence</a>
+    <a class="btn" th:href="@{/pdf-export}" th:text="#{demo.licence.pdfExport}">PDF export</a>
+    <form th:action="@{/add-user}" method="post" style="display: inline;">
+        <button type="submit" th:text="#{demo.licence.addUser}">Add user</button>
+    </form>
     <form th:action="@{/refresh}" method="post" style="display: inline;">
         <button type="submit" class="secondary" th:text="#{demo.licence.refresh}">Refresh licence</button>
     </form>

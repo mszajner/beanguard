@@ -6,21 +6,31 @@ import dev.beanguard.api.models.licence.LicenceTransferInitRequest;
 import dev.beanguard.api.models.licence.LicenceTransferInitResponse;
 import dev.beanguard.api.models.licence.LicenceTransferStatusResponse;
 import dev.beanguard.api.models.shop.LicenceTokenResponse;
+import dev.beanguard.client.annotations.RequiresLicenceFeature;
+import dev.beanguard.client.annotations.RequiresLicenceLimit;
 import dev.beanguard.client.config.LicenceKeys;
 import dev.beanguard.client.config.ServerConfig;
+import dev.beanguard.client.exceptions.LicenceLimitExceeded;
+import dev.beanguard.client.exceptions.MissingLicenceFeature;
 import dev.beanguard.client.registries.LicenceRegistry;
 import dev.beanguard.client.registries.LicenceStatus;
 import dev.beanguard.client.server.BeanGuardServer;
+import dev.beanguard.client.usage.UsageRegistry;
 import dev.beanguard.demo.licence.DemoLicenceKeyStore;
 import dev.beanguard.demo.licence.DemoLicenceKeyStore.PendingTransfer;
 import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,16 +47,19 @@ public class DemoController {
     private final BeanGuardServer beanGuardServer;
     private final DemoLicenceKeyStore licenceKeyStore;
     private final MessageSource messageSource;
+    private final UsageRegistry usageRegistry;
     private final RestClient restClient = RestClient.create();
 
     public DemoController(LicenceRegistry licenceRegistry,
                            BeanGuardServer beanGuardServer,
                            DemoLicenceKeyStore licenceKeyStore,
-                           MessageSource messageSource) {
+                           MessageSource messageSource,
+                           UsageRegistry usageRegistry) {
         this.licenceRegistry = licenceRegistry;
         this.beanGuardServer = beanGuardServer;
         this.licenceKeyStore = licenceKeyStore;
         this.messageSource = messageSource;
+        this.usageRegistry = usageRegistry;
     }
 
     private String msg(String code, Object... args) {
@@ -71,6 +84,8 @@ public class DemoController {
         }
         if (status == LicenceStatus.LOADED) {
             model.addAttribute("licence", licenceRegistry.getLicence());
+            model.addAttribute("usersUsage", usageRegistry.getUsage("users"));
+            model.addAttribute("usersLimit", licenceRegistry.getLimit("users"));
             return "index";
         }
         Optional<PendingTransfer> pendingTransfer = licenceKeyStore.loadPendingTransfer();
@@ -209,5 +224,34 @@ public class DemoController {
             redirectAttributes.addFlashAttribute("error", msg("demo.error.extend", e.getMessage()));
             return "redirect:/";
         }
+    }
+
+    @RequiresLicenceFeature("pdf-export")
+    @GetMapping("/pdf-export")
+    public ResponseEntity<Resource> pdfExport() {
+        Resource pdf = new ClassPathResource("pdf/blank.pdf");
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment().filename("export.pdf").build().toString())
+                .body(pdf);
+    }
+
+    @ExceptionHandler(MissingLicenceFeature.class)
+    public String handleMissingLicenceFeature(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("error", msg("demo.error.pdfExport"));
+        return "redirect:/";
+    }
+
+    @RequiresLicenceLimit("users")
+    @PostMapping("/add-user")
+    public String addUser() {
+        return "redirect:/";
+    }
+
+    @ExceptionHandler(LicenceLimitExceeded.class)
+    public String handleLicenceLimitExceeded(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("error", msg("demo.error.limitExceeded"));
+        return "redirect:/";
     }
 }
