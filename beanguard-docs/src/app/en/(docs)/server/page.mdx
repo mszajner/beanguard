@@ -17,7 +17,7 @@ export const sections = [
 ## Getting started {{ id: 'uruchomienie' }}
 
 ```bash
-docker pull mszajner/beanguard-server:0.1.3
+docker pull mszajner/beanguard-server:0.1.4
 docker run -d \
   -p 8000:80 \
   -e SPRING_PROFILES_ACTIVE=prod \
@@ -26,7 +26,7 @@ docker run -d \
   -e SPRING_DATASOURCE_PASSWORD=<password> \
   -e BEANGUARD_ADMIN_URL=https://admin.yourdomain.com \
   -e BEANGUARD_SHOP_URL=https://shop.yourdomain.com \
-  mszajner/beanguard-server:0.1.3
+  mszajner/beanguard-server:0.1.4
 ```
 
 The container listens internally on port `80` regardless of the mapped host port.

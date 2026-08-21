@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-08-21
+
+### Added
+
+- `beanguard-demo` — a "PDF export" action gated behind `@RequiresLicenceFeature("pdf-export")` and an "Add user" action gated behind `@RequiresLicenceLimit("users")`, demonstrating feature/limit-gated actions against the currently loaded licence.
+
+### Changed
+
+- Client integration docs — the "Example app" page (EN+PL) now describes `beanguard-demo`'s in-app "Server connection" panel as the easiest way to set the server URL/public key/secret key, with env vars documented as the alternative; also fixed a stale `mvn -pl beanguard-demo` command and a leftover `beanguard.demo.server.url` reference (renamed to `beanguard.server.url`).
+- Removed the "not yet published" notice from the download docs (EN+PL) — Docker Hub and Maven Central publishing has been live since `0.1.1`.
+
+### Fixed
+
+- `mvn deploy` on a version tag only staged Maven Central releases (`autoPublish=false`), requiring a manual "Publish" click in Sonatype's Central Portal that never happened for `0.1.2`/`0.1.3` — both sat staged and never reached the public repo. Releases now auto-publish.
+- Docs landing page (EN+PL) referenced a nonexistent `@IncreasesLicenceLimit` annotation instead of `@RequiresLicenceLimit`.
+- Dark mode logo rendering in `beanguard-docs`.
+
 ## [0.1.3] - 2026-08-14
 
 ### Added
@@ -80,7 +97,8 @@ First public release.
 
 Initial internal release — predates the public repository and was never tagged or published anywhere.
 
-[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/mszajner/beanguard/releases/tag/v0.1.4
 [0.1.3]: https://github.com/mszajner/beanguard/releases/tag/v0.1.3
 [0.1.2]: https://github.com/mszajner/beanguard/releases/tag/v0.1.2
 [0.1.1]: https://github.com/mszajner/beanguard/releases/tag/v0.1.1
