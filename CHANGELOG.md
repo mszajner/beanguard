@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.4] - 2026-08-21
-
 ### Added
 
+- `beanguard-client` — `BeanGuardServer.initiateLicenceTransfer(UUID)` and `getLicenceTransferStatus(UUID)` for moving a licence to another machine through the server's `/api/open/licences/transfer` endpoints. Documented in the client integration docs (EN+PL).
 - `beanguard-demo` — a "PDF export" action gated behind `@RequiresLicenceFeature("pdf-export")` and an "Add user" action gated behind `@RequiresLicenceLimit("users")`, demonstrating feature/limit-gated actions against the currently loaded licence.
 
 ### Changed
 
+- `beanguard-demo` — the transfer flow in `DemoController` now uses the new `BeanGuardServer` methods instead of calling the server with its own `RestClient`. Requires bumping `beanguard-client.version` in `beanguard-demo/pom.xml` to the release containing them.
 - Client integration docs — the "Example app" page (EN+PL) now describes `beanguard-demo`'s in-app "Server connection" panel as the easiest way to set the server URL/public key/secret key, with env vars documented as the alternative; also fixed a stale `mvn -pl beanguard-demo` command and a leftover `beanguard.demo.server.url` reference (renamed to `beanguard.server.url`).
 - Removed the "not yet published" notice from the download docs (EN+PL) — Docker Hub and Maven Central publishing has been live since `0.1.1`.
 
@@ -97,8 +97,7 @@ First public release.
 
 Initial internal release — predates the public repository and was never tagged or published anywhere.
 
-[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.4...HEAD
-[0.1.4]: https://github.com/mszajner/beanguard/releases/tag/v0.1.4
+[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.3...HEAD
 [0.1.3]: https://github.com/mszajner/beanguard/releases/tag/v0.1.3
 [0.1.2]: https://github.com/mszajner/beanguard/releases/tag/v0.1.2
 [0.1.1]: https://github.com/mszajner/beanguard/releases/tag/v0.1.1
