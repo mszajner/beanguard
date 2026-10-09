@@ -2,6 +2,9 @@ package dev.beanguard.client.server;
 
 import dev.beanguard.api.models.licence.Licence;
 import dev.beanguard.api.models.licence.LicenceDemoCreateRequest;
+import dev.beanguard.api.models.licence.LicenceTransferInitRequest;
+import dev.beanguard.api.models.licence.LicenceTransferInitResponse;
+import dev.beanguard.api.models.licence.LicenceTransferStatusResponse;
 import dev.beanguard.client.config.BeanGuardConfiguration;
 import dev.beanguard.client.config.LicenceKeys;
 import dev.beanguard.client.config.ServerConfig;
@@ -13,6 +16,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class BeanGuardServerDefault implements BeanGuardServer {
 
@@ -41,6 +45,16 @@ public class BeanGuardServerDefault implements BeanGuardServer {
                 Map.of("Authorization", "KeySecret "
                         + base64Encoder.encodeToString((licenceKeys.get().getKey() + ":" + licenceKeys.get().getSecret()).getBytes())))));
 
+    }
+
+    public LicenceTransferInitResponse initiateLicenceTransfer(UUID licenceKey) throws BeanGuardServerException {
+        return post("/api/open/licences/transfer", new LicenceTransferInitRequest(licenceKey), Map.of(),
+                new TypeReference<>() {});
+    }
+
+    public LicenceTransferStatusResponse getLicenceTransferStatus(UUID transferToken)
+            throws BeanGuardServerException {
+        return get("/api/open/licences/transfer/" + transferToken, Map.of(), new TypeReference<>() {});
     }
 
     private Licence decryptLicence(String encryptedLicence) {

@@ -7,6 +7,7 @@ export const sections = [
   { title: 'Zależność Maven', id: 'zaleznosc' },
   { title: 'Implementacja BeanGuardConfiguration', id: 'konfiguracja' },
   { title: 'Odczyt statusu licencji', id: 'status' },
+  { title: 'Przeniesienie licencji', id: 'transfer' },
 ]
 
 # Integracja klienta
@@ -114,5 +115,32 @@ class LicenceBanner {
 ```
 
 `LicenceStatus` przyjmuje wartości `NOT_LOADED`, `MISSING_KEY`, `WRONG_KEY`, `WRONG_SECRET`, `EXPIRED`, `LOADED` — wykorzystaj je np. do pokazania banera „licencja wygasła" w swojej aplikacji.
+
+## Przeniesienie licencji na inną maszynę {{ id: 'transfer' }}
+
+Aby przenieść istniejącą licencję na nową maszynę (reinstalacja lub utracony sekret), użyj beana `BeanGuardServer`. Proces ma dwa kroki:
+
+```java
+import dev.beanguard.api.models.licence.LicenceTransferInitResponse;
+import dev.beanguard.api.models.licence.LicenceTransferStatusResponse;
+import dev.beanguard.client.server.BeanGuardServer;
+
+// 1. Rozpocznij transfer - serwer wysyła właścicielowi licencji e-mail z linkiem potwierdzającym.
+LicenceTransferInitResponse init = beanGuardServer.initiateLicenceTransfer(licenceKey);
+// Zachowaj init.transferToken() i init.expiresAt() do zakończenia transferu.
+
+// 2. Odpytuj, aż właściciel otworzy link.
+LicenceTransferStatusResponse status = beanGuardServer.getLicenceTransferStatus(init.transferToken());
+switch (status.status()) {
+    case "CONFIRMED" -> {
+        // status.secret() to nowy sekret - zapisz go razem z kluczem licencji,
+        // a następnie wywołaj licenceRegistry.refreshLicence().
+    }
+    case "EXPIRED" -> { /* zacznij od nowa przez initiateLicenceTransfer */ }
+    default -> { /* PENDING - sprawdź ponownie później */ }
+}
+```
+
+Obie metody rzucają `BeanGuardServerException`, gdy serwer odrzuci żądanie (np. nieznany klucz licencji lub token transferu). Zapisanie oczekującego transferu i nowego sekretu leży po stronie Twojej aplikacji, ponieważ `BeanGuardConfiguration` tylko odczytuje klucze licencji - działający przykład znajdziesz w `beanguard-demo`.
 
 Do egzekwowania limitów i funkcji z licencji na poziomie metod służą adnotacje — zobacz [Adnotacje licencyjne](/pl/klient/adnotacje).

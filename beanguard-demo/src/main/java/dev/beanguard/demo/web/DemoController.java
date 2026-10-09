@@ -2,7 +2,6 @@ package dev.beanguard.demo.web;
 
 import dev.beanguard.api.models.licence.Licence;
 import dev.beanguard.api.models.licence.LicenceDemoCreateRequest;
-import dev.beanguard.api.models.licence.LicenceTransferInitRequest;
 import dev.beanguard.api.models.licence.LicenceTransferInitResponse;
 import dev.beanguard.api.models.licence.LicenceTransferStatusResponse;
 import dev.beanguard.api.models.shop.LicenceTokenResponse;
@@ -152,12 +151,7 @@ public class DemoController {
             return "redirect:/";
         }
         try {
-            LicenceTransferInitResponse response = restClient.post()
-                    .uri(licenceKeyStore.getServerConfig().getUrl() + "/api/open/licences/transfer")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new LicenceTransferInitRequest(form.getLicenceKey()))
-                    .retrieve()
-                    .body(LicenceTransferInitResponse.class);
+            LicenceTransferInitResponse response = beanGuardServer.initiateLicenceTransfer(form.getLicenceKey());
             licenceKeyStore.storePendingTransfer(response.transferToken(), form.getLicenceKey(), response.expiresAt());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", msg("demo.error.transferInit", e.getMessage()));
@@ -173,10 +167,7 @@ public class DemoController {
         }
         PendingTransfer transfer = pending.get();
         try {
-            LicenceTransferStatusResponse response = restClient.get()
-                    .uri(licenceKeyStore.getServerConfig().getUrl() + "/api/open/licences/transfer/" + transfer.token())
-                    .retrieve()
-                    .body(LicenceTransferStatusResponse.class);
+            LicenceTransferStatusResponse response = beanGuardServer.getLicenceTransferStatus(transfer.token());
             switch (response.status()) {
                 case "CONFIRMED" -> {
                     licenceKeyStore.storeLicenceKeys(

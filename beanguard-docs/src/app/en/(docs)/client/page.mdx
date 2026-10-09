@@ -7,6 +7,7 @@ export const sections = [
   { title: 'Maven dependency', id: 'zaleznosc' },
   { title: 'Implementing BeanGuardConfiguration', id: 'konfiguracja' },
   { title: 'Reading licence status', id: 'status' },
+  { title: 'Transferring a licence', id: 'transfer' },
 ]
 
 # Client integration
@@ -111,5 +112,32 @@ class LicenceBanner {
 ```
 
 `LicenceStatus` takes the values `NOT_LOADED`, `MISSING_KEY`, `WRONG_KEY`, `WRONG_SECRET`, `EXPIRED`, `LOADED` — use them, for instance, to show a "licence expired" banner in your application.
+
+## Transferring a licence to another machine {{ id: 'transfer' }}
+
+To move an existing licence to a new machine (a reinstall, or a lost secret), use the `BeanGuardServer` bean. The flow has two steps:
+
+```java
+import dev.beanguard.api.models.licence.LicenceTransferInitResponse;
+import dev.beanguard.api.models.licence.LicenceTransferStatusResponse;
+import dev.beanguard.client.server.BeanGuardServer;
+
+// 1. Start the transfer - the server emails a confirmation link to the licence owner.
+LicenceTransferInitResponse init = beanGuardServer.initiateLicenceTransfer(licenceKey);
+// Keep init.transferToken() and init.expiresAt() until the transfer completes.
+
+// 2. Poll until the owner opens the link.
+LicenceTransferStatusResponse status = beanGuardServer.getLicenceTransferStatus(init.transferToken());
+switch (status.status()) {
+    case "CONFIRMED" -> {
+        // status.secret() is the new secret - store it with the licence key,
+        // then call licenceRegistry.refreshLicence().
+    }
+    case "EXPIRED" -> { /* start over with initiateLicenceTransfer */ }
+    default -> { /* PENDING - check again later */ }
+}
+```
+
+Both methods throw `BeanGuardServerException` when the server rejects the request (for example an unknown licence key or transfer token). Storing the pending transfer and the new secret is up to your application, since `BeanGuardConfiguration` only reads the licence keys - see `beanguard-demo` for a working example.
 
 Method-level annotations enforce the limits and features from the licence — see [Licensing annotations](/en/client/annotations).
