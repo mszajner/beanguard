@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-10-09
+
 ### Added
 
 - `beanguard-client` — `BeanGuardServer.initiateLicenceTransfer(UUID)` and `getLicenceTransferStatus(UUID)` for moving a licence to another machine through the server's `/api/open/licences/transfer` endpoints. Documented in the client integration docs (EN+PL).
@@ -97,7 +99,8 @@ First public release.
 
 Initial internal release — predates the public repository and was never tagged or published anywhere.
 
-[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/mszajner/beanguard/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/mszajner/beanguard/releases/tag/v0.1.3
 [0.1.2]: https://github.com/mszajner/beanguard/releases/tag/v0.1.2
 [0.1.1]: https://github.com/mszajner/beanguard/releases/tag/v0.1.1
