@@ -1,0 +1,45 @@
+name: Publish Maven
+
+# Publishes beanguard-api / beanguard-client to Maven Central. Called from ci.yml for version tags;
+# can also be run by hand against an existing tag (e.g. to retry a failed publish).
+on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to publish (e.g. v0.1.5)
+        required: true
+
+jobs:
+  publish-maven:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+      # Maven 3.10 (preinstalled on newer runner images) stages maven-metadata-local.xml, which
+      # central-publishing-maven-plugin 0.11.0 does not strip, and Central then rejects the bundle
+      # with "content that does NOT have a .pom file". Pin 3.9.x until the plugin handles it.
+      - name: Install Maven 3.9.12
+        run: |
+          v=3.9.12
+          curl -fsSLO https://archive.apache.org/dist/maven/maven-3/$v/binaries/apache-maven-$v-bin.tar.gz
+          echo "0a1be79f02466533fc1a80abbef8796e4f737c46c6574ede5658b110899942a94db634477dfd3745501c80aef9aac0d4f841d38574373f7e2d24cce89d694f70  apache-maven-$v-bin.tar.gz" | sha512sum -c -
+          tar -xzf apache-maven-$v-bin.tar.gz -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/apache-maven-$v/bin" >> "$GITHUB_PATH"
+      - name: Deploy beanguard-api / beanguard-client to Maven Central
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -B -Prelease -pl beanguard-api,beanguard-client deploy
