@@ -37,11 +37,13 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    /**
+     * Only the socket peer counts: a client-supplied {@code X-Forwarded-For} would let anyone pick a fresh
+     * bucket per request. Behind a reverse proxy, {@code server.forward-headers-strategy=native} makes
+     * Tomcat resolve the real client address from that header, but only when the peer is a trusted proxy
+     * ({@code server.tomcat.remoteip.internal-proxies}).
+     */
     private String resolveIp(HttpServletRequest request) {
-        String xff = request.getHeader("X-Forwarded-For");
-        if (xff != null && !xff.isBlank()) {
-            return xff.split(",")[0].trim();
-        }
         return request.getRemoteAddr();
     }
 

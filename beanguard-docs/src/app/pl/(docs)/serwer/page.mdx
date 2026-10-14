@@ -58,7 +58,7 @@ Po pierwszym uruchomieniu reszta konfiguracji żyje w bazie (tabela `parameter`)
 | `BRANDING_*`                                                     | Tytuł, logo, favicon, kolor, e-mail wsparcia                                                  | [Branding](/pl/panel-admina/branding)                                                 |
 | `LEGAL_*`                                                        | Dane firmy, waluta i VAT, dokumenty prawne, teksty na certyfikacie i fakturze pro-forma        | [Ustawienia](/pl/panel-admina/ustawienia)                                             |
 | `MAIL_HOST` / `PORT` / `USER` / `PASS` / `FROM` / `SENDER_NAME` / `SMTP_STARTTLS` / `EXPIRY_WARNING_DAYS` | Serwer SMTP i harmonogram przypomnień o wygaśnięciu licencji                | [Parametry](/pl/panel-admina/parametry)                                               |
-| `RATE_LIMIT_OPEN_RPM`                                            | Limit żądań na minutę dla publicznych endpointów bez uwierzytelnienia                         | [Parametry](/pl/panel-admina/parametry)                                               |
+| `RATE_LIMIT_OPEN_RPM` / `TRANSFER_INIT_COOLDOWN_SECONDS`         | Limit żądań na minutę dla publicznych endpointów bez uwierzytelnienia; odstęp między żądaniami przeniesienia licencji | [Parametry](/pl/panel-admina/parametry)                                               |
 
 <Note>
   Klucze prywatne (`LICENCE_PRIVATE_KEY`, `TOKEN_PRIVATE_KEY`) i `MAIL_PASS`

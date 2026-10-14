@@ -65,18 +65,20 @@ class RateLimitInterceptorTest extends Specification {
         resultB == true
     }
 
-    def "uses first IP from X-Forwarded-For header"() {
+    def "ignores a client-supplied X-Forwarded-For header"() {
         given:
         def writer = new StringWriter()
-        def request = Mock(HttpServletRequest) {
-            getHeader("X-Forwarded-For") >> "5.6.7.8, 192.168.1.1"
-            getRemoteAddr() >> "192.168.1.1"
-        }
         def response = Mock(HttpServletResponse) { getWriter() >> new PrintWriter(writer) }
+        def spoofed = { String claimed ->
+            Mock(HttpServletRequest) {
+                getHeader("X-Forwarded-For") >> claimed
+                getRemoteAddr() >> "192.168.1.1"
+            }
+        }
 
-        when:
-        3.times { interceptor.preHandle(request, response, null) }
-        def result = interceptor.preHandle(request, response, null)
+        when: "every request claims a different address but comes from the same peer"
+        3.times { i -> interceptor.preHandle(spoofed("5.6.7.${i}"), response, null) }
+        def result = interceptor.preHandle(spoofed("5.6.7.99"), response, null)
 
         then:
         !result

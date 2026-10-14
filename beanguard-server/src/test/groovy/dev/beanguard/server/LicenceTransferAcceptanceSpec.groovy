@@ -1,194 +1,81 @@
 package dev.beanguard.server
 
-import dev.beanguard.api.models.licence.LicenceCreateRequest
-import dev.beanguard.server.services.LicenceService
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import org.springframework.beans.factory.annotation.Autowired
-import tools.jackson.databind.ObjectMapper
+import dev.beanguard.server.models.ParameterName
 
-import java.time.Instant
-import java.time.temporal.ChronoUnit
+class LicenceTransferAcceptanceSpec extends TransferFlowSpec {
 
-class LicenceTransferAcceptanceSpec extends IntegrationSpec {
+    def setup() {
+        parameterService.setString(ParameterName.TRANSFER_INIT_COOLDOWN_SECONDS, "60")
+    }
 
-    @Autowired LicenceService licenceService
-
-    OkHttpClient http = new OkHttpClient()
-    ObjectMapper mapper = new ObjectMapper()
-    static final MediaType JSON = MediaType.get("application/json")
-
-    def "happy path: initiate -> poll PENDING -> confirm -> poll CONFIRMED with new secret"() {
+    def "happy path: initiate -> poll PENDING -> owner confirms by email -> poll CONFIRMED with new secret"() {
         given:
-        def licence = licenceService.createLicence(LicenceCreateRequest.builder()
-            .expiration(Instant.now().plus(365, ChronoUnit.DAYS))
-            .vatId("1234567890")
-            .email("transfer@example.com")
-            .build())
-        def oldSecret = licence.secret
+        def licence = newLicence("transfer@example.com")
 
         when: "initiate transfer"
-        def initResp = http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer")
-            .post(RequestBody.create("""{"licenceKey":"${licence.key}"}""", JSON))
-            .build()).execute()
-        def initBody = mapper.readTree(initResp.body().string())
+        def init = initiate(licence.key)
 
         then:
-        initResp.code() == 200
-        def transferToken = initBody.get("transferToken").asText()
-        transferToken != null && !transferToken.isBlank()
-        initBody.get("expiresAt") != null
+        init.code == 200
+        def pollToken = init.body.get("transferToken").asText()
+        !pollToken.isBlank()
+        init.body.get("expiresAt") != null
 
-        when: "poll — should be PENDING"
-        def pendingResp = http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer/${transferToken}")
-            .get().build()).execute()
-        def pendingBody = mapper.readTree(pendingResp.body().string())
+        when: "poll before the owner confirms"
+        def pending = poll(pollToken)
 
         then:
-        pendingResp.code() == 200
-        pendingBody.get("status").asText() == "PENDING"
-        pendingBody.get("secret") == null
+        pending.code == 200
+        pending.body.get("status").asText() == "PENDING"
+        pending.body.get("secret") == null
 
-        when: "confirm transfer"
-        def confirmResp = http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer/${transferToken}/confirm")
-            .post(RequestBody.create(new byte[0], null))
-            .build()).execute()
-        def confirmBody = mapper.readTree(confirmResp.body().string())
+        when: "owner confirms from the emailed link"
+        def confirmed = confirm(mailedConfirmToken("transfer@example.com"))
 
         then:
-        confirmResp.code() == 200
-        def newSecret = confirmBody.get("secret").asText()
-        newSecret != null && !newSecret.isBlank()
-        newSecret != oldSecret
+        confirmed.code == 200
 
-        when: "poll again — should be CONFIRMED with secret"
-        def confirmedResp = http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer/${transferToken}")
-            .get().build()).execute()
-        def confirmedBody = mapper.readTree(confirmedResp.body().string())
+        when: "initiator polls again"
+        def collected = poll(pollToken)
 
         then:
-        confirmedResp.code() == 200
-        confirmedBody.get("status").asText() == "CONFIRMED"
-        confirmedBody.get("secret").asText() == newSecret
+        collected.code == 200
+        collected.body.get("status").asText() == "CONFIRMED"
+        def newSecret = collected.body.get("secret").asText()
+        !newSecret.isBlank()
+        newSecret != licence.secret
     }
 
     def "old credentials fail after transfer, new credentials succeed"() {
         given:
-        def licence = licenceService.createLicence(LicenceCreateRequest.builder()
-            .expiration(Instant.now().plus(365, ChronoUnit.DAYS))
-            .vatId("9876543210")
-            .email("transfer2@example.com")
-            .build())
-        def oldCreds = Base64.encoder.encodeToString("${licence.key}:${licence.secret}".bytes)
+        def licence = newLicence("transfer2@example.com")
+        def pollToken = initiate(licence.key).body.get("transferToken").asText()
+        confirm(mailedConfirmToken("transfer2@example.com"))
+        def newSecret = poll(pollToken).body.get("secret").asText()
 
-        // initiate + confirm transfer
-        def token = mapper.readTree(http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer")
-            .post(RequestBody.create("""{"licenceKey":"${licence.key}"}""", JSON))
-            .build()).execute().body().string()).get("transferToken").asText()
-        def newSecret = mapper.readTree(http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer/${token}/confirm")
-            .post(RequestBody.create(new byte[0], null))
-            .build()).execute().body().string()).get("secret").asText()
-
-        when: "old credentials"
-        def oldResp = http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences")
-            .header("Authorization", "KeySecret ${oldCreds}")
-            .get().build()).execute()
-
-        then:
-        oldResp.code() == 404
-
-        when: "new credentials"
-        def newCreds = Base64.encoder.encodeToString("${licence.key}:${newSecret}".bytes)
-        def newResp = http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences")
-            .header("Authorization", "KeySecret ${newCreds}")
-            .get().build()).execute()
-
-        then:
-        newResp.code() == 200
-    }
-
-    def "second initiate replaces first transfer token"() {
-        given:
-        def licence = licenceService.createLicence(LicenceCreateRequest.builder()
-            .expiration(Instant.now().plus(365, ChronoUnit.DAYS))
-            .vatId("1111111111")
-            .email("transfer3@example.com")
-            .build())
-
-        def firstToken = mapper.readTree(http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer")
-            .post(RequestBody.create("""{"licenceKey":"${licence.key}"}""", JSON))
-            .build()).execute().body().string()).get("transferToken").asText()
-
-        when: "second initiate"
-        def secondToken = mapper.readTree(http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer")
-            .post(RequestBody.create("""{"licenceKey":"${licence.key}"}""", JSON))
-            .build()).execute().body().string()).get("transferToken").asText()
-
-        then:
-        secondToken != firstToken
-
-        and: "first token is gone"
-        http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer/${firstToken}")
-            .get().build()).execute().code() == 404
+        expect:
+        licenceDetailsCode(licence.key, licence.secret) == 404
+        licenceDetailsCode(licence.key, newSecret) == 200
     }
 
     def "confirm already-confirmed token returns 410"() {
         given:
-        def licence = licenceService.createLicence(LicenceCreateRequest.builder()
-            .expiration(Instant.now().plus(365, ChronoUnit.DAYS))
-            .vatId("2222222222")
-            .email("transfer4@example.com")
-            .build())
-        def token = mapper.readTree(http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer")
-            .post(RequestBody.create("""{"licenceKey":"${licence.key}"}""", JSON))
-            .build()).execute().body().string()).get("transferToken").asText()
-        http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer/${token}/confirm")
-            .post(RequestBody.create(new byte[0], null))
-            .build()).execute()
+        def licence = newLicence("transfer4@example.com")
+        initiate(licence.key)
+        def confirmToken = mailedConfirmToken("transfer4@example.com")
+        confirm(confirmToken)
 
-        when:
-        def resp = http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer/${token}/confirm")
-            .post(RequestBody.create(new byte[0], null))
-            .build()).execute()
-
-        then:
-        resp.code() == 410
+        expect:
+        confirm(confirmToken).code == 410
     }
 
-    def "initiate with unknown licence key returns 404"() {
-        when:
-        def resp = http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer")
-            .post(RequestBody.create('{"licenceKey":"00000000-0000-0000-0000-000000000000"}', JSON))
-            .build()).execute()
-
-        then:
-        resp.code() == 404
+    def "confirm unknown token returns 404"() {
+        expect:
+        confirm("00000000-0000-0000-0000-000000000000").code == 404
     }
 
     def "poll unknown token returns 404"() {
-        when:
-        def resp = http.newCall(new Request.Builder()
-            .url("http://localhost:${localServerPort}/api/open/licences/transfer/00000000-0000-0000-0000-000000000000")
-            .get().build()).execute()
-
-        then:
-        resp.code() == 404
+        expect:
+        poll("00000000-0000-0000-0000-000000000000").code == 404
     }
 }

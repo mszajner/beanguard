@@ -15,6 +15,9 @@ spring:
 
 server:
   port: 8000
+  # Resolve the client address from X-Forwarded-For only when the peer is a trusted proxy
+  # (private ranges by default, see server.tomcat.remoteip.internal-proxies).
+  forward-headers-strategy: native
 
 beanguard:
   server:

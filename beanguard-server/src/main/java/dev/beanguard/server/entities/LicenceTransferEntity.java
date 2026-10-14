@@ -18,11 +18,16 @@ import java.util.UUID;
 @Table(name = "licence_transfers")
 public class LicenceTransferEntity {
 
+    /** Returned to whoever initiated the transfer; it reads the outcome but cannot confirm. */
     @Id
     private UUID token;
 
     @Column(name = "licence_key", nullable = false)
     private UUID licenceKey;
+
+    /** Emailed to the licence owner only; it confirms the transfer but cannot read its outcome. */
+    @Column(name = "confirm_token", nullable = false, unique = true)
+    private UUID confirmToken;
 
     @Column(name = "status", nullable = false)
     private String status;

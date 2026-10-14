@@ -38,6 +38,10 @@ See [Mail templates](/en/admin-panel/mail-templates) to change the content of th
 
 `RATE_LIMIT_OPEN_RPM` — the maximum number of requests per minute from a single IP address for public, unauthenticated endpoints (shop, licence lookup/activation, self-service DEMO issuance). Protects these endpoints from abuse, since they don't require login.
 
+The limit is keyed on the address of the connecting peer. Behind a reverse proxy, the server takes the client address from `X-Forwarded-For` only when the proxy is on a private network (Tomcat's default `internal-proxies`); if your proxy has a public address, list it in `SERVER_TOMCAT_REMOTEIP_INTERNAL_PROXIES`, otherwise all clients share the proxy's bucket. A `X-Forwarded-For` header sent by a client directly is ignored.
+
+`TRANSFER_INIT_COOLDOWN_SECONDS` (default `60`) — the minimum time between licence-transfer requests for the same licence key. Within it, further requests send no email and change nothing, so a licence owner can't be flooded with confirmation emails or have a pending transfer cancelled by repeated requests.
+
 ## Editing and write-only values {{ id: 'edycja' }}
 
 Clicking **Edit** next to a parameter opens a modal with the name (read-only) and a value field. Parameters marked as write-only (e.g. `MAIL_PASS`) show `••••••• (write-only)` in the list instead of a value, and the button is called **Overwrite** instead of **Edit** — you can't see the current value, only replace it with a new one.

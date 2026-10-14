@@ -22,20 +22,24 @@ public class OpenTransferController {
     private final LicenceTransferService licenceTransferService;
 
     @PostMapping
-    @Operation(summary = "Initiate machine transfer for a licence key.")
+    @Operation(summary = "Initiate machine transfer for a licence key. The owner is emailed a confirmation link; "
+            + "the response is identical whether or not the key is eligible.")
     public LicenceTransferInitResponse initiateTransfer(@RequestBody @Valid LicenceTransferInitRequest request) {
         return licenceTransferService.initiateTransfer(request.licenceKey());
     }
 
     @GetMapping("/{token}")
-    @Operation(summary = "Poll transfer status. Returns PENDING, CONFIRMED (with secret), or EXPIRED.")
+    @Operation(summary = "Poll transfer status. Returns PENDING, EXPIRED, or CONFIRMED with the new secret "
+            + "(rotated on this call; it can be collected once).")
     public LicenceTransferStatusResponse getStatus(@PathVariable UUID token) {
         return licenceTransferService.getStatus(token);
     }
 
     @PostMapping("/{token}/confirm")
-    @Operation(summary = "Confirm transfer from shop frontend. Rotates licence secret.")
+    @Operation(summary = "Confirm transfer from the emailed link (shop frontend). Takes the token from the email, "
+            + "not the one returned by the initiate call.")
     public Map<String, String> confirm(@PathVariable UUID token) {
-        return Map.of("secret", licenceTransferService.confirm(token));
+        licenceTransferService.confirm(token);
+        return Map.of("status", "CONFIRMED");
     }
 }

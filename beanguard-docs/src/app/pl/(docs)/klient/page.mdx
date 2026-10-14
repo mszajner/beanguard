@@ -141,6 +141,8 @@ switch (status.status()) {
 }
 ```
 
+Transfer potwierdza właściciel licencji, a nie maszyna, która go rozpoczęła: link potwierdzający trafia wyłącznie na adres e-mail z licencji, a `transferToken` służy tylko do odpytywania. Pierwsze odpytanie po potwierdzeniu przez właściciela zmienia sekret licencji i go zwraca; sekret można odebrać **tylko raz**, więc zapisz go od razu (kolejne odpytanie zwróci błąd). Dotychczasowy sekret działa do tego momentu. Rozpoczęcie transferu dla nieznanego klucza lub w czasie `TRANSFER_INIT_COOLDOWN_SECONDS` od poprzedniego żądania wygląda jak sukces, ale nie wysyła maila, więc odpytanie takiego tokenu zwróci błąd.
+
 Obie metody rzucają `BeanGuardServerException`, gdy serwer odrzuci żądanie (np. nieznany klucz licencji lub token transferu). Zapisanie oczekującego transferu i nowego sekretu leży po stronie Twojej aplikacji, ponieważ `BeanGuardConfiguration` tylko odczytuje klucze licencji - działający przykład znajdziesz w `beanguard-demo`.
 
 Do egzekwowania limitów i funkcji z licencji na poziomie metod służą adnotacje — zobacz [Adnotacje licencyjne](/pl/klient/adnotacje).

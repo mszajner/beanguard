@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 016-licence-transfer-confirm-token
+      author: mszajner
+      changes:
+        # Transfers live for one hour; dropping in-flight ones is cheaper than backfilling a
+        # confirmation token that would not have been the one already emailed.
+        - delete:
+            tableName: licence_transfers
+        - addColumn:
+            tableName: licence_transfers
+            columns:
+              - column:
+                  name: confirm_token
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true

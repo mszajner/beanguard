@@ -138,6 +138,8 @@ switch (status.status()) {
 }
 ```
 
+The transfer is confirmed by the licence owner, not by the machine that started it: the confirmation link goes only to the email on the licence, and `transferToken` can only be used to poll. The first poll after the owner confirmed rotates the licence secret and returns it; the secret can be collected **once**, so store it immediately (a later poll returns an error). The previous secret keeps working until then. Initiating a transfer for an unknown key, or within `TRANSFER_INIT_COOLDOWN_SECONDS` of the previous request, looks like success but sends no email, so polling that token reports an error.
+
 Both methods throw `BeanGuardServerException` when the server rejects the request (for example an unknown licence key or transfer token). Storing the pending transfer and the new secret is up to your application, since `BeanGuardConfiguration` only reads the licence keys - see `beanguard-demo` for a working example.
 
 Method-level annotations enforce the limits and features from the licence — see [Licensing annotations](/en/client/annotations).

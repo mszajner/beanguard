@@ -58,7 +58,7 @@ After the first startup, the rest of the configuration lives in the database (th
 | `BRANDING_*`                                                     | Title, logo, favicon, colour, support email                                                  | [Branding](/en/admin-panel/branding)                                                 |
 | `LEGAL_*`                                                        | Company details, currency and VAT, legal documents, certificate and pro-forma invoice text        | [Settings](/en/admin-panel/settings)                                             |
 | `MAIL_HOST` / `PORT` / `USER` / `PASS` / `FROM` / `SENDER_NAME` / `SMTP_STARTTLS` / `EXPIRY_WARNING_DAYS` | SMTP server and the schedule for licence-expiry reminders                | [Parameters](/en/admin-panel/parameters)                                               |
-| `RATE_LIMIT_OPEN_RPM`                                            | Requests-per-minute limit for public, unauthenticated endpoints                         | [Parameters](/en/admin-panel/parameters)                                               |
+| `RATE_LIMIT_OPEN_RPM` / `TRANSFER_INIT_COOLDOWN_SECONDS`         | Requests-per-minute limit for public, unauthenticated endpoints; cooldown between licence-transfer requests | [Parameters](/en/admin-panel/parameters)                                               |
 
 <Note>
   Private keys (`LICENCE_PRIVATE_KEY`, `TOKEN_PRIVATE_KEY`) and `MAIL_PASS`

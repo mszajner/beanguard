@@ -2,15 +2,15 @@ package dev.beanguard.server.services.impl
 
 import dev.beanguard.server.entities.LicenceEntity
 import dev.beanguard.server.entities.LicenceTransferEntity
-import dev.beanguard.server.exceptions.LicenceNotFoundException
 import dev.beanguard.server.exceptions.LicenceTransferExpiredException
-import dev.beanguard.server.exceptions.LicenceTransferInitException
 import dev.beanguard.server.exceptions.LicenceTransferNotFoundException
 import dev.beanguard.server.ports.InstantProvider
 import dev.beanguard.server.ports.SecureStringProvider
 import dev.beanguard.server.repositories.LicenceRepository
 import dev.beanguard.server.repositories.LicenceTransferRepository
+import dev.beanguard.server.models.ParameterName
 import dev.beanguard.server.services.MailService
+import dev.beanguard.server.services.ParameterService
 import org.springframework.test.util.ReflectionTestUtils
 import spock.lang.Specification
 
@@ -24,64 +24,102 @@ class LicenceTransferServiceTest extends Specification {
     def mailService = Mock(MailService)
     def secureStringProvider = Mock(SecureStringProvider)
     def instantProvider = Mock(InstantProvider)
+    def parameterService = Mock(ParameterService)
     def service = new LicenceTransferServiceImpl(
             licenceTransferRepository, licenceRepository, mailService,
-            secureStringProvider, instantProvider)
+            secureStringProvider, instantProvider, parameterService)
+
+    def now = Instant.now()
 
     def setup() {
         ReflectionTestUtils.setField(service, "shopBaseUrl", "http://localhost:8001")
+        instantProvider.now() >> now
+        parameterService.getString(ParameterName.TRANSFER_INIT_COOLDOWN_SECONDS) >> "60"
     }
 
-    def "initiateTransfer throws LicenceNotFoundException for unknown key"() {
-        given:
-        def key = UUID.randomUUID()
-        licenceRepository.findByKey(key) >> Optional.empty()
-
-        when:
-        service.initiateTransfer(key)
-
-        then:
-        thrown(LicenceNotFoundException)
-    }
-
-    def "initiateTransfer throws LicenceTransferInitException when licence has no email"() {
-        given:
-        def key = UUID.randomUUID()
+    private LicenceEntity licence(UUID key, String email, String secret = "old-secret") {
         def licence = new LicenceEntity()
         licence.key = key
-        licence.email = null
-        licenceRepository.findByKey(key) >> Optional.of(licence)
-
-        when:
-        service.initiateTransfer(key)
-
-        then:
-        thrown(LicenceTransferInitException)
+        licence.email = email
+        licence.secret = secret
+        licence
     }
 
-    def "initiateTransfer deletes existing transfer, saves new one, sends email"() {
+    private LicenceTransferEntity transfer(UUID token, UUID licenceKey, UUID confirmToken, String status,
+                                           Instant expiresAt = now.plus(1, ChronoUnit.HOURS)) {
+        new LicenceTransferEntity(token, licenceKey, confirmToken, status, expiresAt, now.minus(1, ChronoUnit.MINUTES))
+    }
+
+    def "initiateTransfer saves a transfer, emails only the confirmation token and returns the poll token"() {
         given:
         def key = UUID.randomUUID()
-        def licence = new LicenceEntity()
-        licence.key = key
-        licence.email = "test@example.com"
-        licenceRepository.findByKey(key) >> Optional.of(licence)
-        instantProvider.now() >> Instant.now()
-        licenceTransferRepository.save(_) >> { LicenceTransferEntity e -> e }
+        licenceRepository.findByKey(key) >> Optional.of(licence(key, "test@example.com"))
+        licenceTransferRepository.existsByLicenceKeyAndStatusAndCreatedAtAfter(key, "PENDING", _) >> false
+        LicenceTransferEntity saved = null
 
         when:
         def result = service.initiateTransfer(key)
 
         then:
         1 * licenceTransferRepository.deleteByLicenceKeyAndStatus(key, "PENDING")
-        1 * mailService.sendTransferConfirmation("test@example.com", { it.contains("/transfer-confirm?token=") })
+        1 * licenceTransferRepository.save(_) >> { LicenceTransferEntity e -> saved = e; e }
+        1 * mailService.sendTransferConfirmation("test@example.com", _) >> { to, url ->
+            assert url == "http://localhost:8001/transfer-confirm?token=${saved.confirmToken}"
+            assert !url.contains(saved.token.toString())
+        }
+        result.transferToken() == saved.token
+        saved.token != saved.confirmToken
+        result.expiresAt() != null
+    }
+
+    def "initiateTransfer for an unknown key returns a token but stores and sends nothing"() {
+        given:
+        def key = UUID.randomUUID()
+        licenceRepository.findByKey(key) >> Optional.empty()
+
+        when:
+        def result = service.initiateTransfer(key)
+
+        then:
         result.transferToken() != null
         result.expiresAt() != null
+        0 * licenceTransferRepository.save(_)
+        0 * mailService._
+    }
+
+    def "initiateTransfer for a licence without email returns a token but stores and sends nothing"() {
+        given:
+        def key = UUID.randomUUID()
+        licenceRepository.findByKey(key) >> Optional.of(licence(key, " "))
+
+        when:
+        def result = service.initiateTransfer(key)
+
+        then:
+        result.transferToken() != null
+        0 * licenceTransferRepository.save(_)
+        0 * mailService._
+    }
+
+    def "initiateTransfer within the cooldown keeps the pending transfer and sends nothing"() {
+        given:
+        def key = UUID.randomUUID()
+        licenceRepository.findByKey(key) >> Optional.of(licence(key, "test@example.com"))
+        licenceTransferRepository.existsByLicenceKeyAndStatusAndCreatedAtAfter(key, "PENDING", now.minusSeconds(60)) >> true
+
+        when:
+        def result = service.initiateTransfer(key)
+
+        then:
+        result.transferToken() != null
+        0 * licenceTransferRepository.deleteByLicenceKeyAndStatus(_, _)
+        0 * licenceTransferRepository.save(_)
+        0 * mailService._
     }
 
     def "getStatus throws LicenceTransferNotFoundException for unknown token"() {
         given:
-        licenceTransferRepository.findById(_) >> Optional.empty()
+        licenceTransferRepository.findByTokenForUpdate(_) >> Optional.empty()
 
         when:
         service.getStatus(UUID.randomUUID())
@@ -90,14 +128,11 @@ class LicenceTransferServiceTest extends Specification {
         thrown(LicenceTransferNotFoundException)
     }
 
-    def "getStatus returns EXPIRED and deletes entity when TTL passed"() {
+    def "getStatus returns EXPIRED and deletes the transfer when TTL passed"() {
         given:
         def token = UUID.randomUUID()
-        def now = Instant.now()
-        def entity = new LicenceTransferEntity(token, UUID.randomUUID(), "PENDING",
-                now.minus(1, ChronoUnit.MINUTES), now.minus(2, ChronoUnit.HOURS))
-        licenceTransferRepository.findById(token) >> Optional.of(entity)
-        instantProvider.now() >> now
+        def entity = transfer(token, UUID.randomUUID(), UUID.randomUUID(), "PENDING", now.minus(1, ChronoUnit.MINUTES))
+        licenceTransferRepository.findByTokenForUpdate(token) >> Optional.of(entity)
 
         when:
         def result = service.getStatus(token)
@@ -105,17 +140,14 @@ class LicenceTransferServiceTest extends Specification {
         then:
         result.status() == "EXPIRED"
         result.secret() == null
-        1 * licenceTransferRepository.deleteById(token)
+        1 * licenceTransferRepository.delete(entity)
     }
 
-    def "getStatus returns PENDING when not yet confirmed"() {
+    def "getStatus returns PENDING without a secret while unconfirmed"() {
         given:
         def token = UUID.randomUUID()
-        def now = Instant.now()
-        def entity = new LicenceTransferEntity(token, UUID.randomUUID(), "PENDING",
-                now.plus(1, ChronoUnit.HOURS), now.minus(1, ChronoUnit.MINUTES))
-        licenceTransferRepository.findById(token) >> Optional.of(entity)
-        instantProvider.now() >> now
+        licenceTransferRepository.findByTokenForUpdate(token) >> Optional.of(
+                transfer(token, UUID.randomUUID(), UUID.randomUUID(), "PENDING"))
 
         when:
         def result = service.getStatus(token)
@@ -123,33 +155,33 @@ class LicenceTransferServiceTest extends Specification {
         then:
         result.status() == "PENDING"
         result.secret() == null
+        0 * licenceRepository.save(_)
     }
 
-    def "getStatus returns CONFIRMED with current licence secret"() {
+    def "getStatus on a confirmed transfer rotates the secret, returns it and consumes the transfer"() {
         given:
         def token = UUID.randomUUID()
-        def licenceKey = UUID.randomUUID()
-        def now = Instant.now()
-        def entity = new LicenceTransferEntity(token, licenceKey, "CONFIRMED",
-                now.plus(1, ChronoUnit.HOURS), now.minus(1, ChronoUnit.MINUTES))
-        def licence = new LicenceEntity()
-        licence.key = licenceKey
-        licence.secret = "current-rotated-secret"
-        licenceTransferRepository.findById(token) >> Optional.of(entity)
-        licenceRepository.findByKey(licenceKey) >> Optional.of(licence)
-        instantProvider.now() >> now
+        def key = UUID.randomUUID()
+        def entity = transfer(token, key, UUID.randomUUID(), "CONFIRMED")
+        def licence = licence(key, "test@example.com")
+        licenceTransferRepository.findByTokenForUpdate(token) >> Optional.of(entity)
+        licenceRepository.findByKey(key) >> Optional.of(licence)
+        secureStringProvider.generate(80) >> "new-secret-80chars"
 
         when:
         def result = service.getStatus(token)
 
         then:
         result.status() == "CONFIRMED"
-        result.secret() == "current-rotated-secret"
+        result.secret() == "new-secret-80chars"
+        licence.secret == "new-secret-80chars"
+        1 * licenceRepository.save(licence)
+        1 * licenceTransferRepository.delete(entity)
     }
 
     def "confirm throws LicenceTransferNotFoundException for unknown token"() {
         given:
-        licenceTransferRepository.findById(_) >> Optional.empty()
+        licenceTransferRepository.findByConfirmTokenForUpdate(_) >> Optional.empty()
 
         when:
         service.confirm(UUID.randomUUID())
@@ -160,15 +192,12 @@ class LicenceTransferServiceTest extends Specification {
 
     def "confirm throws LicenceTransferExpiredException for expired token"() {
         given:
-        def token = UUID.randomUUID()
-        def now = Instant.now()
-        def entity = new LicenceTransferEntity(token, UUID.randomUUID(), "PENDING",
-                now.minus(1, ChronoUnit.MINUTES), now.minus(2, ChronoUnit.HOURS))
-        licenceTransferRepository.findById(token) >> Optional.of(entity)
-        instantProvider.now() >> now
+        def confirmToken = UUID.randomUUID()
+        licenceTransferRepository.findByConfirmTokenForUpdate(confirmToken) >> Optional.of(
+                transfer(UUID.randomUUID(), UUID.randomUUID(), confirmToken, "PENDING", now.minus(1, ChronoUnit.MINUTES)))
 
         when:
-        service.confirm(token)
+        service.confirm(confirmToken)
 
         then:
         thrown(LicenceTransferExpiredException)
@@ -176,43 +205,30 @@ class LicenceTransferServiceTest extends Specification {
 
     def "confirm throws LicenceTransferExpiredException for already-confirmed token"() {
         given:
-        def token = UUID.randomUUID()
-        def now = Instant.now()
-        def entity = new LicenceTransferEntity(token, UUID.randomUUID(), "CONFIRMED",
-                now.plus(1, ChronoUnit.HOURS), now.minus(1, ChronoUnit.MINUTES))
-        licenceTransferRepository.findById(token) >> Optional.of(entity)
-        instantProvider.now() >> now
+        def confirmToken = UUID.randomUUID()
+        licenceTransferRepository.findByConfirmTokenForUpdate(confirmToken) >> Optional.of(
+                transfer(UUID.randomUUID(), UUID.randomUUID(), confirmToken, "CONFIRMED"))
 
         when:
-        service.confirm(token)
+        service.confirm(confirmToken)
 
         then:
         thrown(LicenceTransferExpiredException)
     }
 
-    def "confirm rotates licence secret, sets status CONFIRMED, returns new secret"() {
+    def "confirm marks the transfer CONFIRMED without touching the licence secret"() {
         given:
-        def token = UUID.randomUUID()
-        def licenceKey = UUID.randomUUID()
-        def now = Instant.now()
-        def entity = new LicenceTransferEntity(token, licenceKey, "PENDING",
-                now.plus(1, ChronoUnit.HOURS), now.minus(1, ChronoUnit.MINUTES))
-        def licence = new LicenceEntity()
-        licence.key = licenceKey
-        licence.secret = "old-secret"
-        licenceTransferRepository.findById(token) >> Optional.of(entity)
-        licenceRepository.findByKey(licenceKey) >> Optional.of(licence)
-        secureStringProvider.generate(80) >> "new-secret-80chars"
-        instantProvider.now() >> now
+        def confirmToken = UUID.randomUUID()
+        def entity = transfer(UUID.randomUUID(), UUID.randomUUID(), confirmToken, "PENDING")
+        licenceTransferRepository.findByConfirmTokenForUpdate(confirmToken) >> Optional.of(entity)
 
         when:
-        def result = service.confirm(token)
+        service.confirm(confirmToken)
 
         then:
-        result == "new-secret-80chars"
-        licence.secret == "new-secret-80chars"
         entity.status == "CONFIRMED"
-        1 * licenceRepository.save(licence)
         1 * licenceTransferRepository.save(entity)
+        0 * licenceRepository.save(_)
+        0 * secureStringProvider.generate(_)
     }
 }

@@ -38,6 +38,10 @@ Zobacz [Szablony maili](/pl/panel-admina/szablony-maili), żeby zmienić treść
 
 `RATE_LIMIT_OPEN_RPM` — maksymalna liczba żądań na minutę z jednego adresu IP dla publicznych endpointów bez uwierzytelnienia (sklep, wyszukiwanie/aktywacja licencji, samoobsługowe wystawianie DEMO). Chroni te endpointy przed nadużyciem, skoro nie wymagają logowania.
 
+Limit liczony jest po adresie bezpośredniego połączenia. Za reverse proxy serwer bierze adres klienta z `X-Forwarded-For` tylko wtedy, gdy proxy jest w sieci prywatnej (domyślne `internal-proxies` Tomcata); jeśli Twoje proxy ma adres publiczny, wpisz go w `SERVER_TOMCAT_REMOTEIP_INTERNAL_PROXIES`, inaczej wszyscy klienci dzielą jeden limit adresu proxy. Nagłówek `X-Forwarded-For` wysłany bezpośrednio przez klienta jest ignorowany.
+
+`TRANSFER_INIT_COOLDOWN_SECONDS` (domyślnie `60`) — minimalny odstęp między żądaniami przeniesienia licencji dla tego samego klucza. W tym czasie kolejne żądania nie wysyłają maila i nic nie zmieniają, więc właściciela licencji nie da się zalać mailami z potwierdzeniem ani anulować mu oczekującego transferu powtarzanymi żądaniami.
+
 ## Edycja i wartości write-only {{ id: 'edycja' }}
 
 Kliknięcie **Edytuj** przy parametrze otwiera modal z nazwą (tylko do odczytu) i polem wartości. Parametry oznaczone jako write-only (np. `MAIL_PASS`) pokazują na liście `••••••• (write-only)` zamiast wartości, a przycisk zamiast **Edytuj** nazywa się **Nadpisz** — nie da się zobaczyć aktualnej wartości, można ją tylko zastąpić nową.

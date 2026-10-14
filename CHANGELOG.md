@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- **Licence takeover through the transfer flow** (reported privately by kta1kri). `POST /api/open/licences/transfer` returned the same token that the emailed link used to confirm the transfer, so anyone who knew a licence key could confirm their own transfer without access to the licence email and receive a freshly rotated secret, locking out the owner. Transfers now use two tokens: the one returned to the initiator can only poll, and the confirmation token exists only in the email. Affects 0.1.4 and earlier; upgrade the server. No client changes are needed.
+- The new licence secret is no longer returned by the confirmation endpoint. It is generated when the initiator first polls after confirmation and can be collected once; the old secret keeps working until then.
+- Transfer requests are limited per licence key (`TRANSFER_INIT_COOLDOWN_SECONDS`, default 60) and no longer reveal whether a key exists or has an email address.
+- The open-endpoint rate limit no longer trusts a client-supplied `X-Forwarded-For`, which allowed bypassing it. The client address behind a reverse proxy is resolved from trusted proxies only (`server.forward-headers-strategy=native`).
+
 ## [0.1.4] - 2026-10-09
 
 ### Added

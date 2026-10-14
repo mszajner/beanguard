@@ -638,6 +638,7 @@ public enum ParameterName {
             </html>
             """),
     RATE_LIMIT_OPEN_RPM("20"),
+    TRANSFER_INIT_COOLDOWN_SECONDS("60"),
     BRANDING_TITLE("BeanGuard"),
     BRANDING_LOGO_URL(""),
     BRANDING_WEBSITE_URL(""),

@@ -7,7 +7,6 @@ import dev.beanguard.server.exceptions.LastAdminDeletionException;
 import dev.beanguard.server.exceptions.LicenceNotFoundException;
 import dev.beanguard.server.exceptions.LicenceTransferNotFoundException;
 import dev.beanguard.server.exceptions.LicenceTransferExpiredException;
-import dev.beanguard.server.exceptions.LicenceTransferInitException;
 import dev.beanguard.server.exceptions.OpenOrdersExistException;
 import dev.beanguard.server.exceptions.OrderAlreadyProcessedException;
 import dev.beanguard.server.exceptions.OrderNotFoundException;
@@ -48,11 +47,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(LicenceTransferExpiredException.class)
     public ProblemDetail handleTransferExpired(LicenceTransferExpiredException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.GONE, ex.getMessage());
-    }
-
-    @ExceptionHandler(LicenceTransferInitException.class)
-    public ProblemDetail handleTransferInit(LicenceTransferInitException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
     }
 
     @ExceptionHandler(OpenOrdersExistException.class)

@@ -27,3 +27,5 @@ databaseChangeLog:
       file: db/changelog/changes/014-product-certificate-name.yml
   - include:
       file: db/changelog/changes/015-order-number.yml
+  - include:
+      file: db/changelog/changes/016-licence-transfer-confirm-token.yml
