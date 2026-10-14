@@ -1,0 +1,38 @@
+name: Central bundle debug
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+      - name: Stage a bundle against a fake Central
+        env:
+          CENTRAL_USERNAME: x
+          CENTRAL_PASSWORD: y
+        run: |
+          mvn -v
+          sed -i 's#<version>[0-9.]*-SNAPSHOT</version>#<version>0.1.99</version>#' pom.xml beanguard-api/pom.xml beanguard-client/pom.xml
+          python3 - <<'PY' &
+          from http.server import BaseHTTPRequestHandler, HTTPServer
+          class H(BaseHTTPRequestHandler):
+              def do_POST(self):
+                  self.rfile.read(int(self.headers.get('Content-Length', 0)))
+                  self.send_response(201); self.end_headers(); self.wfile.write(b'"abc"')
+              def log_message(self, *a): pass
+          HTTPServer(("127.0.0.1", 8765), H).serve_forever()
+          PY
+          sleep 2
+          mvn -B -Prelease -Dgpg.skip -DskipTests -DcentralBaseUrl=http://127.0.0.1:8765 -pl beanguard-api,beanguard-client deploy | grep -E "Pre Bundling|bundle|Bundle|BUILD" || true
+          echo "--- staging tree"
+          find beanguard-api/target/central-staging -type f | sed 's#.*central-staging/##' | sort
