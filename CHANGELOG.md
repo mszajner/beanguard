@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-10-14
+
 ### Security
 
 - **Licence takeover through the transfer flow** (reported privately by kta1kri). `POST /api/open/licences/transfer` returned the same token that the emailed link used to confirm the transfer, so anyone who knew a licence key could confirm their own transfer without access to the licence email and receive a freshly rotated secret, locking out the owner. Transfers now use two tokens: the one returned to the initiator can only poll, and the confirmation token exists only in the email. Affects 0.1.4 and earlier; upgrade the server. No client changes are needed.
@@ -106,7 +108,8 @@ First public release.
 
 Initial internal release — predates the public repository and was never tagged or published anywhere.
 
-[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.4...HEAD
+[Unreleased]: https://github.com/mszajner/beanguard/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/mszajner/beanguard/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/mszajner/beanguard/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/mszajner/beanguard/releases/tag/v0.1.3
 [0.1.2]: https://github.com/mszajner/beanguard/releases/tag/v0.1.2
