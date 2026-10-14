@@ -121,3 +121,5 @@ Release procedure for `X.Y.Z-SNAPSHOT`:
 4. **Test, commit, tag, push:** run `mvn test`, commit (`chore: release X.Y.Z`), tag `vX.Y.Z`, push both the commit and the tag.
 5. **Bump to the next SNAPSHOT:** set `<version>` to `X.Y.(Z+1)-SNAPSHOT` in the same four reactor `pom.xml` files, commit (`chore: bump version to X.Y.(Z+1)-SNAPSHOT`), push.
 6. **Bump the demo:** once `beanguard-api`/`beanguard-client:X.Y.Z` are live on Maven Central, set `beanguard-demo/pom.xml`'s `beanguard-client.version` property to `X.Y.Z` — it's pinned to a published release, not the reactor version, and won't pick up the new one automatically.
+
+If `publish-maven` fails after the tag is pushed, fix the cause and re-run it for the existing tag with `gh workflow run publish-maven.yml -f tag=vX.Y.Z` instead of moving the tag. Central's own error is not in the CI log; look at the deployment in the Central Portal (Deployments). Maven is pinned to 3.9.12 in `publish-maven.yml` on purpose — see the comment there before changing it.

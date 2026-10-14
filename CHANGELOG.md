@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `beanguard-demo` — now pinned to `beanguard-client` 0.1.5, which contains the licence-transfer methods `DemoController` uses.
+
+### Fixed
+
+- Maven Central publishing failed for `0.1.4` and `0.1.5` ("Bundle has content that does NOT have a .pom file"): runner images moved to Maven 3.10, which stages `maven-metadata-local.xml` that `central-publishing-maven-plugin` 0.11.0 does not strip. Publishing now runs from `publish-maven.yml` with a pinned Maven 3.9.12 and can be re-run by hand for an existing tag.
+
 ## [0.1.5] - 2026-10-14
 
 ### Security
@@ -17,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The open-endpoint rate limit no longer trusts a client-supplied `X-Forwarded-For`, which allowed bypassing it. The client address behind a reverse proxy is resolved from trusted proxies only (`server.forward-headers-strategy=native`).
 
 ## [0.1.4] - 2026-10-09
+
+> Only the Docker images were published for this version; the Maven Central artifacts failed to publish and first appeared in 0.1.5.
 
 ### Added
 
