@@ -27,6 +27,9 @@ updates:
       # Tailwind 4 needs a migration (@tailwindcss/postcss, CSS-based config).
       - dependency-name: tailwindcss
         update-types: ["version-update:semver-major"]
+      # @vitejs/plugin-react does not support Vite 8 yet.
+      - dependency-name: vite
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: npm
     directory: /beanguard-shop
@@ -44,6 +47,9 @@ updates:
         update-types: ["version-update:semver-major"]
       # Tailwind 4 needs a migration (@tailwindcss/postcss, CSS-based config).
       - dependency-name: tailwindcss
+        update-types: ["version-update:semver-major"]
+      # @vitejs/plugin-react does not support Vite 8 yet.
+      - dependency-name: vite
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: npm
