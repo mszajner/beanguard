@@ -14,7 +14,7 @@ jobs:
   publish-maven:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.tag || github.ref }}
       - uses: actions/setup-java@v5
