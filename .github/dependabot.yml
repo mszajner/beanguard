@@ -1,0 +1,39 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: maven
+    directory: /beanguard-demo
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /beanguard-admin
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /beanguard-shop
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /beanguard-docs
+    schedule:
+      interval: weekly
+    ignore:
+      # Next 16 breaks the docs build: MDX plugins are functions (not
+      # serializable for Turbopack), search.mjs is webpack-only, and webpack
+      # reports a bogus "use client" error on page.mdx metadata exports.
+      - dependency-name: next
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@next/mdx"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
