@@ -15,6 +15,15 @@ updates:
     schedule:
       interval: weekly
     ignore:
+      # React 19 needs react, react-dom and the @types packages bumped together.
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
       # Tailwind 4 needs a migration (@tailwindcss/postcss, CSS-based config).
       - dependency-name: tailwindcss
         update-types: ["version-update:semver-major"]
@@ -24,6 +33,15 @@ updates:
     schedule:
       interval: weekly
     ignore:
+      # React 19 needs react, react-dom and the @types packages bumped together.
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
       # Tailwind 4 needs a migration (@tailwindcss/postcss, CSS-based config).
       - dependency-name: tailwindcss
         update-types: ["version-update:semver-major"]
