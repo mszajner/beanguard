@@ -30,6 +30,11 @@ updates:
       # @vitejs/plugin-react does not support Vite 8 yet.
       - dependency-name: vite
         update-types: ["version-update:semver-major"]
+      # @eslint/js 10 requires ESLint 10; bump together after checking plugins.
+      - dependency-name: eslint
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: npm
     directory: /beanguard-shop
@@ -51,6 +56,11 @@ updates:
       # @vitejs/plugin-react does not support Vite 8 yet.
       - dependency-name: vite
         update-types: ["version-update:semver-major"]
+      # @eslint/js 10 requires ESLint 10; bump together after checking plugins.
+      - dependency-name: eslint
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: npm
     directory: /beanguard-docs
@@ -63,6 +73,10 @@ updates:
       - dependency-name: next
         update-types: ["version-update:semver-major"]
       - dependency-name: "@next/mdx"
+        update-types: ["version-update:semver-major"]
+      # TypeScript 7 breaks the '@/' alias resolution in next build and is
+      # outside the typescript-eslint peer range (<6.1).
+      - dependency-name: typescript
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
